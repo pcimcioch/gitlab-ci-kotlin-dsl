@@ -5,5 +5,9 @@ enum class WhenType {
     ON_FAILURE,
     ALWAYS,
     MANUAL,
-    DELAYED
+    DELAYED;
+
+    override fun toString(): String {
+        return super.toString().toLowerCase()
+    }
 }

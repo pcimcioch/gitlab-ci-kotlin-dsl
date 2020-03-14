@@ -2,7 +2,6 @@
 - what this project is about
 - how to use (documentation for each feature)
 - tests
-- hidden jobs
 
 - to yaml conversion
 

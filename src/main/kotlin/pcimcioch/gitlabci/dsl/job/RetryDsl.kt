@@ -34,5 +34,9 @@ enum class WhenRetryType {
     ARCHIVED_FAILURE,
     UNMET_PREREQUISITES,
     SCHEDULER_FAILURE,
-    DATA_INTEGRITY_FAILURE
+    DATA_INTEGRITY_FAILURE;
+
+    override fun toString(): String {
+        return super.toString().toLowerCase()
+    }
 }

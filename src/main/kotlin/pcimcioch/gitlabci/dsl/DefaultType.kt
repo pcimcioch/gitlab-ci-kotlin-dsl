@@ -10,5 +10,9 @@ enum class DefaultType {
     ARTIFACTS,
     RETRY,
     TIMEOUT,
-    INTERRUPTIBLE
+    INTERRUPTIBLE;
+
+    override fun toString(): String {
+        return super.toString().toLowerCase()
+    }
 }

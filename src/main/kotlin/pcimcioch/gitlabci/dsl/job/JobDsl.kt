@@ -24,6 +24,7 @@ class JobDsl(var name: String? = null) : DslBase {
     var parallel: Int? = null
     var interruptible: Boolean? = null
     var resourceGroup: String? = null
+    var variables: VariablesDsl? = null
     private val tags: MutableSet<String> = mutableSetOf()
     private val extends: MutableList<String> = mutableListOf()
 
@@ -55,6 +56,8 @@ class JobDsl(var name: String? = null) : DslBase {
     fun extends(vararg elements: JobDsl) = extends(elements.toList())
     fun extends(elements: Iterable<JobDsl>) = elements.forEach { extends.add(it.name ?: throw IllegalStateException("Passed job without name to extends")) }
 
+    fun variables(block: VariablesDsl.() -> Unit) = ensureVariables().apply(block)
+
     override fun validate(errors: MutableList<String>) {
         val prefix = "[job name='$name']"
 
@@ -67,6 +70,7 @@ class JobDsl(var name: String? = null) : DslBase {
         addErrors(errors, image, prefix)
         addErrors(errors, script, prefix)
         addErrors(errors, services, prefix)
+        addErrors(errors, variables, prefix)
     }
 
     private fun ensureInherit() = inherit ?: InheritDsl().also { inherit = it }
@@ -74,6 +78,7 @@ class JobDsl(var name: String? = null) : DslBase {
     private fun ensureScript() = script ?: ScriptDsl().also { script = it }
     private fun ensureServices() = services ?: ServiceListDsl().also { services = it }
     private fun ensureRetry() = retry ?: RetryDsl().also { retry = it }
+    private fun ensureVariables() = variables ?: VariablesDsl().also { variables = it }
 
     private companion object {
         val RESTRICTED_NAMES = listOf("image", "services", "stages", "types", "before_script", "after_script", "variables", "cache", "include")

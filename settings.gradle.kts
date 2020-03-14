@@ -1,0 +1,1 @@
+rootProject.name = "gitlab-ci-kotlin-dsl"

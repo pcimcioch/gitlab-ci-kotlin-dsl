@@ -1,6 +1,7 @@
 package pcimcioch.gitlabci.dsl
 
 interface DslBase {
+
     fun validate(errors: MutableList<String>) {}
 
     companion object {

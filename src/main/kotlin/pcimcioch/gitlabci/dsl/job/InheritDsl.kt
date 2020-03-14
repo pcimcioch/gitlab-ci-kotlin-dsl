@@ -1,5 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
+import pcimcioch.gitlabci.dsl.DefaultType
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
@@ -8,11 +9,11 @@ import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 class InheritDsl : DslBase {
     private var defaultBoolean: Boolean? = null
     private var variablesBoolean: Boolean? = null
-    private val defaultList: MutableList<String> = mutableListOf() // TODO this should be list of enums
-    private val variablesList: MutableList<String> = mutableListOf()
+    private val defaultList: MutableSet<DefaultType> = mutableSetOf()
+    private val variablesList: MutableSet<String> = mutableSetOf()
 
-    fun default(vararg elements: String) = default(elements.toList())
-    fun default(elements: Iterable<String>) = defaultList.addAll(elements)
+    fun default(vararg elements: DefaultType) = default(elements.toList())
+    fun default(elements: Iterable<DefaultType>) = defaultList.addAll(elements)
 
     fun default(value: Boolean) {
         defaultBoolean = value

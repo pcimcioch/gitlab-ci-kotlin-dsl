@@ -2,20 +2,16 @@ package pcimcioch.gitlabci.dsl.job
 
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
+import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
+import pcimcioch.gitlabci.dsl.addAndReturn
 import pcimcioch.gitlabci.dsl.isEmpty
 
 @GitlabCiDslMarker
-class ServiceDsl : DslBase {
-    var name: String? = null
+class ServiceDsl(var name: String? = null) : DslBase {
     var alias: String? = null
     private var entrypoint: List<String> = listOf()
     private var cmd: List<String> = listOf()
-
-    constructor()
-    constructor(name: String) {
-        this.name = name
-    }
 
     fun cmd(vararg elements: String) = cmd(elements.toList())
     fun cmd(elements: Iterable<String>) {
@@ -35,3 +31,21 @@ class ServiceDsl : DslBase {
 fun service(block: ServiceDsl.() -> Unit) = ServiceDsl().apply(block)
 fun service(name: String) = ServiceDsl(name)
 fun service(name: String, block: ServiceDsl.() -> Unit) = ServiceDsl(name).apply(block)
+
+@GitlabCiDslMarker
+class ServiceListDsl : DslBase {
+    private val services: MutableList<ServiceDsl> = mutableListOf()
+
+    fun service(block: ServiceDsl.() -> Unit) = addAndReturn(services, ServiceDsl()).apply(block)
+    fun service(name: String) = addAndReturn(services, ServiceDsl(name))
+    fun service(name: String, block: ServiceDsl.() -> Unit) = addAndReturn(services, ServiceDsl(name)).apply(block)
+    operator fun ServiceDsl.unaryPlus() = this@ServiceListDsl.services.add(this)
+
+    override fun validate(errors: MutableList<String>) {
+        addErrors(errors, services, "")
+    }
+}
+
+fun services(block: ServiceListDsl.() -> Unit) = ServiceListDsl().apply(block)
+fun services(vararg elements: String) = services(elements.toList())
+fun services(elements: Iterable<String>) = ServiceListDsl().apply { elements.forEach { service(it) } }

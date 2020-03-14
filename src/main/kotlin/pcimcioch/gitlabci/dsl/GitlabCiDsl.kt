@@ -20,7 +20,7 @@ class GitlabCiDsl : DslBase {
     operator fun StageDsl.unaryPlus() = this@GitlabCiDsl.stages.add(this)
 
     fun stages(vararg elements: String) = stages(elements.toList())
-    fun stages(elements: Iterable<String>) = elements.forEach {stages.add(StageDsl(it))}
+    fun stages(elements: Iterable<String>) = elements.forEach { stages.add(StageDsl(it)) }
 
     override fun validate(errors: MutableList<String>) {
         addErrors(errors, stages, "")
@@ -28,9 +28,4 @@ class GitlabCiDsl : DslBase {
     }
 }
 
-fun gitlabCi(block: GitlabCiDsl.() -> Unit): GitlabCiDsl {
-    val dsl = GitlabCiDsl()
-    dsl.apply(block)
-
-    return dsl
-}
+fun gitlabCi(block: GitlabCiDsl.() -> Unit) = GitlabCiDsl().apply(block)

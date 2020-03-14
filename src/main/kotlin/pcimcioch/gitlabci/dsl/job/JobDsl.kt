@@ -5,66 +5,55 @@ import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.WhenType
-import pcimcioch.gitlabci.dsl.addAndReturn
 import pcimcioch.gitlabci.dsl.isEmpty
 import pcimcioch.gitlabci.dsl.stage.StageDsl
 import java.time.Duration
 
 @GitlabCiDslMarker
-class JobDsl : DslBase {
-    var name: String? = null
+class JobDsl(var name: String? = null) : DslBase {
     var inherit: InheritDsl? = null
     var image: ImageDsl? = null
     var stage: String? = null
     var allowFailure: Boolean? = null
     var whenRun: WhenType? = null
     var startIn: Duration? = null
-    private var script: ScriptDsl? = null
-    private val services: MutableList<ServiceDsl> = mutableListOf()
+    var script: ScriptDsl? = null
+    var services: ServiceListDsl? = null
+    var retry: RetryDsl? = null
+    var timeout: Duration? = null
+    var parallel: Int? = null
+    var interruptible: Boolean? = null
+    var resourceGroup: String? = null
+    private val tags: MutableSet<String> = mutableSetOf()
+    private val extends: MutableList<String> = mutableListOf()
 
-    constructor()
-    constructor(name: String) {
-        this.name = name
-    }
+    fun script(block: ScriptDsl.() -> Unit) = ensureScript().apply(block)
 
-    fun script(block: ScriptDsl.() -> Unit): ScriptDsl {
-        script = script ?: ScriptDsl()
-        return script?.apply(block)!!
-    }
+    fun inherit(block: InheritDsl.() -> Unit) = ensureInherit().apply(block)
 
-    fun inherit(block: InheritDsl.() -> Unit): InheritDsl {
-        inherit = inherit ?: InheritDsl()
-        return inherit?.apply(block)!!
-    }
-
-    fun image(name: String): ImageDsl {
-        image = image ?: ImageDsl()
-        image?.name = name
-        return image!!
-    }
-
-    fun image(block: ImageDsl.() -> Unit): ImageDsl {
-        image = image ?: ImageDsl()
-        return image?.apply(block)!!
-    }
-
-    fun image(name: String, block: ImageDsl.() -> Unit): ImageDsl {
-        image = image ?: ImageDsl()
-        image?.name = name
-        return image?.apply(block)!!
-    }
-
-    fun service(block: ServiceDsl.() -> Unit) = addAndReturn(services, ServiceDsl()).apply(block)
-    fun service(name: String) = addAndReturn(services, ServiceDsl(name))
-    fun service(name: String, block: ServiceDsl.() -> Unit) = addAndReturn(services, ServiceDsl(name)).apply(block)
-    operator fun ServiceDsl.unaryPlus() = this@JobDsl.services.add(this)
+    fun image(name: String) = ensureImage().apply { this.name = name }
+    fun image(block: ImageDsl.() -> Unit) = ensureImage().apply(block)
+    fun image(name: String, block: ImageDsl.() -> Unit) = ensureImage().apply { this.name = name }.apply(block)
 
     fun services(vararg elements: String) = services(elements.toList())
-    fun services(elements: Iterable<String>) = elements.forEach { services.add(ServiceDsl(it)) }
+    fun services(elements: Iterable<String>) = ensureServices().apply { elements.forEach { service(it) } }
+    fun services(block: ServiceListDsl.() -> Unit) = ensureServices().apply(block)
 
     fun stage(value: StageDsl) {
         stage = value.name
     }
+
+    fun tags(vararg elements: String) = tags(elements.toList())
+    fun tags(elements: Iterable<String>) = tags.addAll(elements)
+
+    fun retry(max: Int) = ensureRetry().apply { this.max = max }
+    fun retry(block: RetryDsl.() -> Unit) = ensureRetry().apply(block)
+    fun retry(max: Int, block: RetryDsl.() -> Unit) = ensureRetry().apply { this.max = max }.apply(block)
+
+    fun extends(vararg elements: String) = extends(elements.toList())
+    fun extends(elements: Iterable<String>) = extends.addAll(elements)
+    fun extends(vararg elements: JobDsl) = extends(elements.toList())
+    fun extends(elements: Iterable<JobDsl>) = elements.forEach { extends.add(it.name ?: throw IllegalStateException("Passed job without name to extends")) }
 
     override fun validate(errors: MutableList<String>) {
         val prefix = "[job name='$name']"
@@ -72,12 +61,19 @@ class JobDsl : DslBase {
         addError(errors, isEmpty(name) || RESTRICTED_NAMES.contains(name), "$prefix name '$name' is incorrect")
         addError(errors, startIn != null && whenRun != WhenType.DELAYED, "$prefix startIn can be used only with when=delayed jobs")
         addError(errors, script?.commands?.isEmpty() != false, "$prefix at least one script command must be configured")
+        addError(errors, parallel != null && (parallel!! < 2 || parallel!! > 50), "$prefix parallel must be in range [2, 50]")
 
         addErrors(errors, inherit, prefix)
         addErrors(errors, image, prefix)
         addErrors(errors, script, prefix)
         addErrors(errors, services, prefix)
     }
+
+    private fun ensureInherit() = inherit ?: InheritDsl().also { inherit = it }
+    private fun ensureImage() = image ?: ImageDsl().also { image = it }
+    private fun ensureScript() = script ?: ScriptDsl().also { script = it }
+    private fun ensureServices() = services ?: ServiceListDsl().also { services = it }
+    private fun ensureRetry() = retry ?: RetryDsl().also { retry = it }
 
     private companion object {
         val RESTRICTED_NAMES = listOf("image", "services", "stages", "types", "before_script", "after_script", "variables", "cache", "include")

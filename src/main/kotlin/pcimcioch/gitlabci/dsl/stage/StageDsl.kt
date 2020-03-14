@@ -6,13 +6,7 @@ import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.isEmpty
 
 @GitlabCiDslMarker
-class StageDsl : DslBase {
-    var name: String? = null
-
-    constructor()
-    constructor(name: String) {
-        this.name = name
-    }
+class StageDsl(var name: String? = null) : DslBase {
 
     companion object {
         const val PRE_STAGE = ".pre"

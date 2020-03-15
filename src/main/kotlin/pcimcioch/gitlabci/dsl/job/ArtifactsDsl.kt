@@ -1,19 +1,29 @@
 package pcimcioch.gitlabci.dsl.job
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
+import pcimcioch.gitlabci.dsl.StringRepresentation
+import pcimcioch.gitlabci.dsl.serializer.DurationSerializer
+import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 import java.time.Duration
 
 @GitlabCiDslMarker
+@Serializable
 class ArtifactsDsl : DslBase {
-    var paths: MutableSet<String>? = null
     var name: String? = null
+    @SerialName("expose_as")
     var exposeAs: String? = null
     var untracked: Boolean? = null
+    @SerialName("when")
     var whenUpload: WhenUploadType? = null
+    @Serializable(with = DurationSerializer::class)
+    @SerialName("expire_in")
     var expireIn: Duration? = null
-    private var reports: ArtifactsReportsDsl? = null
+    var paths: MutableSet<String>? = null
+    var reports: ArtifactsReportsDsl? = null
 
     fun paths(vararg elements: String) = paths(elements.toList())
     fun paths(elements: Iterable<String>) = ensurePaths().addAll(elements)
@@ -32,15 +42,17 @@ fun artifacts(block: ArtifactsDsl.() -> Unit) = ArtifactsDsl().apply(block)
 fun artifacts(vararg elements: String) = artifacts(elements.toList())
 fun artifacts(elements: Iterable<String>) = ArtifactsDsl().apply { paths(elements) }
 
-enum class WhenUploadType(private val value: String) {
+@Serializable(with = WhenUploadType.WhenUploadTypeSerializer::class)
+enum class WhenUploadType(override val stringRepresentation: String) : StringRepresentation {
     ON_SUCCESS("on_success"),
     ON_FAILURE("on_failure"),
     ALWAYS("always");
 
-    override fun toString() = value
+    object WhenUploadTypeSerializer : StringRepresentationSerializer<WhenUploadType>("WhenUploadType")
 }
 
 @GitlabCiDslMarker
+@Serializable
 class ArtifactsReportsDsl : DslBase {
     var junit: MutableSet<String>? = null
     var dotenv: MutableSet<String>? = null

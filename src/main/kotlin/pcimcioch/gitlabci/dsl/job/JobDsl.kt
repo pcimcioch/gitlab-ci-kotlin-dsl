@@ -74,16 +74,12 @@ class JobDsl(var name: String? = null) : DslBase {
     fun extends(vararg elements: String) = extends(elements.toList())
     fun extends(elements: Iterable<String>) = ensureExtends().addAll(elements)
     fun extends(vararg elements: JobDsl) = extends(elements.toList())
-    fun extends(elements: Iterable<JobDsl>) = ensureExtends().apply { elements.forEach { add(it.name ?: throw IllegalStateException("Passed job without name to extends")) } }
+    fun extends(elements: Iterable<JobDsl>) = ensureExtends().apply { elements.forEach { add(it.getName()) } }
 
     fun dependencies(vararg elements: String) = dependencies(elements.toList())
     fun dependencies(elements: Iterable<String>) = ensureDependencies().addAll(elements)
     fun dependencies(vararg elements: JobDsl) = dependencies(elements.toList())
-    fun dependencies(elements: Iterable<JobDsl>) = ensureDependencies().apply {
-        elements.forEach {
-            add(it.name ?: throw IllegalStateException("Passed job without name to extends"))
-        }
-    }
+    fun dependencies(elements: Iterable<JobDsl>) = ensureDependencies().apply { elements.forEach { add(it.getName()) } }
 
     fun emptyDependencies() = ensureDependencies().clear()
 
@@ -117,6 +113,8 @@ class JobDsl(var name: String? = null) : DslBase {
         addErrors(errors, cache, prefix)
         addErrors(errors, artifacts, prefix)
     }
+
+    internal fun getName() = name ?: throw IllegalStateException("Job without name")
 
     private fun ensureInherit() = inherit ?: InheritDsl().also { inherit = it }
     private fun ensureImage() = image ?: ImageDsl().also { image = it }

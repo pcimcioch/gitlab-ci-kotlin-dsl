@@ -20,9 +20,8 @@ class NeedJobDsl(var job: String? = null) : DslBase {
 fun needJob(block: NeedJobDsl.() -> Unit) = NeedJobDsl().apply(block)
 fun needJob(job: String) = NeedJobDsl(job)
 fun needJob(job: String, block: NeedJobDsl.() -> Unit) = NeedJobDsl(job).apply(block)
-// TODO extract this throw to a method in JobDsl
-fun needJob(job: JobDsl) = NeedJobDsl(job.name ?: throw IllegalStateException("Passed job without name to extends"))
-fun needJob(job: JobDsl, block: NeedJobDsl.() -> Unit) = NeedJobDsl(job.name ?: throw IllegalStateException("Passed job without name to extends")).apply(block)
+fun needJob(job: JobDsl) = NeedJobDsl(job.getName())
+fun needJob(job: JobDsl, block: NeedJobDsl.() -> Unit) = NeedJobDsl(job.getName()).apply(block)
 
 @GitlabCiDslMarker
 class NeedsListDsl : DslBase {
@@ -31,8 +30,8 @@ class NeedsListDsl : DslBase {
     fun needJob(block: NeedJobDsl.() -> Unit) = needs.add(NeedJobDsl().apply(block))
     fun needJob(job: String) = needs.add(NeedJobDsl(job))
     fun needJob(job: String, block: NeedJobDsl.() -> Unit) = needs.add(NeedJobDsl(job).apply(block))
-    fun needJob(job: JobDsl) = needs.add(NeedJobDsl(job.name ?: throw IllegalStateException("Passed job without name to extends")))
-    fun needJob(job: JobDsl, block: NeedJobDsl.() -> Unit) = needs.add(NeedJobDsl(job.name ?: throw IllegalStateException("Passed job without name to extends")).apply(block))
+    fun needJob(job: JobDsl) = needs.add(NeedJobDsl(job.getName()))
+    fun needJob(job: JobDsl, block: NeedJobDsl.() -> Unit) = needs.add(NeedJobDsl(job.getName()).apply(block))
     operator fun NeedJobDsl.unaryPlus() = this@NeedsListDsl.needs.add(this)
 
     override fun validate(errors: MutableList<String>) {
@@ -44,5 +43,6 @@ fun needs(block: NeedsListDsl.() -> Unit) = NeedsListDsl().apply(block)
 fun needs(vararg elements: String) = needs(elements.toList())
 fun needs(elements: Iterable<String>) = NeedsListDsl().apply { elements.forEach { needJob(it) } }
 fun needs(vararg elements: JobDsl) = needs(elements.toList())
+
 @JvmName("needsJob")
 fun needs(elements: Iterable<JobDsl>) = NeedsListDsl().apply { elements.forEach { needJob(it) } }

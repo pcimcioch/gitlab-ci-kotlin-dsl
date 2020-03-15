@@ -15,5 +15,4 @@ open class ValueSerializer<T, K>(private val valueSerializer: KSerializer<K>, pr
     override fun deserialize(decoder: Decoder): T {
         throw IllegalStateException(descriptor.serialName)
     }
-
 }

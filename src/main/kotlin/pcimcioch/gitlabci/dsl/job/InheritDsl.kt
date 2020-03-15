@@ -1,7 +1,10 @@
 package pcimcioch.gitlabci.dsl.job
 
+import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
+import pcimcioch.gitlabci.dsl.StringRepresentation
+import pcimcioch.gitlabci.dsl.StringRepresentationSerializer
 
 @GitlabCiDslMarker
 class InheritDsl : DslBase {
@@ -38,7 +41,8 @@ class InheritDsl : DslBase {
 
 fun inherit(block: InheritDsl.() -> Unit) = InheritDsl().apply(block)
 
-enum class DefaultType(private val value: String) {
+@Serializable(with = DefaultType.DefaultTypeSerializer::class)
+enum class DefaultType(override val stringRepresentation: String) : StringRepresentation {
     IMAGE("image"),
     SERVICES("services"),
     BEFORE_SCRIPT("before_script"),
@@ -50,5 +54,5 @@ enum class DefaultType(private val value: String) {
     TIMEOUT("timeout"),
     INTERRUPTIBLE("interruptible");
 
-    override fun toString() = value
+    object DefaultTypeSerializer : StringRepresentationSerializer<DefaultType>("DefaultType")
 }

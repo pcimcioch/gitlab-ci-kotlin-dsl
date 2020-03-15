@@ -1,8 +1,11 @@
 package pcimcioch.gitlabci.dsl.job
 
+import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
+import pcimcioch.gitlabci.dsl.StringRepresentation
+import pcimcioch.gitlabci.dsl.StringRepresentationSerializer
 
 @GitlabCiDslMarker
 class VariablesDsl : DslBase {
@@ -15,7 +18,7 @@ class VariablesDsl : DslBase {
     infix fun <T : Enum<T>> T.to(value: Any) = add(this, value)
 
     fun gitStrategy(strategy: GitStrategyType) = add(RunnerSettingsVariables.GIT_STRATEGY, strategy)
-    fun gitSubmoduleStrategy(strategy: GItSubmoduleStrategyType) = add(RunnerSettingsVariables.GIT_SUBMODULE_STRATEGY, strategy)
+    fun gitSubmoduleStrategy(strategy: GitSubmoduleStrategyType) = add(RunnerSettingsVariables.GIT_SUBMODULE_STRATEGY, strategy)
     fun gitCheckout(checkout: Boolean) = add(RunnerSettingsVariables.GIT_CHECKOUT, checkout)
     fun gitClean(flags: String) = add(RunnerSettingsVariables.GIT_CLEAN_FLAGS, flags)
     fun disableGitClean() = gitClean("none")
@@ -45,18 +48,20 @@ enum class RunnerSettingsVariables {
     GIT_CLONE_PATH
 }
 
-enum class GitStrategyType(private val value: String) {
+@Serializable(with = GitStrategyType.GitStrategyTypeSerializer::class)
+enum class GitStrategyType(override val stringRepresentation: String) : StringRepresentation {
     CLONE("clone"),
     FETCH("fetch"),
     NONE("none");
 
-    override fun toString() = value
+    object GitStrategyTypeSerializer : StringRepresentationSerializer<GitStrategyType>("GitStrategyType")
 }
 
-enum class GItSubmoduleStrategyType(private val value: String) {
+@Serializable(with = GitSubmoduleStrategyType.GitSubmoduleStrategyTypeSerializer::class)
+enum class GitSubmoduleStrategyType(override val stringRepresentation: String) : StringRepresentation {
     NONE("none"),
     NORMAL("normal"),
     RECURSIVE("recursive");
 
-    override fun toString() = value
+    object GitSubmoduleStrategyTypeSerializer : StringRepresentationSerializer<GitSubmoduleStrategyType>("GitSubmoduleStrategyType")
 }

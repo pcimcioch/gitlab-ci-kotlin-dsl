@@ -1,9 +1,12 @@
 package pcimcioch.gitlabci.dsl.job
 
+import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
+import pcimcioch.gitlabci.dsl.StringRepresentation
+import pcimcioch.gitlabci.dsl.StringRepresentationSerializer
 import pcimcioch.gitlabci.dsl.isEmpty
 import pcimcioch.gitlabci.dsl.stage.StageDsl
 import java.time.Duration
@@ -52,6 +55,7 @@ class JobDsl(var name: String? = null) : DslBase {
     fun needs(vararg elements: String) = needs(elements.toList())
     fun needs(elements: Iterable<String>) = ensureNeeds().apply { elements.forEach { needJob(it) } }
     fun needs(vararg elements: JobDsl) = needs(elements.toList())
+
     @JvmName("needsJob")
     fun needs(elements: Iterable<JobDsl>) = ensureNeeds().apply { elements.forEach { needJob(it) } }
     fun needs(block: NeedsListDsl.() -> Unit) = ensureNeeds().apply(block)
@@ -70,12 +74,17 @@ class JobDsl(var name: String? = null) : DslBase {
     fun extends(vararg elements: String) = extends(elements.toList())
     fun extends(elements: Iterable<String>) = ensureExtends().addAll(elements)
     fun extends(vararg elements: JobDsl) = extends(elements.toList())
-    fun extends(elements: Iterable<JobDsl>) = ensureExtends().apply { elements.forEach { add(it.name ?: throw IllegalStateException("Passed job without name to extends"))} }
+    fun extends(elements: Iterable<JobDsl>) = ensureExtends().apply { elements.forEach { add(it.name ?: throw IllegalStateException("Passed job without name to extends")) } }
 
     fun dependencies(vararg elements: String) = dependencies(elements.toList())
     fun dependencies(elements: Iterable<String>) = ensureDependencies().addAll(elements)
     fun dependencies(vararg elements: JobDsl) = dependencies(elements.toList())
-    fun dependencies(elements: Iterable<JobDsl>) = ensureDependencies().apply { elements.forEach { add(it.name ?: throw IllegalStateException("Passed job without name to extends"))} }
+    fun dependencies(elements: Iterable<JobDsl>) = ensureDependencies().apply {
+        elements.forEach {
+            add(it.name ?: throw IllegalStateException("Passed job without name to extends"))
+        }
+    }
+
     fun emptyDependencies() = ensureDependencies().clear()
 
     fun variables(block: VariablesDsl.() -> Unit) = ensureVariables().apply(block)
@@ -132,12 +141,13 @@ class JobDsl(var name: String? = null) : DslBase {
 fun job(block: JobDsl.() -> Unit) = JobDsl().apply(block)
 fun job(name: String, block: JobDsl.() -> Unit) = JobDsl(name).apply(block)
 
-enum class WhenType(private val value: String) {
+@Serializable(with = WhenType.WhenTypeSerializer::class)
+enum class WhenType(override val stringRepresentation: String) : StringRepresentation {
     ON_SUCCESS("on_success"),
     ON_FAILURE("on_failure"),
     ALWAYS("always"),
     MANUAL("manual"),
     DELAYED("delayed");
 
-    override fun toString() = value
+    object WhenTypeSerializer : StringRepresentationSerializer<WhenType>("WhenType")
 }

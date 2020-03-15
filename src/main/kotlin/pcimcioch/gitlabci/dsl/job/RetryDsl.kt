@@ -1,19 +1,12 @@
 package pcimcioch.gitlabci.dsl.job
 
-import kotlinx.serialization.Encoder
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.PrimitiveDescriptor
-import kotlinx.serialization.PrimitiveKind
-import kotlinx.serialization.SerialDescriptor
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
-import kotlinx.serialization.builtins.list
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.internal.StringDescriptor
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
+import pcimcioch.gitlabci.dsl.StringRepresentation
+import pcimcioch.gitlabci.dsl.StringRepresentationSerializer
 
 @GitlabCiDslMarker
 @Serializable
@@ -35,8 +28,8 @@ fun retry(max: Int) = RetryDsl(max)
 fun retry(block: RetryDsl.() -> Unit) = RetryDsl().apply(block)
 fun retry(max: Int, block: RetryDsl.() -> Unit) = RetryDsl(max).apply(block)
 
-@Serializable
-enum class WhenRetryType(private val value: String) {
+@Serializable(with = WhenRetryType.WhenRetryTypeSerializer::class)
+enum class WhenRetryType(override val stringRepresentation: String) : StringRepresentation {
     ALWAYS("always"),
     UNKNOWN_FAILURE("unknown_failure"),
     SCRIPT_FAILURE("script_failure"),
@@ -52,12 +45,5 @@ enum class WhenRetryType(private val value: String) {
     SCHEDULER_FAILURE("scheduler_failure"),
     DATA_INTEGRITY_FAILURE("data_integrity_failure");
 
-    @Serializer(forClass = WhenRetryType::class)
-    companion object : KSerializer<WhenRetryType> {
-        override val descriptor: SerialDescriptor = PrimitiveDescriptor("WhenRetryType", PrimitiveKind.STRING)
-
-        override fun serialize(encoder: Encoder, value: WhenRetryType) {
-            encoder.encodeString(value.value)
-        }
-    }
+    object WhenRetryTypeSerializer : StringRepresentationSerializer<WhenRetryType>("WhenRetryType")
 }

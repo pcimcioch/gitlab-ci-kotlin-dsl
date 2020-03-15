@@ -1,9 +1,12 @@
 package pcimcioch.gitlabci.dsl.job
 
+import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
+import pcimcioch.gitlabci.dsl.StringRepresentation
+import pcimcioch.gitlabci.dsl.StringRepresentationSerializer
 
 @GitlabCiDslMarker
 class CacheDsl : DslBase {
@@ -61,10 +64,11 @@ class CacheKeyDsl : DslBase {
 
 fun key(block: CacheKeyDsl.() -> Unit) = CacheKeyDsl().apply(block)
 
-enum class CachePolicy(private val value: String) {
+@Serializable(with = CachePolicy.CachePolicySerializer::class)
+enum class CachePolicy(override val stringRepresentation: String) : StringRepresentation {
     PULL("push"),
     PULL_PUSH("pull-push"),
     PUSH("push");
 
-    override fun toString() = value
+    object CachePolicySerializer : StringRepresentationSerializer<CachePolicy>("CachePolicy")
 }

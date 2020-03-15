@@ -1,11 +1,13 @@
 package pcimcioch.gitlabci.dsl.job
 
+import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.isEmpty
 
 @GitlabCiDslMarker
+@Serializable
 class ImageDsl(var name: String? = null) : DslBase {
     var entrypoint: List<String>? = null
 

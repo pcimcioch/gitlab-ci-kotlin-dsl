@@ -11,7 +11,7 @@ class CacheDsl : DslBase {
     var untracked: Boolean? = null
     var policy: CachePolicy? = null
 
-    // TODO maybe those should be somehow awailable to read. same for inherit
+    // TODO maybe those should be somehow available to read? same for inherit
     private var keyString: String? = null
     private var keyDsl: CacheKeyDsl? = null
 

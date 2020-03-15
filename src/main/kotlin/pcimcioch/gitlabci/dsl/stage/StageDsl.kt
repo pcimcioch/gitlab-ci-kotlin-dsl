@@ -1,11 +1,13 @@
 package pcimcioch.gitlabci.dsl.stage
 
+import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.isEmpty
 
 @GitlabCiDslMarker
+@Serializable
 class StageDsl(var name: String? = null) : DslBase {
 
     companion object {

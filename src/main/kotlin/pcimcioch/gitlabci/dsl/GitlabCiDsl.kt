@@ -1,8 +1,12 @@
 package pcimcioch.gitlabci.dsl
 
+import com.charleskorn.kaml.Yaml
+import com.charleskorn.kaml.YamlConfiguration
+import kotlinx.serialization.SerializationStrategy
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.job.JobDsl
 import pcimcioch.gitlabci.dsl.stage.StageDsl
+import java.io.Writer
 
 @GitlabCiDslMarker
 class GitlabCiDsl : DslBase {
@@ -29,3 +33,11 @@ class GitlabCiDsl : DslBase {
 }
 
 fun gitlabCi(block: GitlabCiDsl.() -> Unit) = GitlabCiDsl().apply(block)
+
+fun <T : DslBase> serializeToYaml(strategy: SerializationStrategy<T>, value: T, writer: Writer) {
+    val config = YamlConfiguration(encodeDefaults = false)
+    val yaml = Yaml(configuration = config)
+
+    val yamlString = yaml.stringify(strategy, value)
+    writer.write(yamlString)
+}

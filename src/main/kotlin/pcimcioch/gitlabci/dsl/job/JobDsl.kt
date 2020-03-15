@@ -18,6 +18,7 @@ class JobDsl(var name: String? = null) : DslBase {
     var startIn: Duration? = null
     var script: ScriptDsl? = null
     var services: ServiceListDsl? = null
+    var needs: NeedsListDsl? = null
     var retry: RetryDsl? = null
     var timeout: Duration? = null
     var parallel: Int? = null
@@ -28,8 +29,9 @@ class JobDsl(var name: String? = null) : DslBase {
     var artifacts: ArtifactsDsl? = null
     var afterScript: AfterScriptDsl? = null
     var beforeScript: BeforeScriptDsl? = null
-    var tags: MutableSet<String> = mutableSetOf()
-    var extends: MutableList<String> = mutableListOf()
+    var tags: MutableSet<String>? = null
+    var extends: MutableList<String>? = null
+    var dependencies: MutableSet<String>? = null
 
     fun script(block: ScriptDsl.() -> Unit) = ensureScript().apply(block)
 
@@ -47,21 +49,34 @@ class JobDsl(var name: String? = null) : DslBase {
     fun services(elements: Iterable<String>) = ensureServices().apply { elements.forEach { service(it) } }
     fun services(block: ServiceListDsl.() -> Unit) = ensureServices().apply(block)
 
+    fun needs(vararg elements: String) = needs(elements.toList())
+    fun needs(elements: Iterable<String>) = ensureNeeds().apply { elements.forEach { needJob(it) } }
+    fun needs(vararg elements: JobDsl) = needs(elements.toList())
+    @JvmName("needsJob")
+    fun needs(elements: Iterable<JobDsl>) = ensureNeeds().apply { elements.forEach { needJob(it) } }
+    fun needs(block: NeedsListDsl.() -> Unit) = ensureNeeds().apply(block)
+
     fun stage(value: StageDsl) {
         stage = value.name
     }
 
     fun tags(vararg elements: String) = tags(elements.toList())
-    fun tags(elements: Iterable<String>) = tags.addAll(elements)
+    fun tags(elements: Iterable<String>) = ensureTags().addAll(elements)
 
     fun retry(max: Int) = ensureRetry().apply { this.max = max }
     fun retry(block: RetryDsl.() -> Unit) = ensureRetry().apply(block)
     fun retry(max: Int, block: RetryDsl.() -> Unit) = ensureRetry().apply { this.max = max }.apply(block)
 
     fun extends(vararg elements: String) = extends(elements.toList())
-    fun extends(elements: Iterable<String>) = extends.addAll(elements)
+    fun extends(elements: Iterable<String>) = ensureExtends().addAll(elements)
     fun extends(vararg elements: JobDsl) = extends(elements.toList())
-    fun extends(elements: Iterable<JobDsl>) = elements.forEach { extends.add(it.name ?: throw IllegalStateException("Passed job without name to extends")) }
+    fun extends(elements: Iterable<JobDsl>) = ensureExtends().apply { elements.forEach { add(it.name ?: throw IllegalStateException("Passed job without name to extends"))} }
+
+    fun dependencies(vararg elements: String) = dependencies(elements.toList())
+    fun dependencies(elements: Iterable<String>) = ensureDependencies().addAll(elements)
+    fun dependencies(vararg elements: JobDsl) = dependencies(elements.toList())
+    fun dependencies(elements: Iterable<JobDsl>) = ensureDependencies().apply { elements.forEach { add(it.name ?: throw IllegalStateException("Passed job without name to extends"))} }
+    fun emptyDependencies() = ensureDependencies().clear()
 
     fun variables(block: VariablesDsl.() -> Unit) = ensureVariables().apply(block)
 
@@ -88,6 +103,7 @@ class JobDsl(var name: String? = null) : DslBase {
         addErrors(errors, image, prefix)
         addErrors(errors, script, prefix)
         addErrors(errors, services, prefix)
+        addErrors(errors, needs, prefix)
         addErrors(errors, variables, prefix)
         addErrors(errors, cache, prefix)
         addErrors(errors, artifacts, prefix)
@@ -97,12 +113,16 @@ class JobDsl(var name: String? = null) : DslBase {
     private fun ensureImage() = image ?: ImageDsl().also { image = it }
     private fun ensureScript() = script ?: ScriptDsl().also { script = it }
     private fun ensureServices() = services ?: ServiceListDsl().also { services = it }
+    private fun ensureNeeds() = needs ?: NeedsListDsl().also { needs = it }
     private fun ensureRetry() = retry ?: RetryDsl().also { retry = it }
     private fun ensureVariables() = variables ?: VariablesDsl().also { variables = it }
     private fun ensureCache() = cache ?: CacheDsl().also { cache = it }
     private fun ensureArtifacts() = artifacts ?: ArtifactsDsl().also { artifacts = it }
     private fun ensureBeforeScript() = beforeScript ?: BeforeScriptDsl().also { beforeScript = it }
     private fun ensureAfterScript() = afterScript ?: AfterScriptDsl().also { afterScript = it }
+    private fun ensureTags() = tags ?: mutableSetOf<String>().also { tags = it }
+    private fun ensureExtends() = extends ?: mutableListOf<String>().also { extends = it }
+    private fun ensureDependencies() = dependencies ?: mutableSetOf<String>().also { dependencies = it }
 
     private companion object {
         val RESTRICTED_NAMES = listOf("image", "services", "stages", "types", "before_script", "after_script", "variables", "cache", "include")

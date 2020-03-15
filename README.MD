@@ -7,8 +7,6 @@
 - when doing dependencies don't forget about: https://docs.gitlab.com/ee/ci/yaml/#artifactspaths
 
 tomorrow:
-- dependencies
-- needs
 - yaml conversion
 - tests for yaml conversion and validation
 
@@ -33,8 +31,8 @@ tomorrow:
 | environment    | No        | https://docs.gitlab.com/ee/ci/yaml/#environment                    | [//]: # (Implement, test, document)
 | cache          | Yes       | https://docs.gitlab.com/ee/ci/yaml/#cache                          | [//]: # (test, document)
 | artifacts      | Yes       | https://docs.gitlab.com/ee/ci/yaml/#artifacts                      | [//]: # (test, document)
-| dependencies   | No        | https://docs.gitlab.com/ee/ci/yaml/#dependencies                   | [//]: # (Implement, test, document)
-| needs          | No        | https://docs.gitlab.com/ee/ci/yaml/#needs                          | [//]: # (Implement, test, document)
+| dependencies   | Yes       | https://docs.gitlab.com/ee/ci/yaml/#dependencies                   | [//]: # (test, document)
+| needs          | Yes       | https://docs.gitlab.com/ee/ci/yaml/#needs                          | [//]: # (test, document)
 | coverage       | No        | https://docs.gitlab.com/ee/ci/yaml/#coverage                       | [//]: # (Implement, test, document)
 | retry          | Yes       | https://docs.gitlab.com/ee/ci/yaml/#retry                          | [//]: # (test, document)
 | timeout        | Yes       | https://docs.gitlab.com/ee/ci/yaml/#timeout                        | [//]: # (test, document)

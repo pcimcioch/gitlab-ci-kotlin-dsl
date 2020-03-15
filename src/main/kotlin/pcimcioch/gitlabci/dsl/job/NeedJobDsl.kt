@@ -23,6 +23,7 @@ fun needJob(job: String, block: NeedJobDsl.() -> Unit) = NeedJobDsl(job).apply(b
 fun needJob(job: JobDsl) = NeedJobDsl(job.getName())
 fun needJob(job: JobDsl, block: NeedJobDsl.() -> Unit) = NeedJobDsl(job.getName()).apply(block)
 
+// TODO tests
 @GitlabCiDslMarker
 class NeedsListDsl : DslBase {
     private val needs: MutableList<NeedJobDsl> = mutableListOf()

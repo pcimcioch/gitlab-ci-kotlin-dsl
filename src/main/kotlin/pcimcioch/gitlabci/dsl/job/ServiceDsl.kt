@@ -7,6 +7,7 @@ import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.addAndReturn
 import pcimcioch.gitlabci.dsl.isEmpty
 
+// TODO tests
 @GitlabCiDslMarker
 class ServiceDsl(var name: String? = null) : DslBase {
     var alias: String? = null

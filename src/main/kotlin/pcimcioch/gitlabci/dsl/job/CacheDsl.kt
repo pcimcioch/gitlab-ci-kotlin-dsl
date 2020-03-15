@@ -8,6 +8,7 @@ import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
+// TODO tests
 @GitlabCiDslMarker
 class CacheDsl : DslBase {
     var paths: MutableSet<String>? = null

@@ -7,6 +7,7 @@ import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
+// TODO tests
 @GitlabCiDslMarker
 class VariablesDsl : DslBase {
     var variables: MutableMap<String, Any> = mutableMapOf()

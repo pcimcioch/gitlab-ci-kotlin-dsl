@@ -8,6 +8,7 @@ import pcimcioch.gitlabci.dsl.job.JobDsl
 import pcimcioch.gitlabci.dsl.stage.StageDsl
 import java.io.Writer
 
+// TODO tests
 @GitlabCiDslMarker
 class GitlabCiDsl : DslBase {
     private val jobs: MutableList<JobDsl> = mutableListOf()
@@ -32,9 +33,10 @@ class GitlabCiDsl : DslBase {
     }
 }
 
+// TODO generate to file (optional writer and validation disable)
 fun gitlabCi(block: GitlabCiDsl.() -> Unit) = GitlabCiDsl().apply(block)
 
-fun <T : DslBase> serializeToYaml(strategy: SerializationStrategy<T>, value: T, writer: Writer) {
+internal fun <T : DslBase> serializeToYaml(strategy: SerializationStrategy<T>, value: T, writer: Writer) {
     val config = YamlConfiguration(encodeDefaults = false)
     val yaml = Yaml(configuration = config)
 

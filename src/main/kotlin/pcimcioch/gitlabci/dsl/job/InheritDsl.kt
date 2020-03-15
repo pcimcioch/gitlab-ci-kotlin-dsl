@@ -6,6 +6,7 @@ import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
+// TODO tests
 @GitlabCiDslMarker
 class InheritDsl : DslBase {
     private var defaultBoolean: Boolean? = null

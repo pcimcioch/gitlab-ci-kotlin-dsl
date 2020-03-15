@@ -11,6 +11,7 @@ import pcimcioch.gitlabci.dsl.isEmpty
 import pcimcioch.gitlabci.dsl.stage.StageDsl
 import java.time.Duration
 
+// TODO tests
 @GitlabCiDslMarker
 class JobDsl(var name: String? = null) : DslBase {
     var inherit: InheritDsl? = null

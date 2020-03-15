@@ -10,8 +10,8 @@ import pcimcioch.gitlabci.dsl.isEmpty
 @GitlabCiDslMarker
 class ServiceDsl(var name: String? = null) : DslBase {
     var alias: String? = null
-    private var entrypoint: List<String> = listOf()
-    private var cmd: List<String> = listOf()
+    var entrypoint: List<String> = listOf()
+    var cmd: List<String> = listOf()
 
     fun cmd(vararg elements: String) = cmd(elements.toList())
     fun cmd(elements: Iterable<String>) {

@@ -7,7 +7,7 @@ enum class DefaultEnvironment {
     CI,
     CI_API_V4_URL,
     CI_BUILDS_DIR,
-    CI_COMMIT_BEFORE_SHA	,
+    CI_COMMIT_BEFORE_SHA,
     CI_COMMIT_DESCRIPTION,
     CI_COMMIT_MESSAGE,
     CI_COMMIT_REF_NAME,

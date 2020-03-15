@@ -5,7 +5,7 @@ import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 
 @GitlabCiDslMarker
 class BeforeScriptDsl : DslBase {
-    private val commands: MutableList<String> = mutableListOf()
+    var commands: MutableList<String> = mutableListOf()
 
     fun exec(command: String) = commands.add(command)
 }

@@ -5,8 +5,8 @@ interface DslBase {
     fun validate(errors: MutableList<String>) {}
 
     companion object {
-        internal fun addError(errors: MutableList<String>, condition: Boolean, message: String) {
-            if (condition) {
+        internal fun addError(errors: MutableList<String>, condition: Boolean?, message: String) {
+            if (condition == true) {
                 errors.add(message)
             }
         }

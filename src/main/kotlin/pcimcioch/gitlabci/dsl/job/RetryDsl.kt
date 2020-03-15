@@ -6,7 +6,7 @@ import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 
 @GitlabCiDslMarker
 class RetryDsl(var max: Int? = null) : DslBase {
-    private val whenRetry: MutableSet<WhenRetryType> = mutableSetOf()
+    var whenRetry: MutableSet<WhenRetryType> = mutableSetOf()
 
     fun whenRetry(vararg elements: WhenRetryType) = whenRetry(elements.toList())
     fun whenRetry(elements: Iterable<WhenRetryType>) = whenRetry.addAll(elements)

@@ -4,7 +4,6 @@ import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
-import pcimcioch.gitlabci.dsl.WhenType
 import pcimcioch.gitlabci.dsl.isEmpty
 import pcimcioch.gitlabci.dsl.stage.StageDsl
 import java.time.Duration
@@ -25,8 +24,9 @@ class JobDsl(var name: String? = null) : DslBase {
     var interruptible: Boolean? = null
     var resourceGroup: String? = null
     var variables: VariablesDsl? = null
-    private val tags: MutableSet<String> = mutableSetOf()
-    private val extends: MutableList<String> = mutableListOf()
+    var cache: CacheDsl? = null
+    var tags: MutableSet<String> = mutableSetOf()
+    var extends: MutableList<String> = mutableListOf()
 
     fun script(block: ScriptDsl.() -> Unit) = ensureScript().apply(block)
 
@@ -58,6 +58,10 @@ class JobDsl(var name: String? = null) : DslBase {
 
     fun variables(block: VariablesDsl.() -> Unit) = ensureVariables().apply(block)
 
+    fun cache(block: CacheDsl.() -> Unit) = ensureCache().apply(block)
+    fun cache(vararg elements: String) = cache(elements.toList())
+    fun cache(elements: Iterable<String>) = ensureCache().apply { paths(elements) }
+
     override fun validate(errors: MutableList<String>) {
         val prefix = "[job name='$name']"
 
@@ -71,6 +75,7 @@ class JobDsl(var name: String? = null) : DslBase {
         addErrors(errors, script, prefix)
         addErrors(errors, services, prefix)
         addErrors(errors, variables, prefix)
+        addErrors(errors, cache, prefix)
     }
 
     private fun ensureInherit() = inherit ?: InheritDsl().also { inherit = it }
@@ -79,6 +84,7 @@ class JobDsl(var name: String? = null) : DslBase {
     private fun ensureServices() = services ?: ServiceListDsl().also { services = it }
     private fun ensureRetry() = retry ?: RetryDsl().also { retry = it }
     private fun ensureVariables() = variables ?: VariablesDsl().also { variables = it }
+    private fun ensureCache() = cache ?: CacheDsl().also { cache = it }
 
     private companion object {
         val RESTRICTED_NAMES = listOf("image", "services", "stages", "types", "before_script", "after_script", "variables", "cache", "include")
@@ -87,3 +93,15 @@ class JobDsl(var name: String? = null) : DslBase {
 
 fun job(block: JobDsl.() -> Unit) = JobDsl().apply(block)
 fun job(name: String, block: JobDsl.() -> Unit) = JobDsl(name).apply(block)
+
+enum class WhenType {
+    ON_SUCCESS,
+    ON_FAILURE,
+    ALWAYS,
+    MANUAL,
+    DELAYED;
+
+    override fun toString(): String {
+        return super.toString().toLowerCase()
+    }
+}

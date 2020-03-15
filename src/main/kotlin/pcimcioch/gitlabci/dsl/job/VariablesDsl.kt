@@ -5,7 +5,7 @@ import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 
 @GitlabCiDslMarker
 class VariablesDsl : DslBase {
-    private val variables: MutableMap<String, Any> = mutableMapOf()
+    var variables: MutableMap<String, Any> = mutableMapOf()
 
     fun add(name: String, value: Any) = variables.put(name, value)
     fun <T : Enum<T>> add(name: T, value: Any) = variables.put(name.toString(), value)
@@ -22,8 +22,11 @@ class VariablesDsl : DslBase {
     fun artifactDownloadAttempts(attempts: Int) = add(RunnerSettingsVariables.ARTIFACT_DOWNLOAD_ATTEMPTS, attempts)
     fun restoreCacheAttempts(attempts: Int) = add(RunnerSettingsVariables.RESTORE_CACHE_ATTEMPTS, attempts)
     fun gitDepth(attempts: Int) = add(RunnerSettingsVariables.GIT_DEPTH, attempts)
+    fun gitClonePath(path: String) = add(RunnerSettingsVariables.GIT_CLONE_PATH, path)
 }
 // TODO remember that during yaml conversion, we have to call toString() for all values, except Int
+
+fun variables(block: VariablesDsl.() -> Unit) = VariablesDsl().apply(block)
 
 enum class RunnerSettingsVariables {
     GIT_STRATEGY,
@@ -33,7 +36,8 @@ enum class RunnerSettingsVariables {
     GET_SOURCES_ATTEMPTS,
     ARTIFACT_DOWNLOAD_ATTEMPTS,
     RESTORE_CACHE_ATTEMPTS,
-    GIT_DEPTH
+    GIT_DEPTH,
+    GIT_CLONE_PATH
 }
 
 enum class GitStrategyType {

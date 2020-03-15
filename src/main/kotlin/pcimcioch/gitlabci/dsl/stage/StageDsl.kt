@@ -14,7 +14,7 @@ class StageDsl(var name: String? = null) : DslBase {
     }
 
     override fun validate(errors: MutableList<String>) {
-        addError(errors, isEmpty(name), "[service name='$name'] name '$name' is incorrect")
+        addError(errors, isEmpty(name), "[stage name='$name'] name '$name' is incorrect")
     }
 }
 

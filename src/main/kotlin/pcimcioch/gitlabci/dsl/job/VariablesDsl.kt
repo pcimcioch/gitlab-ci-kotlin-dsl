@@ -1,6 +1,7 @@
 package pcimcioch.gitlabci.dsl.job
 
 import pcimcioch.gitlabci.dsl.DslBase
+import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 
 @GitlabCiDslMarker
@@ -23,6 +24,10 @@ class VariablesDsl : DslBase {
     fun restoreCacheAttempts(attempts: Int) = add(RunnerSettingsVariables.RESTORE_CACHE_ATTEMPTS, attempts)
     fun gitDepth(attempts: Int) = add(RunnerSettingsVariables.GIT_DEPTH, attempts)
     fun gitClonePath(path: String) = add(RunnerSettingsVariables.GIT_CLONE_PATH, path)
+
+    override fun validate(errors: MutableList<String>) {
+        addError(errors, variables.isEmpty(), "[variables] variables map cannot be empty")
+    }
 }
 // TODO remember that during yaml conversion, we have to call toString() for all values, except Int
 
@@ -40,22 +45,18 @@ enum class RunnerSettingsVariables {
     GIT_CLONE_PATH
 }
 
-enum class GitStrategyType {
-    CLONE,
-    FETCH,
-    NONE;
+enum class GitStrategyType(private val value: String) {
+    CLONE("clone"),
+    FETCH("fetch"),
+    NONE("none");
 
-    override fun toString(): String {
-        return super.toString().toLowerCase()
-    }
+    override fun toString() = value
 }
 
-enum class GItSubmoduleStrategyType {
-    NONE,
-    NORMAL,
-    RECURSIVE;
+enum class GItSubmoduleStrategyType(private val value: String) {
+    NONE("none"),
+    NORMAL("normal"),
+    RECURSIVE("recursive");
 
-    override fun toString(): String {
-        return super.toString().toLowerCase()
-    }
+    override fun toString() = value
 }

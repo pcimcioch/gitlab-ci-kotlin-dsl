@@ -113,7 +113,7 @@ enum class DefaultEnvironment {
     GITLAB_USER_NAM,
     RESTORE_CACHE_ATTEMPTS;
 
-    override fun toString(): String {
-        return "$" + super.toString()
-    }
+    fun unix() = "$" + toString()
+    fun win() = "%" + toString() + "%"
+    fun powershell() = "\$env:" + toString()
 }

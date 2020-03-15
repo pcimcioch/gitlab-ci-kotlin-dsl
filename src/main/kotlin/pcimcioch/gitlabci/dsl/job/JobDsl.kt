@@ -25,10 +25,17 @@ class JobDsl(var name: String? = null) : DslBase {
     var resourceGroup: String? = null
     var variables: VariablesDsl? = null
     var cache: CacheDsl? = null
+    var artifacts: ArtifactsDsl? = null
+    var afterScript: AfterScriptDsl? = null
+    var beforeScript: BeforeScriptDsl? = null
     var tags: MutableSet<String> = mutableSetOf()
     var extends: MutableList<String> = mutableListOf()
 
     fun script(block: ScriptDsl.() -> Unit) = ensureScript().apply(block)
+
+    fun beforeScript(block: BeforeScriptDsl.() -> Unit) = ensureBeforeScript().apply(block)
+
+    fun afterScript(block: AfterScriptDsl.() -> Unit) = ensureAfterScript().apply(block)
 
     fun inherit(block: InheritDsl.() -> Unit) = ensureInherit().apply(block)
 
@@ -62,20 +69,28 @@ class JobDsl(var name: String? = null) : DslBase {
     fun cache(vararg elements: String) = cache(elements.toList())
     fun cache(elements: Iterable<String>) = ensureCache().apply { paths(elements) }
 
+    fun artifacts(block: ArtifactsDsl.() -> Unit) = ensureArtifacts().apply(block)
+    fun artifacts(vararg elements: String) = artifacts(elements.toList())
+    fun artifacts(elements: Iterable<String>) = ensureArtifacts().apply { paths(elements) }
+
     override fun validate(errors: MutableList<String>) {
         val prefix = "[job name='$name']"
 
         addError(errors, isEmpty(name) || RESTRICTED_NAMES.contains(name), "$prefix name '$name' is incorrect")
         addError(errors, startIn != null && whenRun != WhenType.DELAYED, "$prefix startIn can be used only with when=delayed jobs")
-        addError(errors, script?.commands?.isEmpty() != false, "$prefix at least one script command must be configured")
+        addError(errors, script == null, "$prefix at least one script command must be configured")
         addError(errors, parallel != null && (parallel!! < 2 || parallel!! > 50), "$prefix parallel must be in range [2, 50]")
 
+        addErrors(errors, beforeScript, prefix)
+        addErrors(errors, afterScript, prefix)
+        addErrors(errors, inherit, prefix)
         addErrors(errors, inherit, prefix)
         addErrors(errors, image, prefix)
         addErrors(errors, script, prefix)
         addErrors(errors, services, prefix)
         addErrors(errors, variables, prefix)
         addErrors(errors, cache, prefix)
+        addErrors(errors, artifacts, prefix)
     }
 
     private fun ensureInherit() = inherit ?: InheritDsl().also { inherit = it }
@@ -85,6 +100,9 @@ class JobDsl(var name: String? = null) : DslBase {
     private fun ensureRetry() = retry ?: RetryDsl().also { retry = it }
     private fun ensureVariables() = variables ?: VariablesDsl().also { variables = it }
     private fun ensureCache() = cache ?: CacheDsl().also { cache = it }
+    private fun ensureArtifacts() = artifacts ?: ArtifactsDsl().also { artifacts = it }
+    private fun ensureBeforeScript() = beforeScript ?: BeforeScriptDsl().also { beforeScript = it }
+    private fun ensureAfterScript() = afterScript ?: AfterScriptDsl().also { afterScript = it }
 
     private companion object {
         val RESTRICTED_NAMES = listOf("image", "services", "stages", "types", "before_script", "after_script", "variables", "cache", "include")
@@ -94,14 +112,12 @@ class JobDsl(var name: String? = null) : DslBase {
 fun job(block: JobDsl.() -> Unit) = JobDsl().apply(block)
 fun job(name: String, block: JobDsl.() -> Unit) = JobDsl(name).apply(block)
 
-enum class WhenType {
-    ON_SUCCESS,
-    ON_FAILURE,
-    ALWAYS,
-    MANUAL,
-    DELAYED;
+enum class WhenType(private val value: String) {
+    ON_SUCCESS("on_success"),
+    ON_FAILURE("on_failure"),
+    ALWAYS("always"),
+    MANUAL("manual"),
+    DELAYED("delayed");
 
-    override fun toString(): String {
-        return super.toString().toLowerCase()
-    }
+    override fun toString() = value
 }

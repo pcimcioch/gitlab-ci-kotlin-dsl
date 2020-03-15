@@ -7,7 +7,7 @@ import pcimcioch.gitlabci.dsl.isEmpty
 
 @GitlabCiDslMarker
 class ImageDsl(var name: String? = null) : DslBase {
-    var entrypoint: List<String> = listOf()
+    var entrypoint: List<String>? = null
 
     fun entrypoint(vararg elements: String) = entrypoint(elements.toList())
     fun entrypoint(elements: Iterable<String>) {

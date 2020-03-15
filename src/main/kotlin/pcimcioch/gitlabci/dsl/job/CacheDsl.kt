@@ -7,7 +7,7 @@ import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 
 @GitlabCiDslMarker
 class CacheDsl : DslBase {
-    var paths: MutableSet<String> = mutableSetOf()
+    var paths: MutableSet<String>? = null
     var untracked: Boolean? = null
     var policy: CachePolicy? = null
 
@@ -16,7 +16,7 @@ class CacheDsl : DslBase {
     private var keyDsl: CacheKeyDsl? = null
 
     fun paths(vararg elements: String) = paths(elements.toList())
-    fun paths(elements: Iterable<String>) = paths.addAll(elements)
+    fun paths(elements: Iterable<String>) = ensurePaths().addAll(elements)
 
     fun key(key: String) {
         keyDsl = null
@@ -28,11 +28,12 @@ class CacheDsl : DslBase {
         ensureKeyDsl().apply(block)
     }
 
-    private fun ensureKeyDsl(): CacheKeyDsl = keyDsl ?: CacheKeyDsl().also { keyDsl = it }
-
     override fun validate(errors: MutableList<String>) {
         addErrors(errors, keyDsl, "[cache]")
     }
+
+    private fun ensureKeyDsl(): CacheKeyDsl = keyDsl ?: CacheKeyDsl().also { keyDsl = it }
+    private fun ensurePaths() = paths ?: mutableSetOf<String>().also { paths = it }
 }
 
 fun cache(block: CacheDsl.() -> Unit) = CacheDsl().apply(block)
@@ -48,6 +49,7 @@ class CacheKeyDsl : DslBase {
     fun files(elements: Iterable<String>) = files.addAll(elements)
 
     override fun validate(errors: MutableList<String>) {
+        addError(errors, files.isEmpty(), "[key] files list can't be empty")
         addError(errors,
                 "." == prefix || "%2E" == prefix || "%2e" == prefix,
                 "[key] prefix value '$prefix' can't be '.' nor '%2E'")
@@ -59,13 +61,10 @@ class CacheKeyDsl : DslBase {
 
 fun key(block: CacheKeyDsl.() -> Unit) = CacheKeyDsl().apply(block)
 
-enum class CachePolicy {
-    // TODO maybe set names up explicitely?
-    PULL,
-    PULL_PUSH,
-    PUSH;
+enum class CachePolicy(private val value: String) {
+    PULL("push"),
+    PULL_PUSH("pull-push"),
+    PUSH("push");
 
-    override fun toString(): String {
-        return super.toString().toLowerCase().replace('_', '-')
-    }
+    override fun toString() = value
 }

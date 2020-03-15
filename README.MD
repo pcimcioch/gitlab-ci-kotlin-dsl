@@ -2,12 +2,11 @@
 - what this project is about
 - how to use (documentation for each feature)
 - tests
-- javaDocs
+- javaDocs?
 - to yaml conversion
+- when doing dependencies don't forget about: https://docs.gitlab.com/ee/ci/yaml/#artifactspaths
 
 tomorrow:
-- cache
-- artifacts
 - dependencies
 - needs
 - yaml conversion
@@ -32,8 +31,8 @@ tomorrow:
 | allow_failure  | Yes       | https://docs.gitlab.com/ee/ci/yaml/#allow_failure                  | [//]: # (test, document)
 | when           | Yes       | https://docs.gitlab.com/ee/ci/yaml/#when                           | [//]: # (test, document)
 | environment    | No        | https://docs.gitlab.com/ee/ci/yaml/#environment                    | [//]: # (Implement, test, document)
-| cache          | No        | https://docs.gitlab.com/ee/ci/yaml/#cache                          | [//]: # (Implement, test, document)
-| artifacts      | No        | https://docs.gitlab.com/ee/ci/yaml/#artifacts                      | [//]: # (Implement, test, document)
+| cache          | Yes       | https://docs.gitlab.com/ee/ci/yaml/#cache                          | [//]: # (test, document)
+| artifacts      | Yes       | https://docs.gitlab.com/ee/ci/yaml/#artifacts                      | [//]: # (test, document)
 | dependencies   | No        | https://docs.gitlab.com/ee/ci/yaml/#dependencies                   | [//]: # (Implement, test, document)
 | needs          | No        | https://docs.gitlab.com/ee/ci/yaml/#needs                          | [//]: # (Implement, test, document)
 | coverage       | No        | https://docs.gitlab.com/ee/ci/yaml/#coverage                       | [//]: # (Implement, test, document)

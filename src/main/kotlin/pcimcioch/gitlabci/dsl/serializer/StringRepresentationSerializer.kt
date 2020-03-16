@@ -9,7 +9,7 @@ import kotlinx.serialization.SerialDescriptor
 import pcimcioch.gitlabci.dsl.StringRepresentation
 
 open class StringRepresentationSerializer<T : StringRepresentation>(val name: String) : KSerializer<T> {
-    override val descriptor: SerialDescriptor = PrimitiveDescriptor(name, PrimitiveKind.STRING) // TODO T.name?
+    override val descriptor: SerialDescriptor = PrimitiveDescriptor(name, PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: T) {
         encoder.encodeString(value.stringRepresentation)

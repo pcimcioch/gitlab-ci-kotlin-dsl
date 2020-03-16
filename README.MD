@@ -15,9 +15,9 @@ Project is currently in development and is not available in maven central yet
 | Block          | Supported | Gitlab Documentation link                                            |
 | -------------- | --------- |--------------------------------------------------------------------- |
 | default        | No        | <https://docs.gitlab.com/ee/ci/yaml/#setting-default-parameters>     | [//]: # (Implement, test, document)
-| inherit        | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#inherit>                        | [//]: # (test, document)
+| inherit        | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#inherit>                        | [//]: # (document)
 | image          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#image>                          | [//]: # (document)
-| services       | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#services>                       | [//]: # (test, document)
+| services       | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#services>                       | [//]: # (document)
 | before_script  | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#before_script-and-after_script> | [//]: # (document)
 | after_script   | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#before_script-and-after_script> | [//]: # (document)
 | stage          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#stage>                          | [//]: # (document)
@@ -42,7 +42,7 @@ Project is currently in development and is not available in maven central yet
 | include        | No        | <https://docs.gitlab.com/ee/ci/yaml/#include>                        | [//]: # (Implement, test, document)
 | extends        | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#extends>                        | [//]: # (test, document)
 | pages          | No        | <https://docs.gitlab.com/ee/ci/yaml/#pages>                          | [//]: # (Implement, test, document)
-| variables      | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#variables>                      | [//]: # (test, document)
+| variables      | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#variables>                      | [//]: # (document)
 
 # Documentation
 

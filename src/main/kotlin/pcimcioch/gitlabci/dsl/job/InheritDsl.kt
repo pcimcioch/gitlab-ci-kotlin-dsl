@@ -13,6 +13,7 @@ import kotlinx.serialization.builtins.set
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.StringRepresentation
+import pcimcioch.gitlabci.dsl.serializer.MultiTypeSerializer
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
 @GitlabCiDslMarker
@@ -30,12 +31,12 @@ class InheritDsl : DslBase {
     @Transient
     private var variablesSet: MutableSet<String>? = null
 
-    @Serializable(with = BooleanOrDefaultTypeSetSerializer::class)
+    @Serializable(with = DefaultSerializer::class)
     var default: Any? = null
         get() = defaultBoolean ?: defaultSet
         private set
 
-    @Serializable(with = BooleanOrStringSetSerializer::class)
+    @Serializable(with = VariablesSerializer::class)
     var variables: Any? = null
         get() = variablesBoolean ?: variablesSet
         private set
@@ -65,40 +66,13 @@ class InheritDsl : DslBase {
     private fun ensureDefaultSet() = defaultSet ?: mutableSetOf<DefaultType>().also { defaultSet = it }
     private fun ensureVariablesSet() = variablesSet ?: mutableSetOf<String>().also { variablesSet = it }
 
-    // TODO do something with this...
-    object BooleanOrStringSetSerializer : KSerializer<Any> {
-        override val descriptor: SerialDescriptor = PrimitiveDescriptor("Variables", PrimitiveKind.BOOLEAN)
+    object VariablesSerializer : MultiTypeSerializer(
+            PrimitiveDescriptor("Variables", PrimitiveKind.BOOLEAN),
+            mapOf(Boolean::class to Boolean.serializer(), Set::class to String.serializer().set))
 
-        override fun serialize(encoder: Encoder, value: Any) {
-            if (value is Boolean) {
-                Boolean.serializer().serialize(encoder, value)
-            }
-            if (value is Set<*>) {
-                String.serializer().set.serialize(encoder, value as Set<String>)
-            }
-        }
-
-        override fun deserialize(decoder: Decoder): Any {
-            throw IllegalStateException(descriptor.serialName)
-        }
-    }
-
-    object BooleanOrDefaultTypeSetSerializer : KSerializer<Any> {
-        override val descriptor: SerialDescriptor = PrimitiveDescriptor("Default", PrimitiveKind.BOOLEAN)
-
-        override fun serialize(encoder: Encoder, value: Any) {
-            if (value is Boolean) {
-                Boolean.serializer().serialize(encoder, value)
-            }
-            if (value is Set<*>) {
-                DefaultType.DefaultTypeSerializer.set.serialize(encoder, value as Set<DefaultType>)
-            }
-        }
-
-        override fun deserialize(decoder: Decoder): Any {
-            throw IllegalStateException(descriptor.serialName)
-        }
-    }
+    object DefaultSerializer : MultiTypeSerializer(
+            PrimitiveDescriptor("Default", PrimitiveKind.BOOLEAN),
+            mapOf(Boolean::class to Boolean.serializer(), Set::class to DefaultType.DefaultTypeSerializer.set))
 }
 
 fun inherit(block: InheritDsl.() -> Unit) = InheritDsl().apply(block)

@@ -9,6 +9,7 @@ import pcimcioch.gitlabci.dsl.stage.StageDsl
 import java.io.Writer
 
 // TODO tests
+// TODO maybe each dsl should have invoke operator?
 @GitlabCiDslMarker
 class GitlabCiDsl : DslBase {
     private val jobs: MutableList<JobDsl> = mutableListOf()

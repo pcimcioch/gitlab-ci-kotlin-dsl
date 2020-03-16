@@ -13,12 +13,14 @@ import pcimcioch.gitlabci.dsl.stage.StageDsl
 
 // TODO tests
 @GitlabCiDslMarker
-class JobDsl(var name: String? = null) : DslBase {
+class JobDsl(
+        var name: String? = null
+) : DslBase {
     var inherit: InheritDsl? = null
     var image: ImageDsl? = null
     var stage: String? = null
     var allowFailure: Boolean? = null
-    var whenRun: WhenType? = null
+    var whenRun: WhenRunType? = null
     var startIn: Duration? = null
     var script: ScriptDsl? = null
     var services: ServiceListDsl? = null
@@ -106,7 +108,7 @@ class JobDsl(var name: String? = null) : DslBase {
         val prefix = "[job name='$name']"
 
         addError(errors, isEmpty(name) || RESTRICTED_NAMES.contains(name), "$prefix name '$name' is incorrect")
-        addError(errors, startIn != null && whenRun != WhenType.DELAYED, "$prefix startIn can be used only with when=delayed jobs")
+        addError(errors, startIn != null && whenRun != WhenRunType.DELAYED, "$prefix startIn can be used only with when=delayed jobs")
         addError(errors, script == null, "$prefix at least one script command must be configured")
         addError(errors, parallel != null && (parallel!! < 2 || parallel!! > 50), "$prefix parallel must be in range [2, 50]")
 
@@ -148,13 +150,15 @@ class JobDsl(var name: String? = null) : DslBase {
 fun job(block: JobDsl.() -> Unit) = JobDsl().apply(block)
 fun job(name: String, block: JobDsl.() -> Unit) = JobDsl(name).apply(block)
 
-@Serializable(with = WhenType.WhenTypeSerializer::class)
-enum class WhenType(override val stringRepresentation: String) : StringRepresentation {
+@Serializable(with = WhenRunType.WhenRuntTypeSerializer::class)
+enum class WhenRunType(
+        override val stringRepresentation: String
+) : StringRepresentation {
     ON_SUCCESS("on_success"),
     ON_FAILURE("on_failure"),
     ALWAYS("always"),
     MANUAL("manual"),
     DELAYED("delayed");
 
-    object WhenTypeSerializer : StringRepresentationSerializer<WhenType>("WhenType")
+    object WhenRuntTypeSerializer : StringRepresentationSerializer<WhenRunType>("WhenRunType")
 }

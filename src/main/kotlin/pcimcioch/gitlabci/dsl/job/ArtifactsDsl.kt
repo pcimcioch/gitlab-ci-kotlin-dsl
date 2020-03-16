@@ -41,7 +41,9 @@ fun artifacts(vararg elements: String) = artifacts(elements.toList())
 fun artifacts(elements: Iterable<String>) = ArtifactsDsl().apply { paths(elements) }
 
 @Serializable(with = WhenUploadType.WhenUploadTypeSerializer::class)
-enum class WhenUploadType(override val stringRepresentation: String) : StringRepresentation {
+enum class WhenUploadType(
+        override val stringRepresentation: String
+) : StringRepresentation {
     ON_SUCCESS("on_success"),
     ON_FAILURE("on_failure"),
     ALWAYS("always");

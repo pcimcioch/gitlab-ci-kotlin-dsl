@@ -12,7 +12,9 @@ import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
 @GitlabCiDslMarker
 @Serializable
-class ServiceDsl(var name: String? = null) : DslBase {
+class ServiceDsl(
+        var name: String? = null
+) : DslBase {
     var alias: String? = null
     var cmd: List<String>? = null
     var entrypoint: List<String>? = null

@@ -10,7 +10,9 @@ import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
 @GitlabCiDslMarker
 @Serializable
-class RetryDsl(var max: Int? = null) : DslBase {
+class RetryDsl(
+        var max: Int? = null
+) : DslBase {
     @SerialName("when")
     var whenRetry: MutableSet<WhenRetryType>? = null
 
@@ -29,7 +31,9 @@ fun retry(block: RetryDsl.() -> Unit) = RetryDsl().apply(block)
 fun retry(max: Int, block: RetryDsl.() -> Unit) = RetryDsl(max).apply(block)
 
 @Serializable(with = WhenRetryType.WhenRetryTypeSerializer::class)
-enum class WhenRetryType(override val stringRepresentation: String) : StringRepresentation {
+enum class WhenRetryType(
+        override val stringRepresentation: String
+) : StringRepresentation {
     ALWAYS("always"),
     UNKNOWN_FAILURE("unknown_failure"),
     SCRIPT_FAILURE("script_failure"),

@@ -39,7 +39,7 @@ internal class InheritDslTest : DslTestBase() {
     fun `should create inherit with multivalued lists`() {
         // given
         val testee = inherit {
-            default(DefaultType.AFTER_SCRIPT, DefaultType.ARTIFACTS)
+            default(InheritDefaultType.AFTER_SCRIPT, InheritDefaultType.ARTIFACTS)
             variables("var1", "var2")
         }
 
@@ -77,7 +77,7 @@ internal class InheritDslTest : DslTestBase() {
     fun `should create inherit with single element lists`() {
         // given
         val testee = inherit {
-            default(DefaultType.BEFORE_SCRIPT)
+            default(InheritDefaultType.BEFORE_SCRIPT)
             variables("var1")
         }
 
@@ -96,9 +96,9 @@ internal class InheritDslTest : DslTestBase() {
     fun `should merge lists`() {
         // given
         val testee = inherit {
-            default(DefaultType.CACHE, DefaultType.IMAGE)
+            default(InheritDefaultType.CACHE, InheritDefaultType.IMAGE)
             variables("var1", "var2")
-            default(listOf(DefaultType.RETRY))
+            default(listOf(InheritDefaultType.RETRY))
             variables(listOf("var3"))
         }
 
@@ -142,7 +142,7 @@ internal class InheritDslTest : DslTestBase() {
         val testee = inherit {
             default(true)
             variables("var1", "var2")
-            default(DefaultType.SERVICES, DefaultType.TIMEOUT)
+            default(InheritDefaultType.SERVICES, InheritDefaultType.TIMEOUT)
             variables(false)
         }
 

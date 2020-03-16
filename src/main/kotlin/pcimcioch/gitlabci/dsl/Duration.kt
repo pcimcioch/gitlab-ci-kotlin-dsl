@@ -5,7 +5,14 @@ import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
 @Serializable(with = Duration.DurationSerializer::class)
-data class Duration(val years: Int = 0, val months: Int = 0, val days: Int = 0, val hours: Int = 0, val minutes: Int = 0, val seconds: Int = 0) {
+data class Duration(
+        val years: Int = 0,
+        val months: Int = 0,
+        val days: Int = 0,
+        val hours: Int = 0,
+        val minutes: Int = 0,
+        val seconds: Int = 0
+) {
     init {
         require(years >= 0) { "Argument |years| must be greater or equal zero. years=$years" }
         require(months >= 0) { "Argument |months| must be greater or equal zero. months=$months" }

@@ -8,7 +8,9 @@ import pcimcioch.gitlabci.dsl.isEmpty
 
 @GitlabCiDslMarker
 @Serializable
-class ImageDsl(var name: String? = null) : DslBase {
+class ImageDsl(
+        var name: String? = null
+) : DslBase {
     var entrypoint: List<String>? = null
 
     fun entrypoint(vararg elements: String) = entrypoint(elements.toList())

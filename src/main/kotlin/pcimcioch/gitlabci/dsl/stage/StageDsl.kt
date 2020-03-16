@@ -8,7 +8,9 @@ import pcimcioch.gitlabci.dsl.isEmpty
 
 @GitlabCiDslMarker
 @Serializable
-class StageDsl(var name: String? = null) : DslBase {
+class StageDsl(
+        var name: String? = null
+) : DslBase {
 
     companion object {
         const val PRE_STAGE = ".pre"

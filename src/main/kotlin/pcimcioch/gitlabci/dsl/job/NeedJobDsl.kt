@@ -1,13 +1,21 @@
 package pcimcioch.gitlabci.dsl.job
 
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.list
+import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.isEmpty
+import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
 @GitlabCiDslMarker
-class NeedJobDsl(var job: String? = null) : DslBase {
+@Serializable
+class NeedJobDsl(
+        var job: String? = null
+) : DslBase {
     var artifacts: Boolean? = null
     var project: String? = null
     var ref: String? = null
@@ -23,8 +31,8 @@ fun needJob(job: String, block: NeedJobDsl.() -> Unit) = NeedJobDsl(job).apply(b
 fun needJob(job: JobDsl) = NeedJobDsl(job.getName())
 fun needJob(job: JobDsl, block: NeedJobDsl.() -> Unit) = NeedJobDsl(job.getName()).apply(block)
 
-// TODO tests
 @GitlabCiDslMarker
+@Serializable(with = NeedsListDsl.NeedsListDslSerializer::class)
 class NeedsListDsl : DslBase {
     private val needs: MutableList<NeedJobDsl> = mutableListOf()
 
@@ -38,6 +46,8 @@ class NeedsListDsl : DslBase {
     override fun validate(errors: MutableList<String>) {
         addErrors(errors, needs, "")
     }
+
+    object NeedsListDslSerializer : ValueSerializer<NeedsListDsl, List<NeedJobDsl>>(NeedJobDsl.serializer().list, NeedsListDsl::needs)
 }
 
 fun needs(block: NeedsListDsl.() -> Unit) = NeedsListDsl().apply(block)

@@ -62,7 +62,9 @@ enum class RunnerSettingsVariables {
 }
 
 @Serializable(with = GitStrategyType.GitStrategyTypeSerializer::class)
-enum class GitStrategyType(override val stringRepresentation: String) : StringRepresentation {
+enum class GitStrategyType(
+        override val stringRepresentation: String
+) : StringRepresentation {
     CLONE("clone"),
     FETCH("fetch"),
     NONE("none");
@@ -71,7 +73,9 @@ enum class GitStrategyType(override val stringRepresentation: String) : StringRe
 }
 
 @Serializable(with = GitSubmoduleStrategyType.GitSubmoduleStrategyTypeSerializer::class)
-enum class GitSubmoduleStrategyType(override val stringRepresentation: String) : StringRepresentation {
+enum class GitSubmoduleStrategyType(
+        override val stringRepresentation: String
+) : StringRepresentation {
     NONE("none"),
     NORMAL("normal"),
     RECURSIVE("recursive");

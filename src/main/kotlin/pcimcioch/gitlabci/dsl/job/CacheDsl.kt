@@ -66,7 +66,9 @@ class CacheKeyDsl : DslBase {
 fun key(block: CacheKeyDsl.() -> Unit) = CacheKeyDsl().apply(block)
 
 @Serializable(with = CachePolicy.CachePolicySerializer::class)
-enum class CachePolicy(override val stringRepresentation: String) : StringRepresentation {
+enum class CachePolicy(
+        override val stringRepresentation: String
+) : StringRepresentation {
     PULL("push"),
     PULL_PUSH("pull-push"),
     PUSH("push");

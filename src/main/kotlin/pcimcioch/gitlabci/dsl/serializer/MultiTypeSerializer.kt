@@ -6,7 +6,10 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialDescriptor
 import kotlin.reflect.KClass
 
-open class MultiTypeSerializer(override val descriptor: SerialDescriptor, private val serializers: Map<KClass<*>, KSerializer<*>>) : KSerializer<Any> {
+open class MultiTypeSerializer(
+        override val descriptor: SerialDescriptor,
+        private val serializers: Map<KClass<*>, KSerializer<*>>
+) : KSerializer<Any> {
 
     override fun serialize(encoder: Encoder, value: Any) {
         getSerializer(value).serialize(encoder, value)

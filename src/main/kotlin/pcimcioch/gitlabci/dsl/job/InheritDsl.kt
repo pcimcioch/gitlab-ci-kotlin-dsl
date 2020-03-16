@@ -22,7 +22,7 @@ class InheritDsl : DslBase {
     private var variablesBoolean: Boolean? = null
 
     @Transient
-    private var defaultSet: MutableSet<DefaultType>? = null
+    private var defaultSet: MutableSet<InheritDefaultType>? = null
 
     @Transient
     private var variablesSet: MutableSet<String>? = null
@@ -37,8 +37,8 @@ class InheritDsl : DslBase {
         get() = variablesBoolean ?: variablesSet
         private set
 
-    fun default(vararg elements: DefaultType) = default(elements.toList())
-    fun default(elements: Iterable<DefaultType>) {
+    fun default(vararg elements: InheritDefaultType) = default(elements.toList())
+    fun default(elements: Iterable<InheritDefaultType>) {
         defaultBoolean = null
         ensureDefaultSet().addAll(elements)
     }
@@ -59,7 +59,7 @@ class InheritDsl : DslBase {
         variablesBoolean = value
     }
 
-    private fun ensureDefaultSet() = defaultSet ?: mutableSetOf<DefaultType>().also { defaultSet = it }
+    private fun ensureDefaultSet() = defaultSet ?: mutableSetOf<InheritDefaultType>().also { defaultSet = it }
     private fun ensureVariablesSet() = variablesSet ?: mutableSetOf<String>().also { variablesSet = it }
 
     object VariablesSerializer : MultiTypeSerializer(
@@ -68,13 +68,15 @@ class InheritDsl : DslBase {
 
     object DefaultSerializer : MultiTypeSerializer(
             PrimitiveDescriptor("Default", PrimitiveKind.BOOLEAN),
-            mapOf(Boolean::class to Boolean.serializer(), Set::class to DefaultType.DefaultTypeSerializer.set))
+            mapOf(Boolean::class to Boolean.serializer(), Set::class to InheritDefaultType.InheritDefaultTypeSerializer.set))
 }
 
 fun inherit(block: InheritDsl.() -> Unit) = InheritDsl().apply(block)
 
-@Serializable(with = DefaultType.DefaultTypeSerializer::class)
-enum class DefaultType(override val stringRepresentation: String) : StringRepresentation {
+@Serializable(with = InheritDefaultType.InheritDefaultTypeSerializer::class)
+enum class InheritDefaultType(
+        override val stringRepresentation: String
+) : StringRepresentation {
     IMAGE("image"),
     SERVICES("services"),
     BEFORE_SCRIPT("before_script"),
@@ -86,5 +88,5 @@ enum class DefaultType(override val stringRepresentation: String) : StringRepres
     TIMEOUT("timeout"),
     INTERRUPTIBLE("interruptible");
 
-    object DefaultTypeSerializer : StringRepresentationSerializer<DefaultType>("DefaultType")
+    object InheritDefaultTypeSerializer : StringRepresentationSerializer<InheritDefaultType>("InheritDefaultType")
 }

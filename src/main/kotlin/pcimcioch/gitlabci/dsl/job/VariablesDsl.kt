@@ -1,25 +1,28 @@
 package pcimcioch.gitlabci.dsl.job
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
+import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
-// TODO tests
 @GitlabCiDslMarker
+@Serializable(with = VariablesDsl.VariablesDslSerializer::class)
 class VariablesDsl : DslBase {
-    var variables: MutableMap<String, Any> = mutableMapOf()
+    var variables: MutableMap<String, String> = mutableMapOf()
 
-    fun add(name: String, value: Any) = variables.put(name, value)
-    fun <T : Enum<T>> add(name: T, value: Any) = variables.put(name.toString(), value)
+    fun add(name: String, value: Any) = variables.put(name, value.toString())
+    fun <T : Enum<T>> add(name: T, value: Any) = variables.put(name.toString(), value.toString())
 
     infix fun String.to(value: Any) = add(this, value)
     infix fun <T : Enum<T>> T.to(value: Any) = add(this, value)
 
-    fun gitStrategy(strategy: GitStrategyType) = add(RunnerSettingsVariables.GIT_STRATEGY, strategy)
-    fun gitSubmoduleStrategy(strategy: GitSubmoduleStrategyType) = add(RunnerSettingsVariables.GIT_SUBMODULE_STRATEGY, strategy)
+    fun gitStrategy(strategy: GitStrategyType) = add(RunnerSettingsVariables.GIT_STRATEGY, strategy.stringRepresentation)
+    fun gitSubmoduleStrategy(strategy: GitSubmoduleStrategyType) = add(RunnerSettingsVariables.GIT_SUBMODULE_STRATEGY, strategy.stringRepresentation)
     fun gitCheckout(checkout: Boolean) = add(RunnerSettingsVariables.GIT_CHECKOUT, checkout)
     fun gitClean(flags: String) = add(RunnerSettingsVariables.GIT_CLEAN_FLAGS, flags)
     fun disableGitClean() = gitClean("none")
@@ -32,10 +35,19 @@ class VariablesDsl : DslBase {
     override fun validate(errors: MutableList<String>) {
         addError(errors, variables.isEmpty(), "[variables] variables map cannot be empty")
     }
+
+    object VariablesDslSerializer : ValueSerializer<VariablesDsl, Map<String, String>>(MapSerializer(String.serializer(), String.serializer()), VariablesDsl::variables)
 }
-// TODO remember that during yaml conversion, we have to call toString() for all values, except Int
 
 fun variables(block: VariablesDsl.() -> Unit) = VariablesDsl().apply(block)
+fun variables(elements: Map<String, String>) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }
+fun variables(elements: Map<String, String>, block: VariablesDsl.() -> Unit) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+
+@JvmName("variablesEnum")
+fun <T : Enum<T>> variables(elements: Map<T, String>) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }
+
+@JvmName("variablesEnum")
+fun <T : Enum<T>> variables(elements: Map<T, String>, block: VariablesDsl.() -> Unit) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
 
 enum class RunnerSettingsVariables {
     GIT_STRATEGY,

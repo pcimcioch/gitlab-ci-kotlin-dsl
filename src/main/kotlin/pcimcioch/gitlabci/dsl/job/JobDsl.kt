@@ -4,12 +4,12 @@ import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
+import pcimcioch.gitlabci.dsl.Duration
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.StringRepresentation
-import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 import pcimcioch.gitlabci.dsl.isEmpty
+import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 import pcimcioch.gitlabci.dsl.stage.StageDsl
-import java.time.Duration
 
 // TODO tests
 @GitlabCiDslMarker
@@ -85,6 +85,14 @@ class JobDsl(var name: String? = null) : DslBase {
     fun emptyDependencies() = ensureDependencies().clear()
 
     fun variables(block: VariablesDsl.() -> Unit) = ensureVariables().apply(block)
+    fun variables(elements: Map<String, String>) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }
+    fun variables(elements: Map<String, String>, block: VariablesDsl.() -> Unit) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+
+    @JvmName("variablesEnum")
+    fun <T : Enum<T>> variables(elements: Map<T, String>) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }
+
+    @JvmName("variablesEnum")
+    fun <T : Enum<T>> variables(elements: Map<T, String>, block: VariablesDsl.() -> Unit) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
 
     fun cache(block: CacheDsl.() -> Unit) = ensureCache().apply(block)
     fun cache(vararg elements: String) = cache(elements.toList())

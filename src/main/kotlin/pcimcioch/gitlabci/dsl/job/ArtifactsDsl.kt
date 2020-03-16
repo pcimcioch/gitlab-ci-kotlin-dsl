@@ -4,11 +4,10 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
+import pcimcioch.gitlabci.dsl.Duration
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.StringRepresentation
-import pcimcioch.gitlabci.dsl.serializer.DurationSerializer
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
-import java.time.Duration
 
 @GitlabCiDslMarker
 @Serializable
@@ -19,7 +18,6 @@ class ArtifactsDsl : DslBase {
     var untracked: Boolean? = null
     @SerialName("when")
     var whenUpload: WhenUploadType? = null
-    @Serializable(with = DurationSerializer::class)
     @SerialName("expire_in")
     var expireIn: Duration? = null
     var paths: MutableSet<String>? = null

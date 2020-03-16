@@ -2,7 +2,7 @@ package pcimcioch.gitlabci.dsl.job
 
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
-import java.time.Duration
+import pcimcioch.gitlabci.dsl.Duration
 
 internal class ArtifactsDslTest : DslTestBase() {
 
@@ -27,7 +27,7 @@ internal class ArtifactsDslTest : DslTestBase() {
             exposeAs = "exposed"
             untracked = true
             whenUpload = WhenUploadType.ALWAYS
-            expireIn = Duration.ofDays(1)
+            expireIn = Duration(days = 1)
             paths("p 1")
             reports {
                 junit("junit 1")
@@ -41,7 +41,7 @@ internal class ArtifactsDslTest : DslTestBase() {
                     expose_as: "exposed"
                     untracked: true
                     when: "always"
-                    expire_in: "1"
+                    expire_in: "1 day"
                     paths:
                     - "p 1"
                     reports:

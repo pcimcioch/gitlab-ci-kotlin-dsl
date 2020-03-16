@@ -14,8 +14,11 @@ class BeforeScriptDsl : DslBase {
     var commands: MutableList<String> = mutableListOf()
 
     fun exec(command: String) = commands.add(command)
+    operator fun String.unaryPlus() = this@BeforeScriptDsl.commands.add(this)
 
     object BeforeScriptDslSerializer : ValueSerializer<BeforeScriptDsl, List<String>>(String.serializer().list, BeforeScriptDsl::commands)
 }
 
 fun beforeScript(block: BeforeScriptDsl.() -> Unit) = BeforeScriptDsl().apply(block)
+fun beforeScript(vararg elements: String) = beforeScript(elements.toList())
+fun beforeScript(elements: Iterable<String>) = BeforeScriptDsl().apply { elements.forEach { exec(it) } }

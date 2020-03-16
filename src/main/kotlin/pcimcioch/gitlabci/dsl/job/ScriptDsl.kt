@@ -15,6 +15,7 @@ class ScriptDsl : DslBase {
     var commands: MutableList<String> = mutableListOf()
 
     fun exec(command: String) = commands.add(command)
+    operator fun String.unaryPlus() = this@ScriptDsl.commands.add(this)
 
     override fun validate(errors: MutableList<String>) {
         addError(errors, commands.isEmpty(), "[script] commands list cannot be empty")
@@ -24,3 +25,5 @@ class ScriptDsl : DslBase {
 }
 
 fun script(block: ScriptDsl.() -> Unit) = ScriptDsl().apply(block)
+fun script(vararg elements: String) = script(elements.toList())
+fun script(elements: Iterable<String>) = ScriptDsl().apply { elements.forEach { exec(it) } }

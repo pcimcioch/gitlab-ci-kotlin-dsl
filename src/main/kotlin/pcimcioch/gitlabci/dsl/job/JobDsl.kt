@@ -1,13 +1,9 @@
 package pcimcioch.gitlabci.dsl.job
 
 import kotlinx.serialization.Serializable
-import pcimcioch.gitlabci.dsl.DslBase
+import pcimcioch.gitlabci.dsl.*
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
-import pcimcioch.gitlabci.dsl.Duration
-import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
-import pcimcioch.gitlabci.dsl.StringRepresentation
-import pcimcioch.gitlabci.dsl.isEmpty
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 import pcimcioch.gitlabci.dsl.stage.StageDsl
 
@@ -40,10 +36,16 @@ class JobDsl(
     var dependencies: MutableSet<String>? = null
 
     fun script(block: ScriptDsl.() -> Unit) = ensureScript().apply(block)
+    fun script(vararg elements: String) = script(elements.toList())
+    fun script(elements: Iterable<String>) = ensureScript().apply { elements.forEach { exec(it) } }
 
     fun beforeScript(block: BeforeScriptDsl.() -> Unit) = ensureBeforeScript().apply(block)
+    fun beforeScript(vararg elements: String) = beforeScript(elements.toList())
+    fun beforeScript(elements: Iterable<String>) = ensureBeforeScript().apply { elements.forEach { exec(it) } }
 
     fun afterScript(block: AfterScriptDsl.() -> Unit) = ensureAfterScript().apply(block)
+    fun afterScript(vararg elements: String) = afterScript(elements.toList())
+    fun afterScript(elements: Iterable<String>) = ensureAfterScript().apply { elements.forEach { exec(it) } }
 
     fun inherit(block: InheritDsl.() -> Unit) = ensureInherit().apply(block)
 

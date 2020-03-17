@@ -1,6 +1,8 @@
 package pcimcioch.gitlabci.dsl.job
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import pcimcioch.gitlabci.dsl.*
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
@@ -9,31 +11,39 @@ import pcimcioch.gitlabci.dsl.stage.StageDsl
 
 // TODO tests
 @GitlabCiDslMarker
+@Serializable
 class JobDsl(
+        @Transient
         var name: String? = null
 ) : DslBase {
-    var inherit: InheritDsl? = null
+    var extends: MutableList<String>? = null
     var image: ImageDsl? = null
     var stage: String? = null
+    var tags: MutableSet<String>? = null
+    var inherit: InheritDsl? = null
+    @SerialName("allow_failure")
     var allowFailure: Boolean? = null
+    @SerialName("when")
     var whenRun: WhenRunType? = null
+    @SerialName("start_in")
     var startIn: Duration? = null
-    var script: ScriptDsl? = null
+    var timeout: Duration? = null
+    var retry: RetryDsl? = null
+    var interruptible: Boolean? = null
+    var parallel: Int? = null
+    @SerialName("resource_group")
+    var resourceGroup: String? = null
     var services: ServiceListDsl? = null
     var needs: NeedsListDsl? = null
-    var retry: RetryDsl? = null
-    var timeout: Duration? = null
-    var parallel: Int? = null
-    var interruptible: Boolean? = null
-    var resourceGroup: String? = null
-    var variables: VariablesDsl? = null
+    var dependencies: MutableSet<String>? = null
     var cache: CacheDsl? = null
     var artifacts: ArtifactsDsl? = null
-    var afterScript: AfterScriptDsl? = null
+    @SerialName("before_script")
     var beforeScript: BeforeScriptDsl? = null
-    var tags: MutableSet<String>? = null
-    var extends: MutableList<String>? = null
-    var dependencies: MutableSet<String>? = null
+    var script: ScriptDsl? = null
+    @SerialName("after_script")
+    var afterScript: AfterScriptDsl? = null
+    var variables: VariablesDsl? = null
 
     fun script(block: ScriptDsl.() -> Unit) = ensureScript().apply(block)
     fun script(vararg elements: String) = script(elements.toList())
@@ -109,7 +119,7 @@ class JobDsl(
     override fun validate(errors: MutableList<String>) {
         val prefix = "[job name='$name']"
 
-        addError(errors, isEmpty(name) || RESTRICTED_NAMES.contains(name), "$prefix name '$name' is incorrect")
+        addError(errors, isEmpty(name) || Validation.RESTRICTED_NAMES.contains(name), "$prefix name '$name' is incorrect")
         addError(errors, startIn != null && whenRun != WhenRunType.DELAYED, "$prefix startIn can be used only with when=delayed jobs")
         addError(errors, script == null, "$prefix at least one script command must be configured")
         addError(errors, parallel != null && (parallel!! < 2 || parallel!! > 50), "$prefix parallel must be in range [2, 50]")
@@ -117,7 +127,7 @@ class JobDsl(
         addErrors(errors, beforeScript, prefix)
         addErrors(errors, afterScript, prefix)
         addErrors(errors, inherit, prefix)
-        addErrors(errors, inherit, prefix)
+        addErrors(errors, retry, prefix)
         addErrors(errors, image, prefix)
         addErrors(errors, script, prefix)
         addErrors(errors, services, prefix)
@@ -144,7 +154,7 @@ class JobDsl(
     private fun ensureExtends() = extends ?: mutableListOf<String>().also { extends = it }
     private fun ensureDependencies() = dependencies ?: mutableSetOf<String>().also { dependencies = it }
 
-    private companion object {
+    private object Validation {
         val RESTRICTED_NAMES = listOf("image", "services", "stages", "types", "before_script", "after_script", "variables", "cache", "include")
     }
 }

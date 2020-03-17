@@ -477,4 +477,217 @@ internal class JobDslTest : DslTestBase() {
                 """.trimIndent()
         )
     }
+
+    @Test
+    fun `should allow different script options`() {
+        // given
+        val testee = job {
+            name = "test"
+
+            script {
+                +"command 1"
+            }
+            script("command 2")
+            script(listOf("command 3"))
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    script:
+                    - "command 1"
+                    - "command 2"
+                    - "command 3"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow different beforeScript options`() {
+        // given
+        val testee = job {
+            name = "test"
+            script("test command")
+
+            beforeScript {
+                +"command 1"
+            }
+            beforeScript("command 2")
+            beforeScript(listOf("command 3"))
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    before_script:
+                    - "command 1"
+                    - "command 2"
+                    - "command 3"
+                    script:
+                    - "test command"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow different afterScript options`() {
+        // given
+        val testee = job {
+            name = "test"
+            script("test command")
+
+            afterScript {
+                +"command 1"
+            }
+            afterScript("command 2")
+            afterScript(listOf("command 3"))
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    script:
+                    - "test command"
+                    after_script:
+                    - "command 1"
+                    - "command 2"
+                    - "command 3"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow image by name configuration `() {
+        // given
+        val testee = job {
+            name = "test"
+            script("test command")
+
+            image("image:1")
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    image:
+                      name: "image:1"
+                    script:
+                    - "test command"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow image by block configuration `() {
+        // given
+        val testee = job {
+            name = "test"
+            script("test command")
+
+            image {
+                name = "image:1"
+            }
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    image:
+                      name: "image:1"
+                    script:
+                    - "test command"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow image by name and block configuration `() {
+        // given
+        val testee = job {
+            name = "test"
+            script("test command")
+
+            image("image:1") {
+                entrypoint("entry", "point")
+            }
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    image:
+                      name: "image:1"
+                      entrypoint:
+                      - "entry"
+                      - "point"
+                    script:
+                    - "test command"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow different services options`() {
+        // given
+        val testee = job {
+            name = "test"
+            script("test command")
+
+            services("ser1")
+            services(listOf("ser2"))
+            services {
+                service("ser3")
+            }
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    services:
+                    - name: "ser1"
+                    - name: "ser2"
+                    - name: "ser3"
+                    script:
+                    - "test command"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow different needs options`() {
+        // given
+        val job3 = job("job3") {}
+        val job4 = job("job4") {}
+        val testee = job {
+            name = "test"
+            script("test command")
+
+            needs("job1")
+            needs(listOf("job2"))
+            needs(job3)
+            needs(listOf(job4))
+            needs {
+                needJob("job5")
+            }
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    needs:
+                    - job: "job1"
+                    - job: "job2"
+                    - job: "job3"
+                    - job: "job4"
+                    - job: "job5"
+                    script:
+                    - "test command"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow direct access`() {
+        // TODO implement
+    }
 }

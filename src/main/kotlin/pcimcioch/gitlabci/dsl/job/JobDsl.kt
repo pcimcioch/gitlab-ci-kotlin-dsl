@@ -9,7 +9,6 @@ import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 import pcimcioch.gitlabci.dsl.stage.StageDsl
 
-// TODO tests
 @GitlabCiDslMarker
 @Serializable
 class JobDsl(
@@ -99,14 +98,14 @@ class JobDsl(
     fun emptyDependencies() = ensureDependencies().clear()
 
     fun variables(block: VariablesDsl.() -> Unit) = ensureVariables().apply(block)
-    fun variables(elements: Map<String, String>) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }
-    fun variables(elements: Map<String, String>, block: VariablesDsl.() -> Unit) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+    fun variables(elements: Map<String, Any>) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }
+    fun variables(elements: Map<String, Any>, block: VariablesDsl.() -> Unit) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
 
     @JvmName("variablesEnum")
-    fun <T : Enum<T>> variables(elements: Map<T, String>) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }
+    fun <T : Enum<T>> variables(elements: Map<T, Any>) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }
 
     @JvmName("variablesEnum")
-    fun <T : Enum<T>> variables(elements: Map<T, String>, block: VariablesDsl.() -> Unit) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+    fun <T : Enum<T>> variables(elements: Map<T, Any>, block: VariablesDsl.() -> Unit) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
 
     fun cache(block: CacheDsl.() -> Unit) = ensureCache().apply(block)
     fun cache(vararg elements: String) = cache(elements.toList())

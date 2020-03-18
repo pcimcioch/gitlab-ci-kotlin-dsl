@@ -1,10 +1,9 @@
 package pcimcioch.gitlabci.dsl.job
 
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 import pcimcioch.gitlabci.dsl.Duration
-import kotlin.math.min
+import pcimcioch.gitlabci.dsl.stage.stage
 
 internal class JobDslTest : DslTestBase() {
 
@@ -680,6 +679,189 @@ internal class JobDslTest : DslTestBase() {
                     - job: "job3"
                     - job: "job4"
                     - job: "job5"
+                    script:
+                    - "test command"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow to set stage from object`() {
+        // given
+        val testStage = stage("testStage")
+        val testee = job {
+            name = "test"
+            script("test command")
+
+            stage(testStage)
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    stage: "testStage"
+                    script:
+                    - "test command"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow retry from number`() {
+        // given
+        val testee = job {
+            name = "test"
+            script("test command")
+
+            retry(2)
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    retry:
+                      max: 2
+                    script:
+                    - "test command"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow retry from block`() {
+        // given
+        val testee = job {
+            name = "test"
+            script("test command")
+
+            retry {
+                max = 2
+            }
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    retry:
+                      max: 2
+                    script:
+                    - "test command"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow retry from number and block`() {
+        // given
+        val testee = job {
+            name = "test"
+            script("test command")
+
+            retry(2) {
+                whenRetry(WhenRetryType.API_FAILURE)
+            }
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    retry:
+                      max: 2
+                      when:
+                      - "api_failure"
+                    script:
+                    - "test command"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow different variables options`() {
+        // given
+        val testee = job {
+            name = "test"
+            script("test command")
+
+            variables {
+                "k1" to "v1"
+            }
+            variables(mapOf("k2" to "v2"))
+            variables(mapOf("k3" to "v3")) {
+                "k4" to "v4"
+            }
+            variables(mapOf(RunnerSettingsVariables.GIT_DEPTH to "2"))
+            variables(mapOf(RunnerSettingsVariables.GET_SOURCES_ATTEMPTS to 1)) {
+                RunnerSettingsVariables.ARTIFACT_DOWNLOAD_ATTEMPTS to 3
+            }
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    script:
+                    - "test command"
+                    variables:
+                      "k1": "v1"
+                      "k2": "v2"
+                      "k3": "v3"
+                      "k4": "v4"
+                      "GIT_DEPTH": "2"
+                      "GET_SOURCES_ATTEMPTS": "1"
+                      "ARTIFACT_DOWNLOAD_ATTEMPTS": "3"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow different cache options`() {
+        // given
+        val testee = job {
+            name = "test"
+            script("test command")
+
+            cache {
+                paths("p1")
+            }
+            cache("p2")
+            cache(listOf("p3"))
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    cache:
+                      paths:
+                      - "p1"
+                      - "p2"
+                      - "p3"
+                    script:
+                    - "test command"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow different artifacts options`() {
+        // given
+        val testee = job {
+            name = "test"
+            script("test command")
+
+            artifacts {
+                paths("a1")
+            }
+            artifacts("a2")
+            artifacts(listOf("a3"))
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    artifacts:
+                      paths:
+                      - "a1"
+                      - "a2"
+                      - "a3"
                     script:
                     - "test command"
                 """.trimIndent()

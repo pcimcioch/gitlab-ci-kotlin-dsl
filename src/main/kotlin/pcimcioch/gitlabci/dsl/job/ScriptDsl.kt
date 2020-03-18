@@ -1,7 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
 import kotlinx.serialization.builtins.list
 import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.DslBase
@@ -24,6 +23,6 @@ class ScriptDsl : DslBase {
     object ScriptDslSerializer : ValueSerializer<ScriptDsl, List<String>>(String.serializer().list, ScriptDsl::commands)
 }
 
-fun script(block: ScriptDsl.() -> Unit) = ScriptDsl().apply(block)
-fun script(vararg elements: String) = script(elements.toList())
-fun script(elements: Iterable<String>) = ScriptDsl().apply { elements.forEach { exec(it) } }
+fun createScript(block: ScriptDsl.() -> Unit) = ScriptDsl().apply(block)
+fun createScript(vararg elements: String) = createScript(elements.toList())
+fun createScript(elements: Iterable<String>) = ScriptDsl().apply { elements.forEach { exec(it) } }

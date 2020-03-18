@@ -26,9 +26,9 @@ class RetryDsl(
     private fun ensureWhenRetry() = whenRetry ?: mutableSetOf<WhenRetryType>().also { whenRetry = it }
 }
 
-fun retry(max: Int) = RetryDsl(max)
-fun retry(block: RetryDsl.() -> Unit) = RetryDsl().apply(block)
-fun retry(max: Int, block: RetryDsl.() -> Unit) = RetryDsl(max).apply(block)
+fun createRetry(max: Int) = RetryDsl(max)
+fun createRetry(block: RetryDsl.() -> Unit) = RetryDsl().apply(block)
+fun createRetry(max: Int, block: RetryDsl.() -> Unit) = RetryDsl(max).apply(block)
 
 @Serializable(with = WhenRetryType.WhenRetryTypeSerializer::class)
 enum class WhenRetryType(

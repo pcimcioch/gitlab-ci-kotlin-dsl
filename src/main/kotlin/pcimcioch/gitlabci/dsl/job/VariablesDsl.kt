@@ -39,15 +39,15 @@ class VariablesDsl : DslBase {
     object VariablesDslSerializer : ValueSerializer<VariablesDsl, Map<String, String>>(MapSerializer(String.serializer(), String.serializer()), VariablesDsl::variables)
 }
 
-fun variables(block: VariablesDsl.() -> Unit) = VariablesDsl().apply(block)
-fun variables(elements: Map<String, String>) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }
-fun variables(elements: Map<String, String>, block: VariablesDsl.() -> Unit) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+fun createVariables(block: VariablesDsl.() -> Unit) = VariablesDsl().apply(block)
+fun createVariables(elements: Map<String, String>) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }
+fun createVariables(elements: Map<String, String>, block: VariablesDsl.() -> Unit) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
 
 @JvmName("variablesEnum")
-fun <T : Enum<T>> variables(elements: Map<T, String>) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }
+fun <T : Enum<T>> createVariables(elements: Map<T, String>) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }
 
 @JvmName("variablesEnum")
-fun <T : Enum<T>> variables(elements: Map<T, String>, block: VariablesDsl.() -> Unit) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+fun <T : Enum<T>> createVariables(elements: Map<T, String>, block: VariablesDsl.() -> Unit) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
 
 enum class RunnerSettingsVariables {
     GIT_STRATEGY,

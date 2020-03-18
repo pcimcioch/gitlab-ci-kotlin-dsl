@@ -8,7 +8,7 @@ internal class BeforeScriptDslTest : DslTestBase() {
     @Test
     fun `should create script from block`() {
         // given
-        val testee = beforeScript {
+        val testee = createBeforeScript {
             exec("command 1")
         }
 
@@ -23,7 +23,7 @@ internal class BeforeScriptDslTest : DslTestBase() {
     @Test
     fun `should create script from vararg`() {
         // given
-        val testee = beforeScript("command 1", "command 2")
+        val testee = createBeforeScript("command 1", "command 2")
 
         // then
         assertDsl(BeforeScriptDsl.serializer(), testee,
@@ -37,7 +37,7 @@ internal class BeforeScriptDslTest : DslTestBase() {
     @Test
     fun `should create script from list`() {
         // given
-        val testee = beforeScript(listOf("command 1", "command 2"))
+        val testee = createBeforeScript(listOf("command 1", "command 2"))
 
         // then
         assertDsl(BeforeScriptDsl.serializer(), testee,
@@ -51,7 +51,7 @@ internal class BeforeScriptDslTest : DslTestBase() {
     @Test
     fun `should create script with multiple command`() {
         // given
-        val testee = beforeScript {
+        val testee = createBeforeScript {
             exec("command 1")
             exec("command 2")
         }
@@ -68,7 +68,7 @@ internal class BeforeScriptDslTest : DslTestBase() {
     @Test
     fun `should create script with one command`() {
         // given
-        val testee = beforeScript {
+        val testee = createBeforeScript {
             exec("command 1")
         }
 
@@ -83,7 +83,7 @@ internal class BeforeScriptDslTest : DslTestBase() {
     @Test
     fun `should create script with no commands`() {
         // given
-        val testee = beforeScript {}
+        val testee = createBeforeScript {}
 
         // then
         assertDsl(BeforeScriptDsl.serializer(), testee,
@@ -96,7 +96,7 @@ internal class BeforeScriptDslTest : DslTestBase() {
     @Test
     fun `should add commands with unary plus`() {
         // given
-        val testee = beforeScript {
+        val testee = createBeforeScript {
             exec("command 1")
             +"command 2"
         }
@@ -113,7 +113,7 @@ internal class BeforeScriptDslTest : DslTestBase() {
     @Test
     fun `should allow direct access`() {
         // given
-        val testee = beforeScript {
+        val testee = createBeforeScript {
             commands = mutableListOf("command 1", "command 2")
         }
 

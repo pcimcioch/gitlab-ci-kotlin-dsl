@@ -71,7 +71,7 @@ class InheritDsl : DslBase {
             mapOf(Boolean::class to Boolean.serializer(), Set::class to InheritDefaultType.InheritDefaultTypeSerializer.set))
 }
 
-fun inherit(block: InheritDsl.() -> Unit) = InheritDsl().apply(block)
+fun createInherit(block: InheritDsl.() -> Unit) = InheritDsl().apply(block)
 
 @Serializable(with = InheritDefaultType.InheritDefaultTypeSerializer::class)
 enum class InheritDefaultType(

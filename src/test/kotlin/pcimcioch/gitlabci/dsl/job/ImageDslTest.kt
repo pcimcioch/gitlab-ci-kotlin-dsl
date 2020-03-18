@@ -8,7 +8,7 @@ internal class ImageDslTest : DslTestBase() {
     @Test
     fun `should create image from name`() {
         // given
-        val testee = image("image 1")
+        val testee = createImage("image 1")
 
         // then
         assertDsl(ImageDsl.serializer(), testee,
@@ -21,7 +21,7 @@ internal class ImageDslTest : DslTestBase() {
     @Test
     fun `should create image from name and block`() {
         // given
-        val testee = image("image 1") {
+        val testee = createImage("image 1") {
             entrypoint("cmd 1", "cmd 2")
         }
 
@@ -39,7 +39,7 @@ internal class ImageDslTest : DslTestBase() {
     @Test
     fun `should create image from block`() {
         // given
-        val testee = image {
+        val testee = createImage {
             name = "image 1"
             entrypoint(listOf("cmd 1"))
         }
@@ -57,7 +57,7 @@ internal class ImageDslTest : DslTestBase() {
     @Test
     fun `should create image with empty entrypoint`() {
         // given
-        val testee = image("image 1") {
+        val testee = createImage("image 1") {
             entrypoint()
         }
 
@@ -73,7 +73,7 @@ internal class ImageDslTest : DslTestBase() {
     @Test
     fun `should create image with one element entrypoint`() {
         // given
-        val testee = image("image 1") {
+        val testee = createImage("image 1") {
             entrypoint("cmd 1")
         }
 
@@ -90,7 +90,7 @@ internal class ImageDslTest : DslTestBase() {
     @Test
     fun `should create image with multiple elements entrypoint`() {
         // given
-        val testee = image("image 1") {
+        val testee = createImage("image 1") {
             entrypoint("cmd 1", "cmd 2")
         }
 
@@ -108,7 +108,7 @@ internal class ImageDslTest : DslTestBase() {
     @Test
     fun `should override entrypoint`() {
         // given
-        val testee = image("image 1") {
+        val testee = createImage("image 1") {
             entrypoint("cmd 1", "cmd 2")
             entrypoint("cmd 3", "cmd 4", "cmd 5")
         }
@@ -128,7 +128,7 @@ internal class ImageDslTest : DslTestBase() {
     @Test
     fun `should not validate null name`() {
         // given
-        val testee = image {
+        val testee = createImage {
             entrypoint("cmd 1")
         }
 
@@ -145,7 +145,7 @@ internal class ImageDslTest : DslTestBase() {
     @Test
     fun `should not validate empty name`() {
         // given
-        val testee = image("") {
+        val testee = createImage("") {
             entrypoint("cmd 1")
         }
 
@@ -163,7 +163,7 @@ internal class ImageDslTest : DslTestBase() {
     @Test
     fun `should allow direct access`() {
         // given
-        val testee = image("image 1") {
+        val testee = createImage("image 1") {
             entrypoint = listOf("cmd 1", "cmd 2")
         }
 

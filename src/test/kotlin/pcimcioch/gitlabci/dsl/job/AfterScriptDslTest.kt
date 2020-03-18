@@ -8,7 +8,7 @@ internal class AfterScriptDslTest : DslTestBase() {
     @Test
     fun `should create script from block`() {
         // given
-        val testee = afterScript {
+        val testee = createAfterScript {
             exec("command 1")
         }
 
@@ -23,7 +23,7 @@ internal class AfterScriptDslTest : DslTestBase() {
     @Test
     fun `should create script from vararg`() {
         // given
-        val testee = afterScript("command 1", "command 2")
+        val testee = createAfterScript("command 1", "command 2")
 
         // then
         assertDsl(AfterScriptDsl.serializer(), testee,
@@ -37,7 +37,7 @@ internal class AfterScriptDslTest : DslTestBase() {
     @Test
     fun `should create script from list`() {
         // given
-        val testee = afterScript(listOf("command 1", "command 2"))
+        val testee = createAfterScript(listOf("command 1", "command 2"))
 
         // then
         assertDsl(AfterScriptDsl.serializer(), testee,
@@ -51,7 +51,7 @@ internal class AfterScriptDslTest : DslTestBase() {
     @Test
     fun `should create script with multiple commands`() {
         // given
-        val testee = afterScript {
+        val testee = createAfterScript {
             exec("command 1")
             exec("command 2")
         }
@@ -68,7 +68,7 @@ internal class AfterScriptDslTest : DslTestBase() {
     @Test
     fun `should create script with one command`() {
         // given
-        val testee = afterScript {
+        val testee = createAfterScript {
             exec("command 1")
         }
 
@@ -83,7 +83,7 @@ internal class AfterScriptDslTest : DslTestBase() {
     @Test
     fun `should create script with no commands`() {
         // given
-        val testee = afterScript {}
+        val testee = createAfterScript {}
 
         // then
         assertDsl(AfterScriptDsl.serializer(), testee,
@@ -96,7 +96,7 @@ internal class AfterScriptDslTest : DslTestBase() {
     @Test
     fun `should add commands with unary plus`() {
         // given
-        val testee = afterScript {
+        val testee = createAfterScript {
             exec("command 1")
             +"command 2"
         }
@@ -113,7 +113,7 @@ internal class AfterScriptDslTest : DslTestBase() {
     @Test
     fun `should allow direct access`() {
         // given
-        val testee = afterScript {
+        val testee = createAfterScript {
             commands = mutableListOf("command 1", "command 2")
         }
 

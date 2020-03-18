@@ -3,14 +3,14 @@ package pcimcioch.gitlabci.dsl.job
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 import pcimcioch.gitlabci.dsl.Duration
-import pcimcioch.gitlabci.dsl.stage.stage
+import pcimcioch.gitlabci.dsl.stage.createStage
 
 internal class JobDslTest : DslTestBase() {
 
     @Test
     fun `should create job from block`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
         }
@@ -27,7 +27,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should create job from name and block`() {
         // given
-        val testee = job("test") {
+        val testee = createJob("test") {
             script("test command")
         }
 
@@ -43,7 +43,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should validate null name`() {
         // given
-        val testee = job {
+        val testee = createJob {
             script("test command")
         }
 
@@ -60,7 +60,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should validate empty name`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = ""
             script("test command")
         }
@@ -78,7 +78,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should validate restricted name`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "image"
             script("test command")
         }
@@ -96,7 +96,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should validate startIn without when`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
             startIn = Duration(minutes = 10)
@@ -116,7 +116,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should validate startIn without delayed when`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
             whenRun = WhenRunType.ALWAYS
@@ -138,7 +138,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should validate no script`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
         }
 
@@ -154,7 +154,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should validate empty script`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script()
         }
@@ -171,7 +171,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should validate to small parallel`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
             parallel = 1
@@ -191,7 +191,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should validate to big parallel`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
             parallel = 51
@@ -210,7 +210,7 @@ internal class JobDslTest : DslTestBase() {
 
     @Test
     fun `should validate nested objects`() {
-        val testee = job {
+        val testee = createJob {
             name = "test"
 
             beforeScript("before 1", "before 2")
@@ -283,7 +283,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should create empty job`() {
         // given
-        val testee = job {}
+        val testee = createJob {}
 
         // then
         assertDsl(JobDsl.serializer(), testee,
@@ -303,7 +303,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should create job with empty collections`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
 
@@ -327,7 +327,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should create job with single element collections`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
 
@@ -354,7 +354,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should create job with multiple element collections`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
 
@@ -384,7 +384,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should merge collections`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
 
@@ -423,7 +423,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should allow reset dependencies`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
 
@@ -443,12 +443,12 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should allow objects in collections`() {
         // given
-        val job1 = job("job1") {}
-        val job2 = job("job2") {}
-        val job3 = job("job3") {}
-        val job4 = job("job4") {}
+        val job1 = createJob("job1") {}
+        val job2 = createJob("job2") {}
+        val job3 = createJob("job3") {}
+        val job4 = createJob("job4") {}
 
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
 
@@ -480,7 +480,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should allow different script options`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
 
             script {
@@ -504,7 +504,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should allow different beforeScript options`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
 
@@ -531,7 +531,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should allow different afterScript options`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
 
@@ -558,7 +558,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should allow image by name configuration `() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
 
@@ -579,7 +579,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should allow image by block configuration `() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
 
@@ -602,7 +602,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should allow image by name and block configuration `() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
 
@@ -628,7 +628,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should allow different services options`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
 
@@ -655,9 +655,9 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should allow different needs options`() {
         // given
-        val job3 = job("job3") {}
-        val job4 = job("job4") {}
-        val testee = job {
+        val job3 = createJob("job3") {}
+        val job4 = createJob("job4") {}
+        val testee = createJob {
             name = "test"
             script("test command")
 
@@ -688,8 +688,8 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should allow to set stage from object`() {
         // given
-        val testStage = stage("testStage")
-        val testee = job {
+        val testStage = createStage("testStage")
+        val testee = createJob {
             name = "test"
             script("test command")
 
@@ -709,7 +709,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should allow retry from number`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
 
@@ -730,7 +730,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should allow retry from block`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
 
@@ -753,7 +753,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should allow retry from number and block`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
 
@@ -778,7 +778,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should allow different variables options`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
 
@@ -815,7 +815,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should allow different cache options`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
 
@@ -843,7 +843,7 @@ internal class JobDslTest : DslTestBase() {
     @Test
     fun `should allow different artifacts options`() {
         // given
-        val testee = job {
+        val testee = createJob {
             name = "test"
             script("test command")
 

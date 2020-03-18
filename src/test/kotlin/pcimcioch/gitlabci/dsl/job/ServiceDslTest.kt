@@ -8,7 +8,7 @@ internal class ServiceDslTest : DslTestBase() {
     @Test
     fun `should create service from name`() {
         // given
-        val testee = service("ser 1")
+        val testee = createService("ser 1")
 
         // then
         assertDsl(ServiceDsl.serializer(), testee,
@@ -21,7 +21,7 @@ internal class ServiceDslTest : DslTestBase() {
     @Test
     fun `should create service from name and block`() {
         // given
-        val testee = service("ser 1") {
+        val testee = createService("ser 1") {
             alias = "test"
         }
 
@@ -37,7 +37,7 @@ internal class ServiceDslTest : DslTestBase() {
     @Test
     fun `should create service from block`() {
         // given
-        val testee = service {
+        val testee = createService {
             name = "test"
         }
 
@@ -52,7 +52,7 @@ internal class ServiceDslTest : DslTestBase() {
     @Test
     fun `should not validate null name`() {
         // given
-        val testee = service {
+        val testee = createService {
             alias = "test"
         }
 
@@ -68,7 +68,7 @@ internal class ServiceDslTest : DslTestBase() {
     @Test
     fun `should not validate empty name`() {
         // given
-        val testee = service("")
+        val testee = createService("")
 
         // then
         assertDsl(ServiceDsl.serializer(), testee,
@@ -82,7 +82,7 @@ internal class ServiceDslTest : DslTestBase() {
     @Test
     fun `should allow direct access`() {
         // given
-        val testee = service("name") {
+        val testee = createService("name") {
             cmd = listOf("c 1", "c 2")
             entrypoint = listOf("e 1", "e 2")
         }
@@ -104,7 +104,7 @@ internal class ServiceDslTest : DslTestBase() {
     @Test
     fun `should override command and entrypoint`() {
         // given
-        val testee = service("name") {
+        val testee = createService("name") {
             cmd("c 1", "c 2")
             entrypoint("e 1", "e 2")
             cmd("c 10", "c 20")
@@ -128,7 +128,7 @@ internal class ServiceDslTest : DslTestBase() {
     @Test
     fun `should create empty command and entrypoint`() {
         // given
-        val testee = service("name") {
+        val testee = createService("name") {
             cmd()
             entrypoint()
         }
@@ -146,7 +146,7 @@ internal class ServiceDslTest : DslTestBase() {
     @Test
     fun `should create one element command and entrypoint`() {
         // given
-        val testee = service("name") {
+        val testee = createService("name") {
             cmd("c 1")
             entrypoint("e 1")
         }
@@ -166,7 +166,7 @@ internal class ServiceDslTest : DslTestBase() {
     @Test
     fun `should create multiple elements command and entrypoint`() {
         // given
-        val testee = service("name") {
+        val testee = createService("name") {
             cmd(listOf("c 1", "c 2"))
             entrypoint(listOf("e 1", "e 2"))
         }
@@ -191,7 +191,7 @@ internal class ServiceListDslTest : DslTestBase() {
     @Test
     fun `should create services from block`() {
         // given
-        val testee = services {
+        val testee = createServices {
             service("service 1")
         }
 
@@ -206,7 +206,7 @@ internal class ServiceListDslTest : DslTestBase() {
     @Test
     fun `should create services from vararg list`() {
         // given
-        val testee = services("service 1", "service 2")
+        val testee = createServices("service 1", "service 2")
 
         // then
         assertDsl(ServiceListDsl.serializer(), testee,
@@ -220,7 +220,7 @@ internal class ServiceListDslTest : DslTestBase() {
     @Test
     fun `should create services from list`() {
         // given
-        val testee = services(listOf("service 1", "service 2"))
+        val testee = createServices(listOf("service 1", "service 2"))
 
         // then
         assertDsl(ServiceListDsl.serializer(), testee,
@@ -234,7 +234,7 @@ internal class ServiceListDslTest : DslTestBase() {
     @Test
     fun `should create empty`() {
         // given
-        val testee = services()
+        val testee = createServices()
 
         // then
         assertDsl(ServiceListDsl.serializer(), testee,
@@ -247,7 +247,7 @@ internal class ServiceListDslTest : DslTestBase() {
     @Test
     fun `should validate services`() {
         // given
-        val testee = services {
+        val testee = createServices {
             service("")
             service("service 2")
             service {
@@ -270,9 +270,9 @@ internal class ServiceListDslTest : DslTestBase() {
     @Test
     fun `should allow multiple service creation mechanisms`() {
         // given
-        val service = service("test 4")
+        val service = createService("test 4")
 
-        val testee = services {
+        val testee = createServices {
             service {
                 name = "test 1"
                 alias = "alias 1"

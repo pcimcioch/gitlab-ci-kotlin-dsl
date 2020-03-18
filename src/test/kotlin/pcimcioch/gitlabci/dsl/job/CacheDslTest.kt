@@ -8,7 +8,7 @@ internal class CacheDslTest : DslTestBase() {
     @Test
     fun `should create empty cache`() {
         // given
-        val testee = cache {}
+        val testee = createCache {}
 
         // then
         assertDsl(CacheDsl.serializer(), testee,
@@ -21,7 +21,7 @@ internal class CacheDslTest : DslTestBase() {
     @Test
     fun `should create full cache`() {
         // given
-        val testee = cache {
+        val testee = createCache {
             paths("path1", "path2")
             untracked = true
             policy = CachePolicy.PULL_PUSH
@@ -44,7 +44,7 @@ internal class CacheDslTest : DslTestBase() {
     @Test
     fun `should create cache from block`() {
         // given
-        val testee = cache {
+        val testee = createCache {
             paths("path")
         }
 
@@ -60,7 +60,7 @@ internal class CacheDslTest : DslTestBase() {
     @Test
     fun `should create cache from vararg paths`() {
         // given
-        val testee = cache("path/1", "path/2")
+        val testee = createCache("path/1", "path/2")
 
         // then
         assertDsl(CacheDsl.serializer(), testee,
@@ -75,7 +75,7 @@ internal class CacheDslTest : DslTestBase() {
     @Test
     fun `should create cache from list paths`() {
         // given
-        val testee = cache(listOf("path/1", "path/2"))
+        val testee = createCache(listOf("path/1", "path/2"))
 
         // then
         assertDsl(CacheDsl.serializer(), testee,
@@ -90,7 +90,7 @@ internal class CacheDslTest : DslTestBase() {
     @Test
     fun `should create string key`() {
         // given
-        val testee = cache {
+        val testee = createCache {
             paths("path1", "path2")
             key("key1")
         }
@@ -109,7 +109,7 @@ internal class CacheDslTest : DslTestBase() {
     @Test
     fun `should create object key`() {
         // given
-        val testee = cache {
+        val testee = createCache {
             paths("path1", "path2")
             key {
                 files("file1", "file2")
@@ -135,7 +135,7 @@ internal class CacheDslTest : DslTestBase() {
     @Test
     fun `should validate key`() {
         // given
-        val testee = cache {
+        val testee = createCache {
             paths("path1", "path2")
             key {
                 files("file1", "file2")
@@ -162,7 +162,7 @@ internal class CacheDslTest : DslTestBase() {
     @Test
     fun `should create cache with empty paths`() {
         // given
-        val testee = cache {
+        val testee = createCache {
             paths()
         }
 
@@ -177,7 +177,7 @@ internal class CacheDslTest : DslTestBase() {
     @Test
     fun `should create cache with single element paths`() {
         // given
-        val testee = cache {
+        val testee = createCache {
             paths("path1")
         }
 
@@ -193,7 +193,7 @@ internal class CacheDslTest : DslTestBase() {
     @Test
     fun `should create cache with multiple element paths`() {
         // given
-        val testee = cache {
+        val testee = createCache {
             paths("path1", "path2")
         }
 
@@ -210,7 +210,7 @@ internal class CacheDslTest : DslTestBase() {
     @Test
     fun `should merge paths`() {
         // given
-        val testee = cache {
+        val testee = createCache {
             paths("path1", "path2")
             paths(listOf("path3", "path4"))
         }
@@ -233,7 +233,7 @@ internal class CacheKeyDslTest : DslTestBase() {
     @Test
     fun `should create empty key`() {
         // given
-        val testee = cacheKey {}
+        val testee = createCacheKey {}
 
         // then
         assertDsl(CacheKeyDsl.serializer(), testee,
@@ -247,7 +247,7 @@ internal class CacheKeyDslTest : DslTestBase() {
     @Test
     fun `should create full key`() {
         // given
-        val testee = cacheKey {
+        val testee = createCacheKey {
             prefix = "test"
             files("file 1", "file 2")
         }
@@ -266,7 +266,7 @@ internal class CacheKeyDslTest : DslTestBase() {
     @Test
     fun `should create key with empty files`() {
         // given
-        val testee = cacheKey {
+        val testee = createCacheKey {
             files()
         }
 
@@ -282,7 +282,7 @@ internal class CacheKeyDslTest : DslTestBase() {
     @Test
     fun `should create key with one file`() {
         // given
-        val testee = cacheKey {
+        val testee = createCacheKey {
             files("file 1")
         }
 
@@ -298,7 +298,7 @@ internal class CacheKeyDslTest : DslTestBase() {
     @Test
     fun `should create key with multiple file`() {
         // given
-        val testee = cacheKey {
+        val testee = createCacheKey {
             files("file 1", "file 2")
         }
 
@@ -315,7 +315,7 @@ internal class CacheKeyDslTest : DslTestBase() {
     @Test
     fun `should merge files`() {
         // given
-        val testee = cacheKey {
+        val testee = createCacheKey {
             files("file 1", "file 2")
             files(listOf("file 3"))
         }
@@ -334,7 +334,7 @@ internal class CacheKeyDslTest : DslTestBase() {
     @Test
     fun `should allow direct access`() {
         // given
-        val testee = cacheKey {
+        val testee = createCacheKey {
             files = mutableSetOf("file 1", "file 2")
         }
 
@@ -351,7 +351,7 @@ internal class CacheKeyDslTest : DslTestBase() {
     @Test
     fun `should validate dot prefix`() {
         // given
-        val testee = cacheKey {
+        val testee = createCacheKey {
             prefix = "."
             files("file")
         }
@@ -370,7 +370,7 @@ internal class CacheKeyDslTest : DslTestBase() {
     @Test
     fun `should validate escaped dot prefix`() {
         // given
-        val testee = cacheKey {
+        val testee = createCacheKey {
             prefix = "%2E"
             files("file")
         }
@@ -389,7 +389,7 @@ internal class CacheKeyDslTest : DslTestBase() {
     @Test
     fun `should validate escaped lowercase dot prefix`() {
         // given
-        val testee = cacheKey {
+        val testee = createCacheKey {
             prefix = "%2e"
             files("file")
         }
@@ -408,7 +408,7 @@ internal class CacheKeyDslTest : DslTestBase() {
     @Test
     fun `should validate prefix containing slash`() {
         // given
-        val testee = cacheKey {
+        val testee = createCacheKey {
             prefix = "contains/slash"
             files("file")
         }
@@ -427,7 +427,7 @@ internal class CacheKeyDslTest : DslTestBase() {
     @Test
     fun `should validate prefix containing escaped slash`() {
         // given
-        val testee = cacheKey {
+        val testee = createCacheKey {
             prefix = "contains%2Fslash"
             files("file")
         }
@@ -446,7 +446,7 @@ internal class CacheKeyDslTest : DslTestBase() {
     @Test
     fun `should validate prefix containing escaped lowercase slash`() {
         // given
-        val testee = cacheKey {
+        val testee = createCacheKey {
             prefix = "contains%2fslash"
             files("file")
         }

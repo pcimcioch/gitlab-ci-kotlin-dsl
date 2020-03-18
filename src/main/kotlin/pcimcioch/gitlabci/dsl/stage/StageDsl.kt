@@ -22,6 +22,6 @@ class StageDsl(
     }
 }
 
-fun stage(name: String) = StageDsl(name)
-fun stage(block: StageDsl.() -> Unit) = StageDsl().apply(block)
-fun stage(name: String, block: StageDsl.() -> Unit) = StageDsl(name).apply(block)
+fun createStage(name: String) = StageDsl(name)
+fun createStage(block: StageDsl.() -> Unit) = StageDsl().apply(block)
+fun createStage(name: String, block: StageDsl.() -> Unit) = StageDsl(name).apply(block)

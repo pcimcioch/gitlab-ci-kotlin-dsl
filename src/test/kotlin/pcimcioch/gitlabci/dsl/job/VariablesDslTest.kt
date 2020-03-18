@@ -1,7 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
 import org.junit.jupiter.api.Test
-import pcimcioch.gitlabci.dsl.DefaultEnvironment
 import pcimcioch.gitlabci.dsl.DslTestBase
 
 internal class VariablesDslTest : DslTestBase() {
@@ -9,7 +8,7 @@ internal class VariablesDslTest : DslTestBase() {
     @Test
     fun `should create from block`() {
         // given
-        val testee = variables {
+        val testee = createVariables {
             add("key1", "value 1")
         }
 
@@ -24,7 +23,7 @@ internal class VariablesDslTest : DslTestBase() {
     @Test
     fun `should create from map`() {
         // given
-        val testee = variables(mapOf("key1" to "value 1", "key2" to "value 2"))
+        val testee = createVariables(mapOf("key1" to "value 1", "key2" to "value 2"))
 
         // then
         assertDsl(VariablesDsl.serializer(), testee,
@@ -38,7 +37,7 @@ internal class VariablesDslTest : DslTestBase() {
     @Test
     fun `should create from map and block`() {
         // given
-        val testee = variables(mapOf("key1" to "value 1", "key2" to "value 2")) {
+        val testee = createVariables(mapOf("key1" to "value 1", "key2" to "value 2")) {
             add("key3", "value 3")
         }
 
@@ -55,7 +54,7 @@ internal class VariablesDslTest : DslTestBase() {
     @Test
     fun `should create from enum map`() {
         // given
-        val testee = variables(mapOf(RunnerSettingsVariables.GIT_CLONE_PATH to "1", RunnerSettingsVariables.RESTORE_CACHE_ATTEMPTS to "3"))
+        val testee = createVariables(mapOf(RunnerSettingsVariables.GIT_CLONE_PATH to "1", RunnerSettingsVariables.RESTORE_CACHE_ATTEMPTS to "3"))
 
         // then
         assertDsl(VariablesDsl.serializer(), testee,
@@ -69,7 +68,7 @@ internal class VariablesDslTest : DslTestBase() {
     @Test
     fun `should create from enum map and block`() {
         // given
-        val testee = variables(mapOf(RunnerSettingsVariables.GIT_CLONE_PATH to "1", RunnerSettingsVariables.RESTORE_CACHE_ATTEMPTS to "3")) {
+        val testee = createVariables(mapOf(RunnerSettingsVariables.GIT_CLONE_PATH to "1", RunnerSettingsVariables.RESTORE_CACHE_ATTEMPTS to "3")) {
             add(RunnerSettingsVariables.GET_SOURCES_ATTEMPTS, 4)
         }
 
@@ -86,7 +85,7 @@ internal class VariablesDslTest : DslTestBase() {
     @Test
     fun `should create empty variables`() {
         // given
-        val testee = variables {}
+        val testee = createVariables {}
 
         // then
         assertDsl(VariablesDsl.serializer(), testee,
@@ -100,7 +99,7 @@ internal class VariablesDslTest : DslTestBase() {
     @Test
     fun `should create one element variables`() {
         // given
-        val testee = variables {
+        val testee = createVariables {
             add("key1", "value 1")
         }
 
@@ -115,7 +114,7 @@ internal class VariablesDslTest : DslTestBase() {
     @Test
     fun `should create multiple element variables`() {
         // given
-        val testee = variables {
+        val testee = createVariables {
             add("key1", "value 1")
             add("key2", "value 2")
         }
@@ -132,7 +131,7 @@ internal class VariablesDslTest : DslTestBase() {
     @Test
     fun `should allow multiple types of adding`() {
         // given
-        val testee = variables {
+        val testee = createVariables {
             add("key1", "value 1")
             add(RunnerSettingsVariables.GIT_CLONE_PATH, "value 2")
             "key3" to "value 3"
@@ -158,7 +157,7 @@ internal class VariablesDslTest : DslTestBase() {
                 "key2" to "value 2"
         )
 
-        val testee = variables {
+        val testee = createVariables {
             variables = map
         }
 
@@ -174,7 +173,7 @@ internal class VariablesDslTest : DslTestBase() {
     @Test
     fun `should override on add`() {
         // given
-        val testee = variables {
+        val testee = createVariables {
             add("key1", "value 1")
             add("key1", "value 2")
         }
@@ -190,7 +189,7 @@ internal class VariablesDslTest : DslTestBase() {
     @Test
     fun `should set runner settings`() {
         // given
-        val testee = variables {
+        val testee = createVariables {
             gitStrategy(GitStrategyType.CLONE)
             gitSubmoduleStrategy(GitSubmoduleStrategyType.RECURSIVE)
             gitCheckout(true)
@@ -221,7 +220,7 @@ internal class VariablesDslTest : DslTestBase() {
     @Test
     fun `should set git no clean settings`() {
         // given
-        val testee = variables {
+        val testee = createVariables {
             disableGitClean()
         }
 
@@ -236,7 +235,7 @@ internal class VariablesDslTest : DslTestBase() {
     @Test
     fun `should allow adding any objects`() {
         // given
-        val testee = variables {
+        val testee = createVariables {
             add("key1", "string")
             add("key2", 15)
             add("key3", false)

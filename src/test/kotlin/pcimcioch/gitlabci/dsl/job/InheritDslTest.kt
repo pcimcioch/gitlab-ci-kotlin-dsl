@@ -8,7 +8,7 @@ internal class InheritDslTest : DslTestBase() {
     @Test
     fun `should create empty inherit`() {
         // given
-        val testee = inherit {}
+        val testee = createInherit {}
 
         // then
         assertDsl(InheritDsl.serializer(), testee,
@@ -21,7 +21,7 @@ internal class InheritDslTest : DslTestBase() {
     @Test
     fun `should create inherit with boolean values`() {
         // given
-        val testee = inherit {
+        val testee = createInherit {
             default(true)
             variables(false)
         }
@@ -38,7 +38,7 @@ internal class InheritDslTest : DslTestBase() {
     @Test
     fun `should create inherit with multivalued lists`() {
         // given
-        val testee = inherit {
+        val testee = createInherit {
             default(InheritDefaultType.AFTER_SCRIPT, InheritDefaultType.ARTIFACTS)
             variables("var1", "var2")
         }
@@ -59,7 +59,7 @@ internal class InheritDslTest : DslTestBase() {
     @Test
     fun `should create inherit with empty lists`() {
         // given
-        val testee = inherit {
+        val testee = createInherit {
             default()
             variables()
         }
@@ -76,7 +76,7 @@ internal class InheritDslTest : DslTestBase() {
     @Test
     fun `should create inherit with single element lists`() {
         // given
-        val testee = inherit {
+        val testee = createInherit {
             default(InheritDefaultType.BEFORE_SCRIPT)
             variables("var1")
         }
@@ -95,7 +95,7 @@ internal class InheritDslTest : DslTestBase() {
     @Test
     fun `should merge lists`() {
         // given
-        val testee = inherit {
+        val testee = createInherit {
             default(InheritDefaultType.CACHE, InheritDefaultType.IMAGE)
             variables("var1", "var2")
             default(listOf(InheritDefaultType.RETRY))
@@ -120,7 +120,7 @@ internal class InheritDslTest : DslTestBase() {
     @Test
     fun `should create with boolean and list`() {
         // given
-        val testee = inherit {
+        val testee = createInherit {
             default(true)
             variables("var1", "var2")
         }
@@ -139,7 +139,7 @@ internal class InheritDslTest : DslTestBase() {
     @Test
     fun `should allow override list to boolen and boolean to list`() {
         // given
-        val testee = inherit {
+        val testee = createInherit {
             default(true)
             variables("var1", "var2")
             default(InheritDefaultType.SERVICES, InheritDefaultType.TIMEOUT)

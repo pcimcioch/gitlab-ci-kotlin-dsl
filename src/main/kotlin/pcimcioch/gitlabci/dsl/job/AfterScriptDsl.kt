@@ -19,6 +19,6 @@ class AfterScriptDsl : DslBase {
 }
 
 // TODO rename all constructor methods to create*, so they are not easily misused in jobs. Also - use them in all calling methods
-fun afterScript(block: AfterScriptDsl.() -> Unit) = AfterScriptDsl().apply(block)
-fun afterScript(vararg elements: String) = afterScript(elements.toList())
-fun afterScript(elements: Iterable<String>) = AfterScriptDsl().apply { elements.forEach { exec(it) } }
+fun createAfterScript(block: AfterScriptDsl.() -> Unit) = AfterScriptDsl().apply(block)
+fun createAfterScript(vararg elements: String) = createAfterScript(elements.toList())
+fun createAfterScript(elements: Iterable<String>) = AfterScriptDsl().apply { elements.forEach { exec(it) } }

@@ -158,8 +158,8 @@ class JobDsl(
     }
 }
 
-fun job(block: JobDsl.() -> Unit) = JobDsl().apply(block)
-fun job(name: String, block: JobDsl.() -> Unit) = JobDsl(name).apply(block)
+fun createJob(block: JobDsl.() -> Unit) = JobDsl().apply(block)
+fun createJob(name: String, block: JobDsl.() -> Unit) = JobDsl(name).apply(block)
 
 @Serializable(with = WhenRunType.WhenRuntTypeSerializer::class)
 enum class WhenRunType(

@@ -48,9 +48,9 @@ class CacheDsl : DslBase {
     private fun ensurePaths() = paths ?: mutableSetOf<String>().also { paths = it }
 }
 
-fun cache(block: CacheDsl.() -> Unit) = CacheDsl().apply(block)
-fun cache(vararg elements: String) = cache(elements.toList())
-fun cache(elements: Iterable<String>) = CacheDsl().apply { paths(elements) }
+fun createCache(block: CacheDsl.() -> Unit) = CacheDsl().apply(block)
+fun createCache(vararg elements: String) = createCache(elements.toList())
+fun createCache(elements: Iterable<String>) = CacheDsl().apply { paths(elements) }
 
 @GitlabCiDslMarker
 @Serializable
@@ -74,7 +74,7 @@ class CacheKeyDsl : DslBase {
     private fun ensureFiles() = files ?: mutableSetOf<String>().also { files = it }
 }
 
-fun cacheKey(block: CacheKeyDsl.() -> Unit) = CacheKeyDsl().apply(block)
+fun createCacheKey(block: CacheKeyDsl.() -> Unit) = CacheKeyDsl().apply(block)
 
 @Serializable(with = CachePolicy.CachePolicySerializer::class)
 enum class CachePolicy(

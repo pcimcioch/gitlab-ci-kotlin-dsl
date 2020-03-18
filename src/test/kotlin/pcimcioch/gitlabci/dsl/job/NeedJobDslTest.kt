@@ -8,7 +8,7 @@ internal class NeedJobDslTest : DslTestBase() {
     @Test
     fun `should create empty need job`() {
         // given
-        val testee = needJob {}
+        val testee = createNeedJob {}
 
         // then
         assertDsl(NeedJobDsl.serializer(), testee,
@@ -22,7 +22,7 @@ internal class NeedJobDslTest : DslTestBase() {
     @Test
     fun `should not validate empty job name`() {
         // given
-        val testee = needJob("")
+        val testee = createNeedJob("")
 
         // then
         assertDsl(NeedJobDsl.serializer(), testee,
@@ -36,7 +36,7 @@ internal class NeedJobDslTest : DslTestBase() {
     @Test
     fun `should create from name`() {
         // given
-        val testee = needJob("test")
+        val testee = createNeedJob("test")
 
         // then
         assertDsl(NeedJobDsl.serializer(), testee,
@@ -49,7 +49,7 @@ internal class NeedJobDslTest : DslTestBase() {
     @Test
     fun `should create from block`() {
         // given
-        val testee = needJob {
+        val testee = createNeedJob {
             job = "test"
         }
 
@@ -64,7 +64,7 @@ internal class NeedJobDslTest : DslTestBase() {
     @Test
     fun `should create from name and block`() {
         // given
-        val testee = needJob("test") {
+        val testee = createNeedJob("test") {
             project = "proj"
         }
 
@@ -80,8 +80,8 @@ internal class NeedJobDslTest : DslTestBase() {
     @Test
     fun `should create from job`() {
         // given
-        val job = job("test") {}
-        val testee = needJob(job)
+        val job = createJob("test") {}
+        val testee = createNeedJob(job)
 
         // then
         assertDsl(NeedJobDsl.serializer(), testee,
@@ -94,8 +94,8 @@ internal class NeedJobDslTest : DslTestBase() {
     @Test
     fun `should create from job and block`() {
         // given
-        val job = job("test") {}
-        val testee = needJob(job) {
+        val job = createJob("test") {}
+        val testee = createNeedJob(job) {
             project = "proj"
         }
 
@@ -111,7 +111,7 @@ internal class NeedJobDslTest : DslTestBase() {
     @Test
     fun `should create full need job`() {
         // given
-        val testee = needJob("test") {
+        val testee = createNeedJob("test") {
             project = "proj"
             artifacts = true
             ref = "ref"
@@ -134,7 +134,7 @@ internal class NeedsListDslTest : DslTestBase() {
     @Test
     fun `should create from block`() {
         // given
-        val testee = needs {
+        val testee = createNeeds {
             needJob("test")
         }
 
@@ -149,7 +149,7 @@ internal class NeedsListDslTest : DslTestBase() {
     @Test
     fun `should create from string vararg`() {
         // given
-        val testee = needs("test1", "test2")
+        val testee = createNeeds("test1", "test2")
 
         // then
         assertDsl(NeedsListDsl.serializer(), testee,
@@ -163,7 +163,7 @@ internal class NeedsListDslTest : DslTestBase() {
     @Test
     fun `should create from string list`() {
         // given
-        val testee = needs(listOf("test1", "test2"))
+        val testee = createNeeds(listOf("test1", "test2"))
 
         // then
         assertDsl(NeedsListDsl.serializer(), testee,
@@ -177,9 +177,9 @@ internal class NeedsListDslTest : DslTestBase() {
     @Test
     fun `should create from job vararg`() {
         // given
-        val job1 = job("test1") {}
-        val job2 = job("test2") {}
-        val testee = needs(job1, job2)
+        val job1 = createJob("test1") {}
+        val job2 = createJob("test2") {}
+        val testee = createNeeds(job1, job2)
 
         // then
         assertDsl(NeedsListDsl.serializer(), testee,
@@ -193,9 +193,9 @@ internal class NeedsListDslTest : DslTestBase() {
     @Test
     fun `should create from job list`() {
         // given
-        val job1 = job("test1") {}
-        val job2 = job("test2") {}
-        val testee = needs(listOf(job1, job2))
+        val job1 = createJob("test1") {}
+        val job2 = createJob("test2") {}
+        val testee = createNeeds(listOf(job1, job2))
 
         // then
         assertDsl(NeedsListDsl.serializer(), testee,
@@ -209,7 +209,7 @@ internal class NeedsListDslTest : DslTestBase() {
     @Test
     fun `should validate jobs`() {
         // given
-        val testee = needs {
+        val testee = createNeeds {
             needJob("")
             needJob("test")
             needJob {}
@@ -230,10 +230,10 @@ internal class NeedsListDslTest : DslTestBase() {
     @Test
     fun `should create need jobs using all methods`() {
         // given
-        val job1 = job("test4") {}
-        val job2 = job("test5") {}
-        val needJob = needJob("test6")
-        val testee = needs {
+        val job1 = createJob("test4") {}
+        val job2 = createJob("test5") {}
+        val needJob = createNeedJob("test6")
+        val testee = createNeeds {
             needJob {
                 job = "test1"
             }

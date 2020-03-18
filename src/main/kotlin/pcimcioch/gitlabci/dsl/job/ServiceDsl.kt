@@ -34,9 +34,9 @@ class ServiceDsl(
     }
 }
 
-fun service(block: ServiceDsl.() -> Unit) = ServiceDsl().apply(block)
-fun service(name: String) = ServiceDsl(name)
-fun service(name: String, block: ServiceDsl.() -> Unit) = ServiceDsl(name).apply(block)
+fun createService(block: ServiceDsl.() -> Unit) = ServiceDsl().apply(block)
+fun createService(name: String) = ServiceDsl(name)
+fun createService(name: String, block: ServiceDsl.() -> Unit) = ServiceDsl(name).apply(block)
 
 @GitlabCiDslMarker
 @Serializable(with = ServiceListDsl.ServiceListDslSerializer::class)
@@ -55,6 +55,6 @@ class ServiceListDsl : DslBase {
     object ServiceListDslSerializer : ValueSerializer<ServiceListDsl, List<ServiceDsl>>(ServiceDsl.serializer().list, ServiceListDsl::services)
 }
 
-fun services(block: ServiceListDsl.() -> Unit) = ServiceListDsl().apply(block)
-fun services(vararg elements: String) = services(elements.toList())
-fun services(elements: Iterable<String>) = ServiceListDsl().apply { elements.forEach { service(it) } }
+fun createServices(block: ServiceListDsl.() -> Unit) = ServiceListDsl().apply(block)
+fun createServices(vararg elements: String) = createServices(elements.toList())
+fun createServices(elements: Iterable<String>) = ServiceListDsl().apply { elements.forEach { service(it) } }

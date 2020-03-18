@@ -1,9 +1,7 @@
 package pcimcioch.gitlabci.dsl.job
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.list
-import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
@@ -25,11 +23,11 @@ class NeedJobDsl(
     }
 }
 
-fun needJob(block: NeedJobDsl.() -> Unit) = NeedJobDsl().apply(block)
-fun needJob(job: String) = NeedJobDsl(job)
-fun needJob(job: String, block: NeedJobDsl.() -> Unit) = NeedJobDsl(job).apply(block)
-fun needJob(job: JobDsl) = NeedJobDsl(job.getName())
-fun needJob(job: JobDsl, block: NeedJobDsl.() -> Unit) = NeedJobDsl(job.getName()).apply(block)
+fun createNeedJob(block: NeedJobDsl.() -> Unit) = NeedJobDsl().apply(block)
+fun createNeedJob(job: String) = NeedJobDsl(job)
+fun createNeedJob(job: String, block: NeedJobDsl.() -> Unit) = NeedJobDsl(job).apply(block)
+fun createNeedJob(job: JobDsl) = NeedJobDsl(job.getName())
+fun createNeedJob(job: JobDsl, block: NeedJobDsl.() -> Unit) = NeedJobDsl(job.getName()).apply(block)
 
 @GitlabCiDslMarker
 @Serializable(with = NeedsListDsl.NeedsListDslSerializer::class)
@@ -50,10 +48,10 @@ class NeedsListDsl : DslBase {
     object NeedsListDslSerializer : ValueSerializer<NeedsListDsl, List<NeedJobDsl>>(NeedJobDsl.serializer().list, NeedsListDsl::needs)
 }
 
-fun needs(block: NeedsListDsl.() -> Unit) = NeedsListDsl().apply(block)
-fun needs(vararg elements: String) = needs(elements.toList())
-fun needs(elements: Iterable<String>) = NeedsListDsl().apply { elements.forEach { needJob(it) } }
-fun needs(vararg elements: JobDsl) = needs(elements.toList())
+fun createNeeds(block: NeedsListDsl.() -> Unit) = NeedsListDsl().apply(block)
+fun createNeeds(vararg elements: String) = createNeeds(elements.toList())
+fun createNeeds(elements: Iterable<String>) = NeedsListDsl().apply { elements.forEach { needJob(it) } }
+fun createNeeds(vararg elements: JobDsl) = createNeeds(elements.toList())
 
-@JvmName("needsJob")
-fun needs(elements: Iterable<JobDsl>) = NeedsListDsl().apply { elements.forEach { needJob(it) } }
+@JvmName("createNeedsJob")
+fun createNeeds(elements: Iterable<JobDsl>) = NeedsListDsl().apply { elements.forEach { needJob(it) } }

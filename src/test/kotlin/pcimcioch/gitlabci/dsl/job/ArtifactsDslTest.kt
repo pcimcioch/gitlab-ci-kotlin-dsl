@@ -9,7 +9,7 @@ internal class ArtifactsDslTest : DslTestBase() {
     @Test
     fun `should create empty artifacts`() {
         // given
-        val testee = artifacts {}
+        val testee = createArtifacts {}
 
         // then
         assertDsl(ArtifactsDsl.serializer(), testee,
@@ -22,7 +22,7 @@ internal class ArtifactsDslTest : DslTestBase() {
     @Test
     fun `should create full artifacts`() {
         // given
-        val testee = artifacts {
+        val testee = createArtifacts {
             name = "test"
             exposeAs = "exposed"
             untracked = true
@@ -54,7 +54,7 @@ internal class ArtifactsDslTest : DslTestBase() {
     @Test
     fun `should create artifacts from block`() {
         // given
-        val testee = artifacts {
+        val testee = createArtifacts {
             name = "test"
             paths("p 1")
         }
@@ -72,7 +72,7 @@ internal class ArtifactsDslTest : DslTestBase() {
     @Test
     fun `should create artifacts from paths`() {
         // given
-        val testee = artifacts("p 1", "p 2")
+        val testee = createArtifacts("p 1", "p 2")
 
         // then
         assertDsl(ArtifactsDsl.serializer(), testee,
@@ -87,7 +87,7 @@ internal class ArtifactsDslTest : DslTestBase() {
     @Test
     fun `should create artifacts from paths list`() {
         // given
-        val testee = artifacts(listOf("p 1", "p 2"))
+        val testee = createArtifacts(listOf("p 1", "p 2"))
 
         // then
         assertDsl(ArtifactsDsl.serializer(), testee,
@@ -102,7 +102,7 @@ internal class ArtifactsDslTest : DslTestBase() {
     @Test
     fun `should create single path artifacts`() {
         // given
-        val testee = artifacts {
+        val testee = createArtifacts {
             paths("p 1")
         }
 
@@ -118,7 +118,7 @@ internal class ArtifactsDslTest : DslTestBase() {
     @Test
     fun `should create multiple paths artifacts`() {
         // given
-        val testee = artifacts {
+        val testee = createArtifacts {
             paths("p 1", "p 2")
         }
 
@@ -135,7 +135,7 @@ internal class ArtifactsDslTest : DslTestBase() {
     @Test
     fun `should create no paths artifacts`() {
         // given
-        val testee = artifacts {
+        val testee = createArtifacts {
             paths()
         }
 
@@ -150,7 +150,7 @@ internal class ArtifactsDslTest : DslTestBase() {
     @Test
     fun `should merge paths`() {
         // given
-        val testee = artifacts {
+        val testee = createArtifacts {
             paths("p 1", "p 2")
             paths(listOf("p 3", "p 4"))
         }
@@ -170,11 +170,11 @@ internal class ArtifactsDslTest : DslTestBase() {
     @Test
     fun `should allow direct access`() {
         // given
-        val r = reports {
+        val r = createArtifactsReports {
             junit("junit 1")
         }
 
-        val testee = artifacts {
+        val testee = createArtifacts {
             paths = mutableSetOf("p 1", "p 2")
             reports = r
         }
@@ -198,7 +198,7 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
     @Test
     fun `should create empty reports`() {
         // given
-        val testee = reports {}
+        val testee = createArtifactsReports {}
 
         // then
         assertDsl(ArtifactsReportsDsl.serializer(), testee,
@@ -211,7 +211,7 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
     @Test
     fun `should create reports with one path`() {
         // given
-        val testee = reports {
+        val testee = createArtifactsReports {
             junit("junit 1")
             dotenv("dotenv 1")
             codequality("codequality 1")
@@ -257,7 +257,7 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
     @Test
     fun `should create reports with multiple paths`() {
         // given
-        val testee = reports {
+        val testee = createArtifactsReports {
             junit("junit 1", "junit 2")
             dotenv("dotenv 1", "dotenv 2")
             codequality("codequality 1", "codequality 2")
@@ -314,7 +314,7 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
     @Test
     fun `should create reports with no path`() {
         // given
-        val testee = reports {
+        val testee = createArtifactsReports {
             junit()
             dotenv()
             codequality()
@@ -349,7 +349,7 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
     @Test
     fun `should merge paths`() {
         // given
-        val testee = reports {
+        val testee = createArtifactsReports {
             junit("junit 1")
             dotenv("dotenv 1")
             codequality("codequality 1")
@@ -429,7 +429,7 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
     @Test
     fun `should allow direct access`() {
         // given
-        val testee = reports {
+        val testee = createArtifactsReports {
             junit = mutableSetOf("junit 1", "junit 2")
             dotenv = mutableSetOf("dotenv 1", "dotenv 2")
             codequality = mutableSetOf("codequality 1", "codequality 2")

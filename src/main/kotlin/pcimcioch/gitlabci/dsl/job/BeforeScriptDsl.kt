@@ -1,7 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
 import kotlinx.serialization.builtins.list
 import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.DslBase
@@ -19,6 +18,6 @@ class BeforeScriptDsl : DslBase {
     object BeforeScriptDslSerializer : ValueSerializer<BeforeScriptDsl, List<String>>(String.serializer().list, BeforeScriptDsl::commands)
 }
 
-fun beforeScript(block: BeforeScriptDsl.() -> Unit) = BeforeScriptDsl().apply(block)
-fun beforeScript(vararg elements: String) = beforeScript(elements.toList())
-fun beforeScript(elements: Iterable<String>) = BeforeScriptDsl().apply { elements.forEach { exec(it) } }
+fun createBeforeScript(block: BeforeScriptDsl.() -> Unit) = BeforeScriptDsl().apply(block)
+fun createBeforeScript(vararg elements: String) = createBeforeScript(elements.toList())
+fun createBeforeScript(elements: Iterable<String>) = BeforeScriptDsl().apply { elements.forEach { exec(it) } }

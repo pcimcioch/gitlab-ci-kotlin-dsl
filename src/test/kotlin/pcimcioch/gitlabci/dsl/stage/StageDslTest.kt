@@ -8,7 +8,7 @@ internal class StageDslTest : DslTestBase() {
     @Test
     fun `should create from name`() {
         // given
-        val testee = stage("stage 1")
+        val testee = createStage("stage 1")
 
         // then
         assertDsl(StageDsl.serializer(), testee,
@@ -21,7 +21,7 @@ internal class StageDslTest : DslTestBase() {
     @Test
     fun `should create from block`() {
         // given
-        val testee = stage {
+        val testee = createStage {
             name = "stage 1"
         }
 
@@ -36,7 +36,7 @@ internal class StageDslTest : DslTestBase() {
     @Test
     fun `should create from name and block`() {
         // given
-        val testee = stage("stage 1") {
+        val testee = createStage("stage 1") {
             name = "stage 2"
         }
 
@@ -51,7 +51,7 @@ internal class StageDslTest : DslTestBase() {
     @Test
     fun `should not validate null name`() {
         // given
-        val testee = stage {}
+        val testee = createStage {}
 
         // then
         assertDsl(StageDsl.serializer(), testee,
@@ -65,7 +65,7 @@ internal class StageDslTest : DslTestBase() {
     @Test
     fun `should not validate empty name`() {
         // given
-        val testee = stage("")
+        val testee = createStage("")
 
         // then
         assertDsl(StageDsl.serializer(), testee,

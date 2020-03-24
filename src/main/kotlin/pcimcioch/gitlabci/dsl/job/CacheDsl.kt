@@ -1,13 +1,16 @@
 package pcimcioch.gitlabci.dsl.job
 
-import kotlinx.serialization.ContextualSerialization
+import kotlinx.serialization.PrimitiveDescriptor
+import kotlinx.serialization.PrimitiveKind
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.StringRepresentation
+import pcimcioch.gitlabci.dsl.serializer.MultiTypeSerializer
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
 @GitlabCiDslMarker
@@ -19,10 +22,11 @@ class CacheDsl : DslBase {
 
     @Transient
     private var keyString: String? = null
+
     @Transient
     private var keyDsl: CacheKeyDsl? = null
 
-    @ContextualSerialization
+    @Serializable(with = KeySerializer::class)
     var key: Any? = null
         get() = keyString ?: keyDsl
         private set
@@ -46,6 +50,10 @@ class CacheDsl : DslBase {
 
     private fun ensureKeyDsl(): CacheKeyDsl = keyDsl ?: CacheKeyDsl().also { keyDsl = it }
     private fun ensurePaths() = paths ?: mutableSetOf<String>().also { paths = it }
+
+    object KeySerializer : MultiTypeSerializer(
+            PrimitiveDescriptor("Key", PrimitiveKind.STRING),
+            mapOf(String::class to String.serializer(), CacheKeyDsl::class to CacheKeyDsl.serializer()))
 }
 
 fun createCache(block: CacheDsl.() -> Unit) = CacheDsl().apply(block)

@@ -3,33 +3,40 @@ package pcimcioch.gitlabci.dsl.job
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import pcimcioch.gitlabci.dsl.*
+import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
+import pcimcioch.gitlabci.dsl.Duration
+import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
+import pcimcioch.gitlabci.dsl.StringRepresentation
+import pcimcioch.gitlabci.dsl.isEmpty
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
-import pcimcioch.gitlabci.dsl.stage.StageDsl
 
 @GitlabCiDslMarker
 @Serializable
 class JobDsl(
         @Transient
-        var name: String? = null
+        val name: String = ""
 ) : DslBase {
     var extends: MutableList<String>? = null
     var image: ImageDsl? = null
     var stage: String? = null
     var tags: MutableSet<String>? = null
     var inherit: InheritDsl? = null
+
     @SerialName("allow_failure")
     var allowFailure: Boolean? = null
+
     @SerialName("when")
     var whenRun: WhenRunType? = null
+
     @SerialName("start_in")
     var startIn: Duration? = null
     var timeout: Duration? = null
     var retry: RetryDsl? = null
     var interruptible: Boolean? = null
     var parallel: Int? = null
+
     @SerialName("resource_group")
     var resourceGroup: String? = null
     var services: ServiceListDsl? = null
@@ -37,9 +44,11 @@ class JobDsl(
     var dependencies: MutableSet<String>? = null
     var cache: CacheDsl? = null
     var artifacts: ArtifactsDsl? = null
+
     @SerialName("before_script")
     var beforeScript: BeforeScriptDsl? = null
     var script: ScriptDsl? = null
+
     @SerialName("after_script")
     var afterScript: AfterScriptDsl? = null
     var variables: VariablesDsl? = null
@@ -74,10 +83,6 @@ class JobDsl(
     fun needs(elements: Iterable<JobDsl>) = ensureNeeds().apply { elements.forEach { needJob(it) } }
     fun needs(block: NeedsListDsl.() -> Unit) = ensureNeeds().apply(block)
 
-    fun stage(value: StageDsl) {
-        stage = value.name
-    }
-
     fun tags(vararg elements: String) = tags(elements.toList())
     fun tags(elements: Iterable<String>) = ensureTags().addAll(elements)
 
@@ -88,12 +93,12 @@ class JobDsl(
     fun extends(vararg elements: String) = extends(elements.toList())
     fun extends(elements: Iterable<String>) = ensureExtends().addAll(elements)
     fun extends(vararg elements: JobDsl) = extends(elements.toList())
-    fun extends(elements: Iterable<JobDsl>) = ensureExtends().apply { elements.forEach { add(it.getName()) } }
+    fun extends(elements: Iterable<JobDsl>) = ensureExtends().apply { elements.forEach { add(it.name) } }
 
     fun dependencies(vararg elements: String) = dependencies(elements.toList())
     fun dependencies(elements: Iterable<String>) = ensureDependencies().addAll(elements)
     fun dependencies(vararg elements: JobDsl) = dependencies(elements.toList())
-    fun dependencies(elements: Iterable<JobDsl>) = ensureDependencies().apply { elements.forEach { add(it.getName()) } }
+    fun dependencies(elements: Iterable<JobDsl>) = ensureDependencies().apply { elements.forEach { add(it.name) } }
 
     fun emptyDependencies() = ensureDependencies().clear()
 
@@ -136,8 +141,6 @@ class JobDsl(
         addErrors(errors, artifacts, prefix)
     }
 
-    internal fun getName() = name ?: throw IllegalStateException("Job without name")
-
     private fun ensureInherit() = inherit ?: InheritDsl().also { inherit = it }
     private fun ensureImage() = image ?: ImageDsl().also { image = it }
     private fun ensureScript() = script ?: ScriptDsl().also { script = it }
@@ -158,7 +161,6 @@ class JobDsl(
     }
 }
 
-fun createJob(block: JobDsl.() -> Unit) = JobDsl().apply(block)
 fun createJob(name: String, block: JobDsl.() -> Unit) = JobDsl(name).apply(block)
 
 @Serializable(with = WhenRunType.WhenRuntTypeSerializer::class)

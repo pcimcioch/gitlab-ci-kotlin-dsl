@@ -26,8 +26,8 @@ class NeedJobDsl(
 fun createNeedJob(block: NeedJobDsl.() -> Unit) = NeedJobDsl().apply(block)
 fun createNeedJob(job: String) = NeedJobDsl(job)
 fun createNeedJob(job: String, block: NeedJobDsl.() -> Unit) = NeedJobDsl(job).apply(block)
-fun createNeedJob(job: JobDsl) = NeedJobDsl(job.getName())
-fun createNeedJob(job: JobDsl, block: NeedJobDsl.() -> Unit) = NeedJobDsl(job.getName()).apply(block)
+fun createNeedJob(job: JobDsl) = NeedJobDsl(job.name)
+fun createNeedJob(job: JobDsl, block: NeedJobDsl.() -> Unit) = NeedJobDsl(job.name).apply(block)
 
 @GitlabCiDslMarker
 @Serializable(with = NeedsListDsl.NeedsListDslSerializer::class)
@@ -37,8 +37,8 @@ class NeedsListDsl : DslBase {
     fun needJob(block: NeedJobDsl.() -> Unit) = needs.add(NeedJobDsl().apply(block))
     fun needJob(job: String) = needs.add(NeedJobDsl(job))
     fun needJob(job: String, block: NeedJobDsl.() -> Unit) = needs.add(NeedJobDsl(job).apply(block))
-    fun needJob(job: JobDsl) = needs.add(NeedJobDsl(job.getName()))
-    fun needJob(job: JobDsl, block: NeedJobDsl.() -> Unit) = needs.add(NeedJobDsl(job.getName()).apply(block))
+    fun needJob(job: JobDsl) = needs.add(NeedJobDsl(job.name))
+    fun needJob(job: JobDsl, block: NeedJobDsl.() -> Unit) = needs.add(NeedJobDsl(job.name).apply(block))
     operator fun NeedJobDsl.unaryPlus() = this@NeedsListDsl.needs.add(this)
 
     override fun validate(errors: MutableList<String>) {

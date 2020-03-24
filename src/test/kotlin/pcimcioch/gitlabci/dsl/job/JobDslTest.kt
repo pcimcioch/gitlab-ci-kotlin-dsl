@@ -297,7 +297,81 @@ internal class JobDslTest : DslTestBase() {
 
     @Test
     fun `should create full job`() {
-        // TODO implement
+        // given
+        val testee = createJob {
+            name = "test"
+            script("test command")
+
+            extends("testExtends")
+            image("testImage")
+            stage = "testStage"
+            tags("testTag")
+            inherit {
+                default(true)
+            }
+            allowFailure = true
+            whenRun = WhenRunType.DELAYED
+            startIn = Duration(minutes = 10)
+            timeout = Duration(hours = 2)
+            retry(2)
+            interruptible = true
+            parallel = 2
+            resourceGroup = "test resource"
+            services("testService")
+            needs("testNeeds")
+            dependencies("testDep")
+            cache("testCache")
+            artifacts("testArt")
+            beforeScript("before")
+            afterScript("after")
+            variables {
+                add("KEY1", "VALUE1")
+            }
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    extends:
+                    - "testExtends"
+                    image:
+                      name: "testImage"
+                    stage: "testStage"
+                    tags:
+                    - "testTag"
+                    inherit:
+                      default: true
+                    allow_failure: true
+                    when: "delayed"
+                    start_in: "10 min"
+                    timeout: "2 hr"
+                    retry:
+                      max: 2
+                    interruptible: true
+                    parallel: 2
+                    resource_group: "test resource"
+                    services:
+                    - name: "testService"
+                    needs:
+                    - job: "testNeeds"
+                    dependencies:
+                    - "testDep"
+                    cache:
+                      paths:
+                      - "testCache"
+                    artifacts:
+                      paths:
+                      - "testArt"
+                    before_script:
+                    - "before"
+                    script:
+                    - "test command"
+                    after_script:
+                    - "after"
+                    variables:
+                      "KEY1": "VALUE1"
+                """.trimIndent()
+        )
     }
 
     @Test
@@ -870,6 +944,78 @@ internal class JobDslTest : DslTestBase() {
 
     @Test
     fun `should allow direct access`() {
-        // TODO implement
+        // given
+        val scriptDsl = createScript("test command")
+        val imageDsl = createImage("testImage")
+        val inheritDsl = createInherit {
+            default(true)
+        }
+        val retryDsl = createRetry(2)
+        val servicesDsl = createServices("testService")
+        val needsDsl = createNeeds("testNeeds")
+        val cacheDsl = createCache("testCache")
+        val artifactsDsl = createArtifacts("testArt")
+        val beforeScriptDsl = createBeforeScript("before")
+        val afterScriptDsl = createAfterScript("after")
+        val variablesDsl = createVariables {
+            add("KEY1", "VALUE1")
+        }
+
+        val testee = createJob {
+            name = "test"
+            script = scriptDsl
+
+            extends = mutableListOf("testExtends")
+            image = imageDsl
+            stage = "testStage"
+            tags = mutableSetOf("testTag")
+            inherit = inheritDsl
+            retry = retryDsl
+            services = servicesDsl
+            needs = needsDsl
+            dependencies = mutableSetOf("testDep")
+            cache = cacheDsl
+            artifacts = artifactsDsl
+            beforeScript = beforeScriptDsl
+            afterScript = afterScriptDsl
+            variables = variablesDsl
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    extends:
+                    - "testExtends"
+                    image:
+                      name: "testImage"
+                    stage: "testStage"
+                    tags:
+                    - "testTag"
+                    inherit:
+                      default: true
+                    retry:
+                      max: 2
+                    services:
+                    - name: "testService"
+                    needs:
+                    - job: "testNeeds"
+                    dependencies:
+                    - "testDep"
+                    cache:
+                      paths:
+                      - "testCache"
+                    artifacts:
+                      paths:
+                      - "testArt"
+                    before_script:
+                    - "before"
+                    script:
+                    - "test command"
+                    after_script:
+                    - "after"
+                    variables:
+                      "KEY1": "VALUE1"
+                """.trimIndent()
+        )
     }
 }

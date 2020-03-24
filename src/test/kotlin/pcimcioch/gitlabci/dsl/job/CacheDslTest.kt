@@ -226,6 +226,22 @@ internal class CacheDslTest : DslTestBase() {
                 """.trimIndent()
         )
     }
+
+    @Test
+    fun `should allow direct access`() {
+        // given
+        val testee = createCache {
+            paths = mutableSetOf("path")
+        }
+
+        // then
+        assertDsl(CacheDsl.serializer(), testee,
+                """
+                    paths:
+                    - "path"
+                """.trimIndent()
+        )
+    }
 }
 
 internal class CacheKeyDslTest : DslTestBase() {

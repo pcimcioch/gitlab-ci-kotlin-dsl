@@ -12,7 +12,7 @@ class StageDsl(
         var name: String? = null
 ) : DslBase {
 
-    companion object {
+    object Default {
         const val PRE_STAGE = ".pre"
         const val POST_STAGE = ".post"
     }

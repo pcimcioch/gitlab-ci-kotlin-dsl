@@ -17,7 +17,6 @@ import java.io.FileWriter
 import java.io.Writer
 import kotlin.collections.set
 
-// TODO tests
 @GitlabCiDslMarker
 @Serializable(with = GitlabCiDsl.GitlabCiDslSerializer::class)
 class GitlabCiDsl : DslBase {
@@ -50,7 +49,9 @@ class GitlabCiDsl : DslBase {
 
     object ElementSerializer : MultiTypeSerializer(
             PrimitiveDescriptor("Elements", PrimitiveKind.STRING),
-            mapOf(JobDsl::class to JobDsl.serializer(), StagesDsl::class to StagesDsl.serializer()))
+            mapOf(
+                    JobDsl::class to JobDsl.serializer(),
+                    StagesDsl::class to StagesDsl.serializer()))
 
     object GitlabCiDslSerializer : ValueSerializer<GitlabCiDsl, Map<String, Any>>(MapSerializer(String.serializer(), ElementSerializer), GitlabCiDsl::asMap)
 }
@@ -64,8 +65,8 @@ fun gitlabCi(validate: Boolean = true, writer: Writer? = null, block: GitlabCiDs
         if (errors.isNotEmpty()) {
             throw IllegalStateException(errors.joinToString(
                     "\n",
-                    "Configuration validation failed",
-                    "Validation can be disabled by calling 'gitlabCi(validate = false) {...}'"))
+                    "Configuration validation failed\n",
+                    "\nValidation can be disabled by calling 'gitlabCi(validate = false) {}'"))
         }
     }
 

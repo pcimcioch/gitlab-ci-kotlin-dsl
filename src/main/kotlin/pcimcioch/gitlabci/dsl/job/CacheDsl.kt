@@ -53,7 +53,9 @@ class CacheDsl : DslBase {
 
     object KeySerializer : MultiTypeSerializer(
             PrimitiveDescriptor("Key", PrimitiveKind.STRING),
-            mapOf(String::class to String.serializer(), CacheKeyDsl::class to CacheKeyDsl.serializer()))
+            mapOf(
+                    String::class to String.serializer(),
+                    CacheKeyDsl::class to CacheKeyDsl.serializer()))
 }
 
 fun createCache(block: CacheDsl.() -> Unit) = CacheDsl().apply(block)

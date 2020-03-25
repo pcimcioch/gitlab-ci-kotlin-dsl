@@ -1,23 +1,31 @@
 package pcimcioch.gitlabci.dsl.stage
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
+import pcimcioch.gitlabci.dsl.gitlabCi
 import pcimcioch.gitlabci.dsl.job.AfterScriptDsl
 import pcimcioch.gitlabci.dsl.job.createAfterScript
+import java.io.StringWriter
 
 internal class StagesDslTest : DslTestBase() {
+
+    private val writer = StringWriter()
 
     @Test
     fun `should create stages from block`() {
         // given
-        val testee = createStages {
-            stage("stage 1")
+        gitlabCi(writer = writer) {
+            stages {
+                stage("stage 1")
+            }
         }
 
         // then
-        assertDsl(StagesDsl.serializer(), testee,
+        assertThat(writer.toString()).isEqualTo(
                 """
+                    "stages":
                     - "stage 1"
                 """.trimIndent()
         )
@@ -26,11 +34,14 @@ internal class StagesDslTest : DslTestBase() {
     @Test
     fun `should create stages from vararg`() {
         // given
-        val testee = createStages("stage 1", "stage 2")
+        gitlabCi(writer = writer) {
+            stages("stage 1", "stage 2")
+        }
 
         // then
-        assertDsl(StagesDsl.serializer(), testee,
+        assertThat(writer.toString()).isEqualTo(
                 """
+                    "stages":
                     - "stage 1"
                     - "stage 2"
                 """.trimIndent()
@@ -40,11 +51,14 @@ internal class StagesDslTest : DslTestBase() {
     @Test
     fun `should create stages from list`() {
         // given
-        val testee = createStages(listOf("stage 1", "stage 2"))
+        gitlabCi(writer = writer) {
+            stages(listOf("stage 1", "stage 2"))
+        }
 
         // then
-        assertDsl(StagesDsl.serializer(), testee,
+        assertThat(writer.toString()).isEqualTo(
                 """
+                    "stages":
                     - "stage 1"
                     - "stage 2"
                 """.trimIndent()
@@ -54,14 +68,17 @@ internal class StagesDslTest : DslTestBase() {
     @Test
     fun `should create stages with multiple commands`() {
         // given
-        val testee = createStages {
-            stage("stage 1")
-            stage("stage 2")
+        gitlabCi(writer = writer) {
+            stages {
+                stage("stage 1")
+                stage("stage 2")
+            }
         }
 
         // then
-        assertDsl(StagesDsl.serializer(), testee,
+        assertThat(writer.toString()).isEqualTo(
                 """
+                    "stages":
                     - "stage 1"
                     - "stage 2"
                 """.trimIndent()
@@ -71,13 +88,16 @@ internal class StagesDslTest : DslTestBase() {
     @Test
     fun `should create stages with one command`() {
         // given
-        val testee = createStages {
-            stage("stage 1")
+        gitlabCi(writer = writer) {
+            stages {
+                stage("stage 1")
+            }
         }
 
         // then
-        assertDsl(StagesDsl.serializer(), testee,
+        assertThat(writer.toString()).isEqualTo(
                 """
+                    "stages":
                     - "stage 1"
                 """.trimIndent()
         )
@@ -86,12 +106,14 @@ internal class StagesDslTest : DslTestBase() {
     @Test
     fun `should create stages with no commands`() {
         // given
-        val testee = createStages {}
+        gitlabCi(writer = writer) {
+            stages {}
+        }
 
         // then
-        assertDsl(StagesDsl.serializer(), testee,
+        assertThat(writer.toString()).isEqualTo(
                 """
-                    []
+                    "stages": []
                 """.trimIndent()
         )
     }
@@ -99,14 +121,17 @@ internal class StagesDslTest : DslTestBase() {
     @Test
     fun `should add stage with unary plus`() {
         // given
-        val testee = createStages {
-            stage("stage 1")
-            +"stage 2"
+        gitlabCi(writer = writer) {
+            stages {
+                stage("stage 1")
+                +"stage 2"
+            }
         }
 
         // then
-        assertDsl(StagesDsl.serializer(), testee,
+        assertThat(writer.toString()).isEqualTo(
                 """
+                    "stages":
                     - "stage 1"
                     - "stage 2"
                 """.trimIndent()
@@ -116,13 +141,16 @@ internal class StagesDslTest : DslTestBase() {
     @Test
     fun `should allow direct access`() {
         // given
-        val testee = createStages {
-            stages = mutableListOf("stage 1", "stage 2")
+        gitlabCi(writer = writer) {
+            stages {
+                stages = mutableListOf("stage 1", "stage 2")
+            }
         }
 
         // then
-        assertDsl(StagesDsl.serializer(), testee,
+        assertThat(writer.toString()).isEqualTo(
                 """
+                    "stages":
                     - "stage 1"
                     - "stage 2"
                 """.trimIndent()

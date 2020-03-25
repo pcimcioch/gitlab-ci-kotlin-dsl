@@ -3,6 +3,7 @@ package pcimcioch.gitlabci.dsl.job
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 import pcimcioch.gitlabci.dsl.Duration
+import pcimcioch.gitlabci.dsl.gitlabCi
 
 internal class JobDslTest : DslTestBase() {
 
@@ -437,25 +438,6 @@ internal class JobDslTest : DslTestBase() {
                     - "depend 2"
                     - "depend 3"
                     - "depend 4"
-                    script:
-                    - "test command"
-                """.trimIndent()
-        )
-    }
-
-    @Test
-    fun `should allow reset dependencies`() {
-        // given
-        val testee = createJob("test") {
-            script("test command")
-
-            emptyDependencies()
-        }
-
-        // then
-        assertDsl(JobDsl.serializer(), testee,
-                """
-                    dependencies: []
                     script:
                     - "test command"
                 """.trimIndent()

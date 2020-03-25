@@ -18,6 +18,7 @@ Project is currently in development and is not available in maven central yet
 | inherit        | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#inherit>                        |
 | image          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#image>                          |
 | services       | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#services>                       |
+| script         | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#script>                         |
 | before_script  | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#before_script-and-after_script> |
 | after_script   | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#before_script-and-after_script> |
 | stage          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#stage>                          |

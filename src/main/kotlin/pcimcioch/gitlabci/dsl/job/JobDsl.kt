@@ -100,8 +100,6 @@ class JobDsl(
     fun dependencies(vararg elements: JobDsl) = dependencies(elements.toList())
     fun dependencies(elements: Iterable<JobDsl>) = ensureDependencies().apply { elements.forEach { add(it.name) } }
 
-    fun emptyDependencies() = ensureDependencies().clear()
-
     fun variables(block: VariablesDsl.() -> Unit) = ensureVariables().apply(block)
     fun variables(elements: Map<String, Any>) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }
     fun variables(elements: Map<String, Any>, block: VariablesDsl.() -> Unit) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }.apply(block)

@@ -64,11 +64,15 @@ class InheritDsl : DslBase {
 
     object VariablesSerializer : MultiTypeSerializer(
             PrimitiveDescriptor("Variables", PrimitiveKind.BOOLEAN),
-            mapOf(Boolean::class to Boolean.serializer(), Set::class to String.serializer().set))
+            mapOf(
+                    Boolean::class to Boolean.serializer(),
+                    Set::class to String.serializer().set))
 
     object DefaultSerializer : MultiTypeSerializer(
             PrimitiveDescriptor("Default", PrimitiveKind.BOOLEAN),
-            mapOf(Boolean::class to Boolean.serializer(), Set::class to InheritDefaultType.InheritDefaultTypeSerializer.set))
+            mapOf(
+                    Boolean::class to Boolean.serializer(),
+                    Set::class to InheritDefaultType.InheritDefaultTypeSerializer.set))
 }
 
 fun createInherit(block: InheritDsl.() -> Unit) = InheritDsl().apply(block)

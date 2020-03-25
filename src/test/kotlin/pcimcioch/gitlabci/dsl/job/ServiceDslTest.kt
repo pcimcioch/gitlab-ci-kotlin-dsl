@@ -83,8 +83,8 @@ internal class ServiceDslTest : DslTestBase() {
     fun `should allow direct access`() {
         // given
         val testee = createService("name") {
-            cmd = listOf("c 1", "c 2")
-            entrypoint = listOf("e 1", "e 2")
+            cmd = mutableListOf("c 1", "c 2")
+            entrypoint = mutableListOf("e 1", "e 2")
         }
 
         // then
@@ -102,7 +102,7 @@ internal class ServiceDslTest : DslTestBase() {
     }
 
     @Test
-    fun `should override command and entrypoint`() {
+    fun `should merge command and entrypoint`() {
         // given
         val testee = createService("name") {
             cmd("c 1", "c 2")
@@ -116,9 +116,13 @@ internal class ServiceDslTest : DslTestBase() {
                 """
                     name: "name"
                     cmd:
+                    - "c 1"
+                    - "c 2"
                     - "c 10"
                     - "c 20"
                     entrypoint:
+                    - "e 1"
+                    - "e 2"
                     - "e 10"
                     - "e 20"
                 """.trimIndent()

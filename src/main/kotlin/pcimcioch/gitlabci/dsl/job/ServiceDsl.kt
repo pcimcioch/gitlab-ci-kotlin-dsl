@@ -15,22 +15,21 @@ class ServiceDsl(
         var name: String? = null
 ) : DslBase {
     var alias: String? = null
-    var cmd: List<String>? = null
-    var entrypoint: List<String>? = null
+    var cmd: MutableList<String>? = null
+    var entrypoint: MutableList<String>? = null
 
     fun cmd(vararg elements: String) = cmd(elements.toList())
-    fun cmd(elements: Iterable<String>) {
-        cmd = elements.toList()
-    }
+    fun cmd(elements: Iterable<String>) = ensureCmd().addAll(elements)
 
     fun entrypoint(vararg elements: String) = entrypoint(elements.toList())
-    fun entrypoint(elements: Iterable<String>) {
-        entrypoint = elements.toList()
-    }
+    fun entrypoint(elements: Iterable<String>) = ensureEntrypoint().addAll(elements)
 
     override fun validate(errors: MutableList<String>) {
         addError(errors, isEmpty(name), "[service name='$name'] name '$name' is incorrect")
     }
+
+    private fun ensureEntrypoint() = entrypoint ?: mutableListOf<String>().also { entrypoint = it }
+    private fun ensureCmd() = cmd ?: mutableListOf<String>().also { cmd = it }
 }
 
 fun createService(block: ServiceDsl.() -> Unit) = ServiceDsl().apply(block)

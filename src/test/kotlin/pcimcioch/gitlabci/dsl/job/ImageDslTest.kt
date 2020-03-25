@@ -106,7 +106,7 @@ internal class ImageDslTest : DslTestBase() {
     }
 
     @Test
-    fun `should override entrypoint`() {
+    fun `should merge entrypoint`() {
         // given
         val testee = createImage("image 1") {
             entrypoint("cmd 1", "cmd 2")
@@ -118,6 +118,8 @@ internal class ImageDslTest : DslTestBase() {
                 """
                     name: "image 1"
                     entrypoint:
+                    - "cmd 1"
+                    - "cmd 2"
                     - "cmd 3"
                     - "cmd 4"
                     - "cmd 5"
@@ -164,7 +166,7 @@ internal class ImageDslTest : DslTestBase() {
     fun `should allow direct access`() {
         // given
         val testee = createImage("image 1") {
-            entrypoint = listOf("cmd 1", "cmd 2")
+            entrypoint = mutableListOf("cmd 1", "cmd 2")
         }
 
         // then

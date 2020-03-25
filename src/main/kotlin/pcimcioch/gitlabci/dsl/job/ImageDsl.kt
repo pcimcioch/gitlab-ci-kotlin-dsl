@@ -11,16 +11,16 @@ import pcimcioch.gitlabci.dsl.isEmpty
 class ImageDsl(
         var name: String? = null
 ) : DslBase {
-    var entrypoint: List<String>? = null
+    var entrypoint: MutableList<String>? = null
 
     fun entrypoint(vararg elements: String) = entrypoint(elements.toList())
-    fun entrypoint(elements: Iterable<String>) {
-        entrypoint = elements.toList()
-    }
+    fun entrypoint(elements: Iterable<String>) = ensureEntrypoint().addAll(elements)
 
     override fun validate(errors: MutableList<String>) {
         addError(errors, isEmpty(name), "[image] name '$name' is incorrect")
     }
+
+    private fun ensureEntrypoint() = entrypoint ?: mutableListOf<String>().also { entrypoint = it }
 }
 
 fun createImage(name: String) = ImageDsl(name)

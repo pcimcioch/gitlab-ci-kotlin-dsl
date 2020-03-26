@@ -13,7 +13,7 @@ internal class GitlabCiDslTest : DslTestBase() {
     @Test
     fun `should validate`() {
         // when
-        val thrown = assertThrows<IllegalStateException> {
+        val thrown = assertThrows<IllegalArgumentException> {
             gitlabCi(writer = writer) {
                 stages("build", "test", "release")
 
@@ -120,7 +120,7 @@ internal class GitlabCiDslTest : DslTestBase() {
     fun `should create job from name`() {
         // when
         gitlabCi(validate = false, writer = writer) {
-            job("test")
+            job("test") {}
         }
 
         // then

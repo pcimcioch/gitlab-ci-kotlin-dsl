@@ -9,9 +9,9 @@ plugins {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    // TODO api vs implementation
-    implementation("com.charleskorn.kaml:kaml:0.16.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
+
+    implementation("com.charleskorn.kaml:kaml:0.16.1")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.0")
     testImplementation("org.assertj:assertj-core:3.15.0")

@@ -36,7 +36,81 @@
 
 ## How to start
 
-TODO
+This simple code will create `.gitlab-ci.yml` file in working directory containing definition for three stages (`test`, `build` and `release`) and three jobs
+```kotlin
+gitlabCi {
+    stages("test", "build", "release")
+
+    job("test application") {
+        stage = "test"
+        image("openjdk:8-alpine")
+        script("./gradlew test")
+    }
+
+    job("build application") {
+        stage = "build"
+        image("openjdk:8-alpine")
+        script("./gradlew build")
+    }
+
+    job("release application") {
+        stage = "release"
+        image("openjdk:8-alpine")
+        script("./gradlew publish")
+    }
+}
+```
+
+If you want to save generated yaml to different location, you can pass custom writer. Note, that the writer will not be closed automatically
+```kotlin
+val str = StringWriter()
+gitlabCi(writer = str) {
+    // definitions
+}
+
+println(str)
+```
+
+Defined configuration is validated for few simple error cases by default. If configuration is incorrect, `IllegalArgumentException` will be thrown.
+Validation can be disabled
+```kotlin
+val str = StringWriter()
+gitlabCi(validate = false) {
+    // definitions
+}
+
+println(str)
+```
+
+Main `gitlabCi` block can be configured using different methods:
+```kotlin
+gitlabCi {
+    // stages can be added using varargs
+    stages("stage 1", "stage 2")
+    // or any iterable
+    stages(listOf("stage 3", "stage 4"))
+    // or block
+    stages {
+        // more details in 'stages' section of this document
+    }
+
+    // job can be added using name and block
+    job("jobName2") {
+        // more details in other sections of this document
+    }
+}
+
+// jobs can also be created outside of gitlabCi
+val job1 = createJob("jobName") {
+    script("command")
+}
+// it can later be added using unary plus operator
+gitlabCi { 
+    +job1
+    +methodReturningJob()
+}
+```
+
 
 ## default
 
@@ -96,7 +170,7 @@ gitlabCi {
         // or block with more complex configuration
         image {
             name = "alpine"
-            // entrypoint commands can be appended as vararg arguments
+            // entrypoint commands can be added as vararg arguments
             entrypoint("cmd1", "cmd2")
             // or any iterable
             entrypoint(listOf("cmd3", "cmd4"))
@@ -140,7 +214,7 @@ gitlabCi {
 ```kotlin
 gitlabCi {
     job("jobName") {
-        // services can be appended as vararg arguments
+        // services can be added as vararg arguments
         services("service 1", "service 2")
         // or any iterable
         services(listOf("service 1", "service 2"))
@@ -152,13 +226,13 @@ gitlabCi {
             service {
                 name = "service 2"
                 alias = "alias 2"
-                // entrypoint commands can be appended as vararg arguments
+                // entrypoint commands can be added as vararg arguments
                 entrypoint("cmd1", "cmd2")
                 // or any iterable
                 entrypoint(listOf("cmd3", "cmd4"))
                 // entrypoint can also be accessed directly. Note that this will override any previously configured entrypoint in this service
                 entrypoint = mutableListOf("cmd1", "cmd2")
-                // commands can be appended as vararg arguments
+                // commands can be added as vararg arguments
                 cmd("cmd1", "cmd2")
                 // or any iterable
                 cmd(listOf("cmd3", "cmd4"))
@@ -191,7 +265,7 @@ val services1 = createServices("service 1", "service 2")
 val services2 = createServices(listOf("service 3", "service 4"))
 // or block
 val services3 = createServices {
-    // service can be appended using unary plus operator
+    // service can be added using unary plus operator
     +service1
 }
 
@@ -214,7 +288,7 @@ gitlabCi {
 ```kotlin
 gitlabCi {
     job("jobName") {
-        // commands can be appended as vararg arguments
+        // commands can be added as vararg arguments
         script("command 1", "command 2")
         // or any iterable
         script(listOf("command 3", "command 4"))
@@ -257,7 +331,7 @@ gitlabCi {
 ```kotlin
 gitlabCi {
     job("jobName") {
-        // commands can be appended as vararg arguments
+        // commands can be added as vararg arguments
         beforeScript("command 1", "command 2")
         // or any iterable
         beforeScript(listOf("command 3", "command 4"))
@@ -300,7 +374,7 @@ gitlabCi {
 ```kotlin
 gitlabCi {
     job("jobName") {
-        // commands can be appended as vararg arguments
+        // commands can be added as vararg arguments
         afterScript("command 1", "command 2")
         // or any iterable
         afterScript(listOf("command 3", "command 4"))
@@ -342,7 +416,7 @@ gitlabCi {
 
 ```kotlin
 gitlabCi {
-    // stages can be appended as vararg arguments
+    // stages can be added as vararg arguments
     stages("stage 1", "stage 2")
     // or any iterable
     stages(listOf("stage 3", "stage 4"))
@@ -387,7 +461,7 @@ Not supported yet
 ```kotlin
 gitlabCi {
     job("jobName") {
-        // tags can be appended as vararg arguments
+        // tags can be added as vararg arguments
         tags("tag 1", "tag 2")
         // or any iterable
         tags(listOf("tag 3", "tag 4"))
@@ -435,7 +509,7 @@ Not supported yet
 ```kotlin
 gitlabCi { 
     job("jobName") {
-        // paths to cache can be appended as vararg arguments
+        // paths to cache can be added as vararg arguments
         cache("file1", "file2")
         // or any iterable
         cache(listOf("file3", "file4"))
@@ -443,7 +517,7 @@ gitlabCi {
         cache { 
             untracked = true
             policy = CachePolicy.PULL
-            // paths can be appended as vararg arguments
+            // paths can be added as vararg arguments
             paths("file5", "file6")
             // or any iterable
             paths(listOf("file7", "file8"))
@@ -455,7 +529,7 @@ gitlabCi {
             // or more complex object
             key { 
                 prefix = "p_"
-                // key files can be appended as vararg arguments
+                // key files can be added as vararg arguments
                 files("f1", "f2")
                 // or any iterable
                 files("f3", "f4")
@@ -495,7 +569,7 @@ gitlabCi {
 ```kotlin
 gitlabCi {
     job("jobName") {
-        // paths to artifacts can be appended as vararg arguments
+        // paths to artifacts can be added as vararg arguments
         artifacts("file1", "file2")
         // or any iterable
         artifacts(listOf("file3", "file4"))
@@ -506,7 +580,7 @@ gitlabCi {
             untracked = true
             whenUpload = WhenUploadType.ON_FAILURE
             expireIn = Duration(months = 1)
-            // paths can be appended as vararg arguments
+            // paths can be added as vararg arguments
             paths("file5", "file6")
             // or any iterable
             paths(listOf("file7", "file8"))
@@ -593,7 +667,7 @@ gitlabCi {
 ```kotlin
 gitlabCi {
     job("jobName") {
-        // dependencies can be appended as vararg arguments
+        // dependencies can be added as vararg arguments
         dependencies("job 1", "job 2")
         // or any iterable
         dependencies("job 3", "job 4")
@@ -602,13 +676,13 @@ gitlabCi {
     }
 
     // instead of operating on strings, dependencies can also operate on JobDsl
-    val job1 = job("job 1")
-    val job2 = job("job 2")
-    val job3 = job("job 3")
-    val job4 = job("job 4")
+    val job1 = job("job 1") {}
+    val job2 = job("job 2") {}
+    val job3 = job("job 3") {}
+    val job4 = job("job 4") {}
     
     job("lastJob") {
-        // dependencies can be appended as vararg arguments
+        // dependencies can be added as vararg arguments
         dependencies(job1, job2)
         // or any iterable
         dependencies(listOf(job3, job4))
@@ -623,7 +697,7 @@ gitlabCi {
 ```kotlin
 gitlabCi {
     job("jobName") {
-        // needs can be appended as vararg arguments
+        // needs can be added as vararg arguments
         needs("job 1", "job 2")
         // or any iterable
         needs(listOf("job 1", "job 2"))
@@ -646,12 +720,12 @@ gitlabCi {
     }
 
     // instead of operating on strings, needs can also operate on JobDsl
-    val job1 = job("job 1")
-    val job2 = job("job 2")
-    val job3 = job("job 3")
-    val job4 = job("job 4")
+    val job1 = job("job 1") {}
+    val job2 = job("job 2") {}
+    val job3 = job("job 3") {}
+    val job4 = job("job 4") {}
     job("lastJob") {
-        // needs can be appended as vararg arguments
+        // needs can be added as vararg arguments
         needs(job1, job2)
         // or any iterable
         needs(listOf(job3, job4))
@@ -697,7 +771,7 @@ val needs3 = createNeeds(job1, job2)
 val needs4 = createNeeds(listOf(job1, job2))
 // or block
 val needs5 = createNeeds {
-    // needJobs can be appended using unary plus operator
+    // needJobs can be added using unary plus operator
     +needJob1
 }
 
@@ -731,7 +805,7 @@ gitlabCi {
         // or using block
         retry {
             max = 3
-            // when can be appended as vararg arguments
+            // when can be added as vararg arguments
             whenRetry(WhenRetryType.SCHEDULER_FAILURE, WhenRetryType.STALE_SCHEDULE)
             // or any iterable
             whenRetry(listOf(WhenRetryType.JOB_EXECUTION_TIMEOUT, WhenRetryType.ARCHIVED_FAILURE))
@@ -835,7 +909,7 @@ Not supported yet
 ```kotlin
 gitlabCi {
     job("jobName") {
-        // extends can be appended as vararg arguments
+        // extends can be added as vararg arguments
         extends("job 1", "job 2")
         // or any iterable
         extends("job 3", "job 4")
@@ -844,12 +918,12 @@ gitlabCi {
     }
 
     // instead of operating on strings, extends can also operate on JobDsl
-    val job1 = job("job 1")
-    val job2 = job("job 2")
-    val job3 = job("job 3")
-    val job4 = job("job 4")
+    val job1 = job("job 1") {}
+    val job2 = job("job 2") {}
+    val job3 = job("job 3") {}
+    val job4 = job("job 4") {}
     job("lastJob") {
-        // extends can be appended as vararg arguments
+        // extends can be added as vararg arguments
         extends(job1, job2)
         // or any iterable
         extends(listOf(job3, job4))

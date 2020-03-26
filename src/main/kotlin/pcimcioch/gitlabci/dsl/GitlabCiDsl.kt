@@ -23,7 +23,6 @@ class GitlabCiDsl : DslBase {
     private val jobs: MutableList<JobDsl> = mutableListOf()
     private var stages: StagesDsl? = null
 
-    fun job(name: String) = addAndReturn(jobs, JobDsl(name))
     fun job(name: String, block: JobDsl.() -> Unit) = addAndReturn(jobs, JobDsl(name)).apply(block)
     operator fun JobDsl.unaryPlus() = this@GitlabCiDsl.jobs.add(this)
 
@@ -63,7 +62,7 @@ fun gitlabCi(validate: Boolean = true, writer: Writer? = null, block: GitlabCiDs
         val errors = mutableListOf<String>()
         dsl.validate(errors)
         if (errors.isNotEmpty()) {
-            throw IllegalStateException(errors.joinToString(
+            throw IllegalArgumentException(errors.joinToString(
                     "\n",
                     "Configuration validation failed\n",
                     "\nValidation can be disabled by calling 'gitlabCi(validate = false) {}'"))

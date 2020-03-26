@@ -37,8 +37,8 @@ class GitlabCiDsl : DslBase {
 
     private fun ensureStages() = stages ?: StagesDsl().also { stages = it }
 
-    private fun asMap(): Map<String, Any> {
-        val map = mutableMapOf<String, Any>()
+    private fun asMap(): Map<String, DslBase> {
+        val map = mutableMapOf<String, DslBase>()
 
         stages?.also { map["stages"] = it }
         jobs.forEach { map[it.name] = it }
@@ -46,13 +46,13 @@ class GitlabCiDsl : DslBase {
         return map
     }
 
-    object ElementSerializer : MultiTypeSerializer(
+    object ElementSerializer : MultiTypeSerializer<DslBase>(
             PrimitiveDescriptor("Elements", PrimitiveKind.STRING),
             mapOf(
                     JobDsl::class to JobDsl.serializer(),
                     StagesDsl::class to StagesDsl.serializer()))
 
-    object GitlabCiDslSerializer : ValueSerializer<GitlabCiDsl, Map<String, Any>>(MapSerializer(String.serializer(), ElementSerializer), GitlabCiDsl::asMap)
+    object GitlabCiDslSerializer : ValueSerializer<GitlabCiDsl, Map<String, DslBase>>(MapSerializer(String.serializer(), ElementSerializer), GitlabCiDsl::asMap)
 }
 
 fun gitlabCi(validate: Boolean = true, writer: Writer? = null, block: GitlabCiDsl.() -> Unit) {

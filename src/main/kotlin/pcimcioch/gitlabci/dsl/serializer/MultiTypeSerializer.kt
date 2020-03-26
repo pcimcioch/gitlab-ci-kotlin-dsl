@@ -6,16 +6,16 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialDescriptor
 import kotlin.reflect.KClass
 
-open class MultiTypeSerializer(
+open class MultiTypeSerializer<S: Any>(
         override val descriptor: SerialDescriptor,
-        private val serializers: Map<KClass<*>, KSerializer<*>>
-) : KSerializer<Any> {
+        private val serializers: Map<KClass<out S>, KSerializer<out S>>
+) : KSerializer<S> {
 
-    override fun serialize(encoder: Encoder, value: Any) {
+    override fun serialize(encoder: Encoder, value: S) {
         getSerializer(value).serialize(encoder, value)
     }
 
-    override fun deserialize(decoder: Decoder): Any {
+    override fun deserialize(decoder: Decoder): S {
         throw IllegalStateException(descriptor.serialName)
     }
 

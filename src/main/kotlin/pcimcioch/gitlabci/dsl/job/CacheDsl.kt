@@ -51,7 +51,7 @@ class CacheDsl : DslBase {
     private fun ensureKeyDsl(): CacheKeyDsl = keyDsl ?: CacheKeyDsl().also { keyDsl = it }
     private fun ensurePaths() = paths ?: mutableSetOf<String>().also { paths = it }
 
-    object KeySerializer : MultiTypeSerializer(
+    object KeySerializer : MultiTypeSerializer<Any>(
             PrimitiveDescriptor("Key", PrimitiveKind.STRING),
             mapOf(
                     String::class to String.serializer(),

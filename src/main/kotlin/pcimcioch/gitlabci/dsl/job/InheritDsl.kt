@@ -62,13 +62,13 @@ class InheritDsl : DslBase {
     private fun ensureDefaultSet() = defaultSet ?: mutableSetOf<InheritDefaultType>().also { defaultSet = it }
     private fun ensureVariablesSet() = variablesSet ?: mutableSetOf<String>().also { variablesSet = it }
 
-    object VariablesSerializer : MultiTypeSerializer(
+    object VariablesSerializer : MultiTypeSerializer<Any>(
             PrimitiveDescriptor("Variables", PrimitiveKind.BOOLEAN),
             mapOf(
                     Boolean::class to Boolean.serializer(),
                     Set::class to String.serializer().set))
 
-    object DefaultSerializer : MultiTypeSerializer(
+    object DefaultSerializer : MultiTypeSerializer<Any>(
             PrimitiveDescriptor("Default", PrimitiveKind.BOOLEAN),
             mapOf(
                     Boolean::class to Boolean.serializer(),

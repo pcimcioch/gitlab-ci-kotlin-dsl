@@ -137,7 +137,75 @@ gitlabCi {
 
 <https://docs.gitlab.com/ee/ci/yaml/#services>
 
-TODO supported
+```kotlin
+gitlabCi {
+    job("jobName") {
+        // services can be appended as vararg arguments
+        services("service 1", "service 2")
+        // or any iterable
+        services(listOf("service 1", "service 2"))
+        // or services block can be used for more complex services
+        services {
+            // just service name can be used
+            service("service 1")
+            // or block
+            service {
+                name = "service 2"
+                alias = "alias 2"
+                // entrypoint commands can be appended as vararg arguments
+                entrypoint("cmd1", "cmd2")
+                // or any iterable
+                entrypoint(listOf("cmd3", "cmd4"))
+                // entrypoint can also be accessed directly. Note that this will override any previously configured entrypoint in this service
+                entrypoint = mutableListOf("cmd1", "cmd2")
+                // commands can be appended as vararg arguments
+                cmd("cmd1", "cmd2")
+                // or any iterable
+                cmd(listOf("cmd3", "cmd4"))
+                // cmd can also be accessed directly. Note that this will override any previously configured cmd in this service
+                cmd = mutableListOf("cmd1", "cmd2")
+            }
+            // or name and block
+            service("service 3") {
+                alias = "alias 3"
+            }
+        }
+    }
+}
+
+// service and services can also be created outside of gitlabCi
+// from name
+val service1 = createService("service 1")
+// or name and block
+val service2 = createService("service 2") {
+    alias = "alias 2"
+}
+// or just block
+val service3 = createService {
+    name = "service 3"
+}
+
+// services can also be created outside of gitlabCi from names as vararg
+val services1 = createServices("service 1", "service 2")
+// or any iterable
+val services2 = createServices(listOf("service 3", "service 4"))
+// or block
+val services3 = createServices {
+    // service can be appended using unary plus operator
+    +service1
+}
+
+// it can later be added to any job. It may be useful to reuse services blocks
+gitlabCi {
+    job("firstJob") {
+        // Note that this will override any previously configured services in this job
+        services = services1
+    }
+    job("secondJob") {
+        services = services1
+    }
+}
+```
 
 ## script
 
@@ -364,13 +432,159 @@ Not supported yet
 
 <https://docs.gitlab.com/ee/ci/yaml/#cache> 
 
-TODO supported
+```kotlin
+gitlabCi { 
+    job("jobName") {
+        // paths to cache can be appended as vararg arguments
+        cache("file1", "file2")
+        // or any iterable
+        cache(listOf("file3", "file4"))
+        // or by block
+        cache { 
+            untracked = true
+            policy = CachePolicy.PULL
+            // paths can be appended as vararg arguments
+            paths("file5", "file6")
+            // or any iterable
+            paths(listOf("file7", "file8"))
+            // paths can also be accessed directly. Note that this will override any previously defined paths in this cache
+            paths = mutableSetOf("file1", "file2")
+            
+            // path key can be string
+            key("someKey")
+            // or more complex object
+            key { 
+                prefix = "p_"
+                // key files can be appended as vararg arguments
+                files("f1", "f2")
+                // or any iterable
+                files("f3", "f4")
+                // key files can also be accessed directly. Note that this will override any previously defined files in this key
+                files = mutableSetOf("f1", "f2")
+            }
+        }
+    }
+}
+
+// cache can also be created outside of gitlabCi from vararg of paths
+val cache1 = createCache("file1", "file2")
+// or any iterable
+val cache2 = createCache(mutableSetOf("file3", "file4"))
+// or using block
+val cache3 = createCache {
+    paths("f1", "f2")
+    policy = CachePolicy.PULL
+}
+
+// it can later be added to any job. It may be useful to reuse cache blocks
+gitlabCi {
+    job("firstJob") {
+        // Note that this will override any previously configured cache in this job
+        cache = cache1
+    }
+    job("secondJob") {
+        cache = cache1
+    }
+}
+```
 
 ## artifacts
 
 <https://docs.gitlab.com/ee/ci/yaml/#artifacts> 
 
-TODO supported
+```kotlin
+gitlabCi {
+    job("jobName") {
+        // paths to artifacts can be appended as vararg arguments
+        artifacts("file1", "file2")
+        // or any iterable
+        artifacts(listOf("file3", "file4"))
+        // or by block
+        artifacts {
+            name = "art1"
+            exposeAs = "My artefact"
+            untracked = true
+            whenUpload = WhenUploadType.ON_FAILURE
+            expireIn = Duration(months = 1)
+            // paths can be appended as vararg arguments
+            paths("file5", "file6")
+            // or any iterable
+            paths(listOf("file7", "file8"))
+            // paths can also be accessed directly. Note that this will override any previously defined paths in this artifacts
+            paths = mutableSetOf("file1", "file2")
+
+            reports {
+                // every predefined report files can be configured as varargs or any iterable
+                junit("junit 1", "junit 2")
+                junit(listOf("junit 3", "junit 4"))
+                // they can also be accessed directly. Note that this will override any previously defined paths
+                junit = mutableSetOf("junit 1", "junit 2")
+
+                dotenv("dotenv 1", "dotenv 2")
+                dotenv(listOf("dotenv 3", "dotenv 4"))
+                dotenv = mutableSetOf("dotenv 1", "dotenv 2")
+
+                codequality("codequality 1", "codequality 2")
+                codequality(listOf("codequality 3", "codequality 4"))
+                codequality = mutableSetOf("codequality 1", "codequality 2")
+
+                sast("sast 1", "sast 2")
+                sast(listOf("sast 3", "sast 4"))
+                sast = mutableSetOf("sast 1", "sast 2")
+
+                dependencyScanning("dependencyScanning 1", "dependencyScanning 2")
+                dependencyScanning(listOf("dependencyScanning 3", "dependencyScanning 4"))
+                dependencyScanning = mutableSetOf("dependencyScanning 1", "dependencyScanning 2")
+
+                containerScanning("containerScanning 1", "containerScanning 2")
+                containerScanning(listOf("containerScanning 3", "containerScanning 4"))
+                containerScanning = mutableSetOf("containerScanning 1", "containerScanning 2")
+
+                dast("dast 1", "dast 2")
+                dast(listOf("dast 3", "dast 4"))
+                dast = mutableSetOf("dast 1", "dast 2")
+
+                licenseManagement("licenseManagement 1", "licenseManagement 2")
+                licenseManagement(listOf("licenseManagement 3", "licenseManagement 4"))
+                licenseManagement = mutableSetOf("licenseManagement 1", "licenseManagement 2")
+
+                licenseScanning("licenseScanning 1", "licenseScanning 2")
+                licenseScanning(listOf("licenseScanning 3", "licenseScanning 4"))
+                licenseScanning = mutableSetOf("licenseScanning 1", "licenseScanning 2")
+
+                performance("performance 1", "performance 2")
+                performance(listOf("performance 3", "performance 4"))
+                performance = mutableSetOf("performance 1", "performance 2")
+
+                metrics("metrics 1", "metrics 2")
+                metrics(listOf("metrics 3", "metrics 4"))
+                metrics = mutableSetOf("metrics 1", "metrics 2")
+            }
+        }
+    }
+}
+
+// artifacts can also be created outside of gitlabCi from vararg of paths
+val artifacts1 = createArtifacts("file1", "file2")
+// or any iterable
+val artifacts2 = createArtifacts(mutableSetOf("file3", "file4"))
+// or using block
+val artifacts3 = createArtifacts {
+    paths("f1", "f2")
+    whenUpload = WhenUploadType.ALWAYS
+}
+
+// it can later be added to any job. It may be useful to reuse artifacts blocks
+gitlabCi {
+    job("firstJob") {
+        // Note that this will override any previously configured artifacts in this job
+        artifacts = artifacts1
+    }
+    job("secondJob") {
+        artifacts = artifacts1
+    }
+}
+```
 
 ## dependencies
 
@@ -459,7 +673,9 @@ val job2 = createJob("job2") {}
 // from job
 val needJob1 = createNeedJob(job1)
 // or job and block
-val needJob2 = createNeedJob(job2)
+val needJob2 = createNeedJob(job2) {
+    artifacts = true
+}
 // or name
 val needJob3 = createNeedJob("job3")
 // or name and block

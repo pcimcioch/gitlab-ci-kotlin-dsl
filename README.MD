@@ -48,3 +48,5 @@ Project is currently in development and is not available in maven central yet
 # Documentation
 
 All supported features are documented in [Features Page](/FEATURES.MD)
+
+TODO add license

@@ -3,7 +3,6 @@ package pcimcioch.gitlabci.dsl.job
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 import pcimcioch.gitlabci.dsl.Duration
-import pcimcioch.gitlabci.dsl.gitlabCi
 
 internal class JobDslTest : DslTestBase() {
 

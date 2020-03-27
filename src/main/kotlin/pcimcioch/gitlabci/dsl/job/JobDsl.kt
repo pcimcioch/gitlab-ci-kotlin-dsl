@@ -53,6 +53,7 @@ class JobDsl(
 
     @SerialName("after_script")
     var afterScript: AfterScriptDsl? = null
+    var coverage: String? = null
     var variables: VariablesDsl? = null
 
     fun script(block: ScriptDsl.() -> Unit) = ensureScript().apply(block)

@@ -909,7 +909,13 @@ gitlabCi {
 
 <https://docs.gitlab.com/ee/ci/yaml/#coverage>  
 
-Not supported yet
+```kotlin
+gitlabCi {
+    job("jobName") {
+        coverage = "/Code coverage: \\d+\\.\\d+/"
+    }
+}
+```
 
 ## retry
 

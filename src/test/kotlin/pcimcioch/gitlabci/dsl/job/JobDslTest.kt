@@ -280,6 +280,7 @@ internal class JobDslTest : DslTestBase() {
             except("exceptBranch")
             beforeScript("before")
             afterScript("after")
+            coverage = "/Code coverage: \\d+\\.\\d+/"
             variables {
                 add("KEY1", "VALUE1")
             }
@@ -330,6 +331,7 @@ internal class JobDslTest : DslTestBase() {
                     - "test command"
                     after_script:
                     - "after"
+                    coverage: "/Code coverage: \\d+\\.\\d+/"
                     variables:
                       "KEY1": "VALUE1"
                 """.trimIndent()

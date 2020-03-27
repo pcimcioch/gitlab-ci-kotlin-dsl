@@ -33,7 +33,7 @@ Project is currently in development and is not available in maven central yet
 | artifacts      | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#artifacts>                      |
 | dependencies   | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#dependencies>                   |
 | needs          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#needs>                          |
-| coverage       | No        | <https://docs.gitlab.com/ee/ci/yaml/#coverage>                       | [//]: # (3)
+| coverage       | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#coverage>                       |
 | retry          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#retry>                          |
 | timeout        | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#timeout>                        |
 | parallel       | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#parallel>                       |

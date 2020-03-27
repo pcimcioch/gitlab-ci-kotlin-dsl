@@ -28,7 +28,7 @@ Project is currently in development and is not available in maven central yet
 | tags           | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#tags>                           |
 | allow_failure  | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#allow_failure>                  |
 | when           | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#when>                           |
-| environment    | No        | <https://docs.gitlab.com/ee/ci/yaml/#environment>                    | [//]: # (2)
+| environment    | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#environment>                    |
 | cache          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#cache>                          |
 | artifacts      | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#artifacts>                      |
 | dependencies   | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#dependencies>                   |
@@ -37,10 +37,10 @@ Project is currently in development and is not available in maven central yet
 | retry          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#retry>                          |
 | timeout        | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#timeout>                        |
 | parallel       | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#parallel>                       |
-| trigger        | No        | <https://docs.gitlab.com/ee/ci/yaml/#trigger>                        | [//]: # (4)
+| trigger        | No        | <https://docs.gitlab.com/ee/ci/yaml/#trigger>                        | [//]: # (3)
 | interruptible  | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#interruptible>                  |
 | resource_group | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#resource_group>                 |
-| include        | No        | <https://docs.gitlab.com/ee/ci/yaml/#include>                        | [//]: # (3)
+| include        | No        | <https://docs.gitlab.com/ee/ci/yaml/#include>                        | [//]: # (2)
 | extends        | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#extends>                        |
 | pages          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#pages>                          |
 | variables      | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#variables>                      |

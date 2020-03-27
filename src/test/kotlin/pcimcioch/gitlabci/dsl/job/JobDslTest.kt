@@ -187,6 +187,7 @@ internal class JobDslTest : DslTestBase() {
                 }
             }
             artifacts("artifact")
+            environment("env#")
         }
 
         // then
@@ -223,6 +224,8 @@ internal class JobDslTest : DslTestBase() {
                     after_script:
                     - "after 1"
                     - "after 2"
+                    environment:
+                      name: "env#"
                     variables: {}
                 """.trimIndent(),
                 "[job name='test'][retry] max attempts must be in range [0, 2]",
@@ -230,7 +233,8 @@ internal class JobDslTest : DslTestBase() {
                 "[job name='test'][service name=''] name '' is incorrect",
                 "[job name='test'][need job=''] job '' is incorrect",
                 "[job name='test'][variables] variables map cannot be empty",
-                "[job name='test'][cache][key] prefix value 'pre/fix' can't contain '/' nor '%2F'"
+                "[job name='test'][cache][key] prefix value 'pre/fix' can't contain '/' nor '%2F'",
+                "[job name='test'][environment name='env#'] name 'env#' is incorrect. Contains forbidden characters"
         )
     }
 
@@ -280,6 +284,7 @@ internal class JobDslTest : DslTestBase() {
             beforeScript("before")
             afterScript("after")
             coverage = "/Code coverage: \\d+\\.\\d+/"
+            environment("env")
             variables {
                 add("KEY1", "VALUE1")
             }
@@ -331,6 +336,8 @@ internal class JobDslTest : DslTestBase() {
                     after_script:
                     - "after"
                     coverage: "/Code coverage: \\d+\\.\\d+/"
+                    environment:
+                      name: "env"
                     variables:
                       "KEY1": "VALUE1"
                 """.trimIndent()
@@ -903,6 +910,71 @@ internal class JobDslTest : DslTestBase() {
     }
 
     @Test
+    fun `should allow environment by name configuration`() {
+        // given
+        val testee = createJob("test") {
+            script("test command")
+
+            environment("test")
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    script:
+                    - "test command"
+                    environment:
+                      name: "test"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow environment by block configuration`() {
+        // given
+        val testee = createJob("test") {
+            script("test command")
+
+            environment {
+                name = "staging"
+            }
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    script:
+                    - "test command"
+                    environment:
+                      name: "staging"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow environment by name and block configuration`() {
+        // given
+        val testee = createJob("test") {
+            script("test command")
+
+            environment("production") {
+                url = "https://test.com"
+            }
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    script:
+                    - "test command"
+                    environment:
+                      name: "production"
+                      url: "https://test.com"
+                """.trimIndent()
+        )
+    }
+
+    @Test
     fun `should allow direct access`() {
         // given
         val scriptDsl = createScript("test command")
@@ -922,6 +994,7 @@ internal class JobDslTest : DslTestBase() {
         val variablesDsl = createVariables {
             add("KEY1", "VALUE1")
         }
+        val environmentDsl = createEnvironment("production")
 
         val testee = createJob("test") {
             script = scriptDsl
@@ -942,6 +1015,7 @@ internal class JobDslTest : DslTestBase() {
             beforeScript = beforeScriptDsl
             afterScript = afterScriptDsl
             variables = variablesDsl
+            environment = environmentDsl
         }
 
         // then
@@ -982,6 +1056,8 @@ internal class JobDslTest : DslTestBase() {
                     - "test command"
                     after_script:
                     - "after"
+                    environment:
+                      name: "production"
                     variables:
                       "KEY1": "VALUE1"
                 """.trimIndent()

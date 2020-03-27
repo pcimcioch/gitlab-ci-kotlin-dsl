@@ -634,7 +634,66 @@ gitlabCi {
 
 <https://docs.gitlab.com/ee/ci/yaml/#environment>  
 
-Not supported yet
+```kotlin
+gitlabCi {
+    job("jobName") {
+        // environment can be configured by name
+        environment("dev")
+        // or by block
+        environment {
+            name = "staging"
+            url = "https://test.com"
+            onStop = "job2"
+            action = EnvironmentAction.STOP
+            autoStopIn = Duration(minutes = 20)
+            // kubernetes can be created from namespace
+            kubernetes("namespace")
+            // or block
+            kubernetes {
+                namespace = "namespace"
+            }
+            // or name and block
+            kubernetes("namespace1") {
+                namespace = "namespace2"
+            }
+        }
+        // or by name and block
+        environment("production") {
+            url = "https://prod.test.com"
+        }
+    }
+
+    // instead of operating on strings, onStop can also operate on JobDsl
+    val job1 = job("job 1") {}
+    job("lastJob") {
+        environment("test") {
+            onStop(job1)
+        }
+    }
+}
+
+// environment can also be created outside of gitlabCi from name
+val env1 = createEnvironment("dev")
+// or block
+val env2 = createEnvironment {
+    name = "staging"
+}
+// or name and block
+val env3 = createEnvironment("production") {
+    url = "https://test.com"
+}
+
+// it can later be added to any job. It may be useful to reuse environment blocks
+gitlabCi {
+    job("firstJob") {
+        // Note that this will override any previously configured environment in this job
+        environment = env1
+    }
+    job("secondJob") {
+        environment = env1
+    }
+}
+```
 
 ## cache
 

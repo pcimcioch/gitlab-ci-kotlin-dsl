@@ -54,6 +54,7 @@ class JobDsl(
     @SerialName("after_script")
     var afterScript: AfterScriptDsl? = null
     var coverage: String? = null
+    var environment: EnvironmentDsl? = null
     var variables: VariablesDsl? = null
 
     fun script(block: ScriptDsl.() -> Unit) = ensureScript().apply(block)
@@ -129,6 +130,10 @@ class JobDsl(
     fun except(vararg elements: String) = except(elements.toList())
     fun except(elements: Iterable<String>) = ensureExcept().apply { refs(elements) }
 
+    fun environment(name: String) = ensureEnvironment().apply { this.name = name }
+    fun environment(block: EnvironmentDsl.() -> Unit) = ensureEnvironment().apply(block)
+    fun environment(name: String, block: EnvironmentDsl.() -> Unit) = ensureEnvironment().apply { this.name = name }.apply(block)
+
     override fun validate(errors: MutableList<String>) {
         val prefix = "[job name='$name']"
 
@@ -150,6 +155,7 @@ class JobDsl(
         addErrors(errors, artifacts, prefix)
         addErrors(errors, only, prefix)
         addErrors(errors, except, prefix)
+        addErrors(errors, environment, prefix)
     }
 
     private fun ensureInherit() = inherit ?: InheritDsl().also { inherit = it }
@@ -168,6 +174,7 @@ class JobDsl(
     private fun ensureTags() = tags ?: mutableSetOf<String>().also { tags = it }
     private fun ensureExtends() = extends ?: mutableListOf<String>().also { extends = it }
     private fun ensureDependencies() = dependencies ?: mutableSetOf<String>().also { dependencies = it }
+    private fun ensureEnvironment() = environment ?: EnvironmentDsl().also { environment = it }
 
     private object Validation {
         val RESTRICTED_NAMES = listOf("image", "services", "stages", "types", "before_script", "after_script", "variables", "cache", "include")

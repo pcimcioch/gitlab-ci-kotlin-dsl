@@ -9,6 +9,7 @@ import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
+import pcimcioch.gitlabci.dsl.default.DefaultDsl
 import pcimcioch.gitlabci.dsl.job.JobDsl
 import pcimcioch.gitlabci.dsl.serializer.MultiTypeSerializer
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
@@ -22,6 +23,7 @@ import kotlin.collections.set
 class GitlabCiDsl : DslBase {
     private val jobs: MutableList<JobDsl> = mutableListOf()
     private var stages: StagesDsl? = null
+    private var default: DefaultDsl? = null
 
     fun job(name: String, block: JobDsl.() -> Unit) = addAndReturn(jobs, JobDsl(name)).apply(block)
     operator fun JobDsl.unaryPlus() = this@GitlabCiDsl.jobs.add(this)
@@ -30,6 +32,8 @@ class GitlabCiDsl : DslBase {
     fun stages(vararg elements: String) = stages(elements.toList())
     fun stages(elements: Iterable<String>) = ensureStages().apply { elements.forEach { stage(it) } }
 
+    fun default(block: DefaultDsl.() -> Unit) = ensureDefault().apply(block)
+
     fun pages(block: JobDsl.() -> Unit) = job("pages") {
         artifacts("public")
         only("master")
@@ -37,15 +41,18 @@ class GitlabCiDsl : DslBase {
 
     override fun validate(errors: MutableList<String>) {
         addErrors(errors, stages, "")
+        addErrors(errors, default, "")
         addErrors(errors, jobs, "")
     }
 
     private fun ensureStages() = stages ?: StagesDsl().also { stages = it }
+    private fun ensureDefault() = default ?: DefaultDsl().also { default = it }
 
     private fun asMap(): Map<String, DslBase> {
         val map = mutableMapOf<String, DslBase>()
 
         stages?.also { map["stages"] = it }
+        default?.also { map["default"] = it }
         jobs.forEach { map[it.name] = it }
 
         return map
@@ -55,7 +62,8 @@ class GitlabCiDsl : DslBase {
             PrimitiveDescriptor("Elements", PrimitiveKind.STRING),
             mapOf(
                     JobDsl::class to JobDsl.serializer(),
-                    StagesDsl::class to StagesDsl.serializer()))
+                    StagesDsl::class to StagesDsl.serializer(),
+                    DefaultDsl::class to DefaultDsl.serializer()))
 
     object GitlabCiDslSerializer : ValueSerializer<GitlabCiDsl, Map<String, DslBase>>(MapSerializer(String.serializer(), ElementSerializer), GitlabCiDsl::asMap)
 }

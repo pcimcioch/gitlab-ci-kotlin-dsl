@@ -94,6 +94,10 @@ gitlabCi {
         // more details in 'stages' section of this document
     }
 
+    default {
+        // more details in other sections of this document
+    }
+
     // job can be added using name and block
     job("jobName2") {
         // more details in other sections of this document
@@ -116,7 +120,19 @@ gitlabCi {
 
 <https://docs.gitlab.com/ee/ci/yaml/#setting-default-parameters>
 
-Not supported yet
+```kotlin
+gitlabCi { 
+    default { 
+        // those elements can be configured in default block
+        // more details and configuration options can be found in each element section in this document
+        image("openjdk:8-alpine")
+        services("service 1", "service 2")
+        cache("file 1", "file 2")
+        beforeScript("command 1", "command 2")
+        afterScript("command 1", "command 2")
+    }
+}
+```
 
 ## inherit
 

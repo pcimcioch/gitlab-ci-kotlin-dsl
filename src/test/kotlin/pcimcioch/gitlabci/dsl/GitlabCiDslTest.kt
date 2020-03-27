@@ -17,6 +17,10 @@ internal class GitlabCiDslTest : DslTestBase() {
             gitlabCi(writer = writer) {
                 stages("build", "test", "release")
 
+                default {
+                    image("")
+                }
+
                 job("image") {
                     script("test")
                 }
@@ -29,6 +33,7 @@ internal class GitlabCiDslTest : DslTestBase() {
         // then
         assertThat(thrown).hasMessage("""
             Configuration validation failed
+            [default][image] name '' is incorrect
             [job name='image'] name 'image' is incorrect
             [job name='cache'] name 'cache' is incorrect
             Validation can be disabled by calling 'gitlabCi(validate = false) {}'""".trimIndent())
@@ -40,6 +45,10 @@ internal class GitlabCiDslTest : DslTestBase() {
         // when
         gitlabCi(validate = false, writer = writer) {
             stages("build", "test", "release")
+
+            default {
+                image("")
+            }
 
             job("image") {
                 script("test")
@@ -55,6 +64,9 @@ internal class GitlabCiDslTest : DslTestBase() {
             - "build"
             - "test"
             - "release"
+            "default":
+              image:
+                name: ""
             "image":
               script:
               - "test"
@@ -181,6 +193,11 @@ internal class GitlabCiDslTest : DslTestBase() {
         gitlabCi(validate = false, writer = writer) {
             stages("build", "test", "release")
 
+            default {
+                beforeScript("before command")
+                afterScript("after command")
+            }
+
             job("build app") {
                 script("build command")
                 stage = "build"
@@ -209,6 +226,11 @@ internal class GitlabCiDslTest : DslTestBase() {
             - "build"
             - "test"
             - "release"
+            "default":
+              before_script:
+              - "before command"
+              after_script:
+              - "after command"
             "build app":
               stage: "build"
               script:

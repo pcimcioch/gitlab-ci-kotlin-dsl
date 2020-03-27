@@ -14,7 +14,7 @@ Project is currently in development and is not available in maven central yet
 
 | Block          | Supported | Gitlab Documentation link                                            |
 | -------------- | --------- |--------------------------------------------------------------------- |
-| default        | No        | <https://docs.gitlab.com/ee/ci/yaml/#setting-default-parameters>     | [//]: # (6)
+| default        | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#setting-default-parameters>     |
 | inherit        | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#inherit>                        |
 | image          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#image>                          |
 | services       | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#services>                       |
@@ -24,11 +24,11 @@ Project is currently in development and is not available in maven central yet
 | stage          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#stage>                          |
 | only           | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#onlyexcept-basic>               |
 | except         | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#onlyexcept-basic>               |
-| rules          | No        | <https://docs.gitlab.com/ee/ci/yaml/#rules>                          | [//]: # (5)
+| rules          | No        | <https://docs.gitlab.com/ee/ci/yaml/#rules>                          | [//]: # (1)
 | tags           | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#tags>                           |
 | allow_failure  | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#allow_failure>                  |
 | when           | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#when>                           |
-| environment    | No        | <https://docs.gitlab.com/ee/ci/yaml/#environment>                    | [//]: # (7)
+| environment    | No        | <https://docs.gitlab.com/ee/ci/yaml/#environment>                    | [//]: # (2)
 | cache          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#cache>                          |
 | artifacts      | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#artifacts>                      |
 | dependencies   | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#dependencies>                   |
@@ -37,10 +37,10 @@ Project is currently in development and is not available in maven central yet
 | retry          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#retry>                          |
 | timeout        | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#timeout>                        |
 | parallel       | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#parallel>                       |
-| trigger        | No        | <https://docs.gitlab.com/ee/ci/yaml/#trigger>                        | [//]: # (9)
+| trigger        | No        | <https://docs.gitlab.com/ee/ci/yaml/#trigger>                        | [//]: # (4)
 | interruptible  | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#interruptible>                  |
 | resource_group | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#resource_group>                 |
-| include        | No        | <https://docs.gitlab.com/ee/ci/yaml/#include>                        | [//]: # (8)
+| include        | No        | <https://docs.gitlab.com/ee/ci/yaml/#include>                        | [//]: # (3)
 | extends        | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#extends>                        |
 | pages          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#pages>                          |
 | variables      | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#variables>                      |

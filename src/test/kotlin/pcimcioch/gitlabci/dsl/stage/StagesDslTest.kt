@@ -1,12 +1,9 @@
 package pcimcioch.gitlabci.dsl.stage
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 import pcimcioch.gitlabci.dsl.gitlabCi
-import pcimcioch.gitlabci.dsl.job.AfterScriptDsl
-import pcimcioch.gitlabci.dsl.job.createAfterScript
 import java.io.StringWriter
 
 internal class StagesDslTest : DslTestBase() {

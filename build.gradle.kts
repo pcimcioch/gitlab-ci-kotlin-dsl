@@ -34,3 +34,5 @@ tasks {
         useJUnitPlatform()
     }
 }
+
+// TODO add publish task

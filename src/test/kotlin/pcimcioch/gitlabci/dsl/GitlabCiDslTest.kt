@@ -229,4 +229,27 @@ internal class GitlabCiDslTest : DslTestBase() {
               - "release command 2"
         """.trimIndent())
     }
+
+    @Test
+    fun `should create pages job`() {
+        // when
+        gitlabCi(validate = false, writer = writer) {
+            pages {
+                script("command")
+            }
+        }
+
+        // then
+        assertThat(writer.toString()).isEqualTo("""
+            "pages":
+              artifacts:
+                paths:
+                - "public"
+              only:
+                refs:
+                - "master"
+              script:
+              - "command"
+        """.trimIndent())
+    }
 }

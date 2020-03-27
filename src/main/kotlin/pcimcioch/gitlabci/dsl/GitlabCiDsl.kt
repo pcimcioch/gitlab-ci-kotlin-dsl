@@ -30,6 +30,11 @@ class GitlabCiDsl : DslBase {
     fun stages(vararg elements: String) = stages(elements.toList())
     fun stages(elements: Iterable<String>) = ensureStages().apply { elements.forEach { stage(it) } }
 
+    fun pages(block: JobDsl.() -> Unit) = job("pages") {
+        artifacts("public")
+        only("master")
+    }.apply(block)
+
     override fun validate(errors: MutableList<String>) {
         addErrors(errors, stages, "")
         addErrors(errors, jobs, "")

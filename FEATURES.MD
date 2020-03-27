@@ -1059,7 +1059,14 @@ gitlabCi {
 
 <https://docs.gitlab.com/ee/ci/yaml/#pages> 
 
-Not supported yet
+```kotlin
+gitlabCi {
+    // this will create job names "pages", with artifacts.paths=["public"] and only.refs="master"
+    pages {
+        script("command")
+    }
+}
+```
 
 ## variables
 

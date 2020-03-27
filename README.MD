@@ -42,7 +42,7 @@ Project is currently in development and is not available in maven central yet
 | resource_group | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#resource_group>                 |
 | include        | No        | <https://docs.gitlab.com/ee/ci/yaml/#include>                        | [//]: # (8)
 | extends        | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#extends>                        |
-| pages          | No        | <https://docs.gitlab.com/ee/ci/yaml/#pages>                          | [//]: # (4)
+| pages          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#pages>                          |
 | variables      | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#variables>                      |
 
 # Documentation

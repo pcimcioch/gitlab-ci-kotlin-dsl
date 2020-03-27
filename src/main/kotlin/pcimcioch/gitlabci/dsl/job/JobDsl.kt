@@ -44,6 +44,8 @@ class JobDsl(
     var dependencies: MutableSet<String>? = null
     var cache: CacheDsl? = null
     var artifacts: ArtifactsDsl? = null
+    var only: OnlyExceptDsl? = null
+    var except: OnlyExceptDsl? = null
 
     @SerialName("before_script")
     var beforeScript: BeforeScriptDsl? = null
@@ -118,6 +120,14 @@ class JobDsl(
     fun artifacts(vararg elements: String) = artifacts(elements.toList())
     fun artifacts(elements: Iterable<String>) = ensureArtifacts().apply { paths(elements) }
 
+    fun only(block: OnlyExceptDsl.() -> Unit) = ensureOnly().apply(block)
+    fun only(vararg elements: String) = only(elements.toList())
+    fun only(elements: Iterable<String>) = ensureOnly().apply { refs(elements) }
+
+    fun except(block: OnlyExceptDsl.() -> Unit) = ensureExcept().apply(block)
+    fun except(vararg elements: String) = except(elements.toList())
+    fun except(elements: Iterable<String>) = ensureExcept().apply { refs(elements) }
+
     override fun validate(errors: MutableList<String>) {
         val prefix = "[job name='$name']"
 
@@ -137,6 +147,8 @@ class JobDsl(
         addErrors(errors, variables, prefix)
         addErrors(errors, cache, prefix)
         addErrors(errors, artifacts, prefix)
+        addErrors(errors, only, prefix)
+        addErrors(errors, except, prefix)
     }
 
     private fun ensureInherit() = inherit ?: InheritDsl().also { inherit = it }
@@ -148,6 +160,8 @@ class JobDsl(
     private fun ensureVariables() = variables ?: VariablesDsl().also { variables = it }
     private fun ensureCache() = cache ?: CacheDsl().also { cache = it }
     private fun ensureArtifacts() = artifacts ?: ArtifactsDsl().also { artifacts = it }
+    private fun ensureOnly() = only ?: OnlyExceptDsl().also { only = it }
+    private fun ensureExcept() = except ?: OnlyExceptDsl().also { except = it }
     private fun ensureBeforeScript() = beforeScript ?: BeforeScriptDsl().also { beforeScript = it }
     private fun ensureAfterScript() = afterScript ?: AfterScriptDsl().also { afterScript = it }
     private fun ensureTags() = tags ?: mutableSetOf<String>().also { tags = it }

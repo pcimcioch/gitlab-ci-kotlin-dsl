@@ -22,8 +22,8 @@ Project is currently in development and is not available in maven central yet
 | before_script  | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#before_script-and-after_script> |
 | after_script   | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#before_script-and-after_script> |
 | stage          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#stage>                          |
-| only           | No        | <https://docs.gitlab.com/ee/ci/yaml/#onlyexcept-basic>               | [//]: # (1)
-| except         | No        | <https://docs.gitlab.com/ee/ci/yaml/#onlyexcept-basic>               | [//]: # (2)
+| only           | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#onlyexcept-basic>               |
+| except         | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#onlyexcept-basic>               |
 | rules          | No        | <https://docs.gitlab.com/ee/ci/yaml/#rules>                          | [//]: # (5)
 | tags           | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#tags>                           |
 | allow_failure  | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#allow_failure>                  |

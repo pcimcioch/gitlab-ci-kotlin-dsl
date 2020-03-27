@@ -440,13 +440,131 @@ gitlabCi {
 
 <https://docs.gitlab.com/ee/ci/yaml/#onlyexcept-basic> 
 
-Not supported yet
+```kotlin
+gitlabCi {
+    job("jobName") {
+        // only refs can be added as vararg arguments
+        only("branch1", "branch2")
+        // or any iterable
+        only(listOf("branch3", "branch4"))
+        // or block
+        only {
+            kubernetes = KubernetesState.ACTIVE
+            // refs, changes and variables can be added as vararg arguments
+            refs("branch5", "branch6")
+            changes("file 1", "file 2")
+            variables("\$VAR1", "\$VAR2 == 'test'")
+            // or any iterable
+            refs(listOf("branch7", "branch8"))
+            changes(listOf("file 3", "file 4"))
+            variables(listOf("\$VAR3", "\$VAR4 ~= 'test'"))
+            // they can also be accessed directly. Note that this will override any previously configured refs, changes and variables
+            refs = mutableSetOf("branch1", "branch2")
+            changes = mutableSetOf("file 1", "file 2")
+            variables = mutableSetOf("\$VAR1", "\$VAR2 == 'test'")
+            // some predefined refs can be easily configured using helper methods
+            branches()
+            tags()
+            api()
+            external()
+            pipelines()
+            pushes()
+            schedules()
+            triggers()
+            web()
+            mergeRequests()
+            externalPullRequests()
+            chat()
+            master()
+        }
+    }
+}
+
+// only can also be created outside of gitlabCi from vararg of refs
+val only1 = createOnlyExcept("branch1", "branch2")
+// or any iterable
+val only2 = createOnlyExcept(listOf("branch1", "branch2"))
+// or block
+val only3 = createOnlyExcept {
+    refs("branch1", "branch2")
+}
+
+// it can later be added to any job. It may be useful to reuse only blocks
+gitlabCi {
+    job("firstJob") {
+        // Note that this will override any previously configured only in this job
+        only = only1
+    }
+    job("secondJob") {
+        only = only1
+    }
+}
+```
 
 ## except
 
 <https://docs.gitlab.com/ee/ci/yaml/#onlyexcept-basic> 
 
-Not supported yet
+```kotlin
+gitlabCi {
+    job("jobName") {
+        // except refs can be added as vararg arguments
+        except("branch1", "branch2")
+        // or any iterable
+        except(listOf("branch3", "branch4"))
+        // or block
+        except {
+            kubernetes = KubernetesState.ACTIVE
+            // refs, changes and variables can be added as vararg arguments
+            refs("branch5", "branch6")
+            changes("file 1", "file 2")
+            variables("\$VAR1", "\$VAR2 == 'test'")
+            // or any iterable
+            refs(listOf("branch7", "branch8"))
+            changes(listOf("file 3", "file 4"))
+            variables(listOf("\$VAR3", "\$VAR4 ~= 'test'"))
+            // they can also be accessed directly. Note that this will override any previously configured refs, changes and variables
+            refs = mutableSetOf("branch1", "branch2")
+            changes = mutableSetOf("file 1", "file 2")
+            variables = mutableSetOf("\$VAR1", "\$VAR2 == 'test'")
+            // some predefined refs can be easily configured using helper methods
+            branches()
+            tags()
+            api()
+            external()
+            pipelines()
+            pushes()
+            schedules()
+            triggers()
+            web()
+            mergeRequests()
+            externalPullRequests()
+            chat()
+            master()
+        }
+    }
+}
+
+// except can also be created outside of gitlabCi from vararg of refs
+val except1 = createOnlyExcept("branch1", "branch2")
+// or any iterable
+val except2 = createOnlyExcept(listOf("branch1", "branch2"))
+// or block
+val except3 = createOnlyExcept {
+    refs("branch1", "branch2")
+}
+
+// it can later be added to any job. It may be useful to reuse except blocks
+gitlabCi {
+    job("firstJob") {
+        // Note that this will override any previously configured except in this job
+        except = except1
+    }
+    job("secondJob") {
+        except = except1
+    }
+}
+```
 
 ## rules
 

@@ -3,6 +3,7 @@ package pcimcioch.gitlabci.dsl.job
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 import pcimcioch.gitlabci.dsl.Duration
+import pcimcioch.gitlabci.dsl.gitlabCi
 
 internal class JobDslTest : DslTestBase() {
 
@@ -127,7 +128,7 @@ internal class JobDslTest : DslTestBase() {
     }
 
     @Test
-    fun `should validate to small parallel`() {
+    fun `should validate too small parallel`() {
         // given
         val testee = createJob("test") {
             script("test command")
@@ -146,7 +147,7 @@ internal class JobDslTest : DslTestBase() {
     }
 
     @Test
-    fun `should validate to big parallel`() {
+    fun `should validate too big parallel`() {
         // given
         val testee = createJob("test") {
             script("test command")
@@ -275,6 +276,8 @@ internal class JobDslTest : DslTestBase() {
             dependencies("testDep")
             cache("testCache")
             artifacts("testArt")
+            only("onlyBranch")
+            except("exceptBranch")
             beforeScript("before")
             afterScript("after")
             variables {
@@ -315,6 +318,12 @@ internal class JobDslTest : DslTestBase() {
                     artifacts:
                       paths:
                       - "testArt"
+                    only:
+                      refs:
+                      - "onlyBranch"
+                    except:
+                      refs:
+                      - "exceptBranch"
                     before_script:
                     - "before"
                     script:
@@ -835,6 +844,64 @@ internal class JobDslTest : DslTestBase() {
     }
 
     @Test
+    fun `should allow different only options`() {
+        // given
+        val testee = createJob("test") {
+            script("test command")
+
+            only {
+                kubernetes = KubernetesState.ACTIVE
+            }
+            only("o1", "o2")
+            only(listOf("o3", "o4"))
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    only:
+                      refs:
+                      - "o1"
+                      - "o2"
+                      - "o3"
+                      - "o4"
+                      kubernetes: "active"
+                    script:
+                    - "test command"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow different except options`() {
+        // given
+        val testee = createJob("test") {
+            script("test command")
+
+            except {
+                kubernetes = KubernetesState.ACTIVE
+            }
+            except("e1", "e2")
+            except(listOf("e3", "e4"))
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    except:
+                      refs:
+                      - "e1"
+                      - "e2"
+                      - "e3"
+                      - "e4"
+                      kubernetes: "active"
+                    script:
+                    - "test command"
+                """.trimIndent()
+        )
+    }
+
+    @Test
     fun `should allow direct access`() {
         // given
         val scriptDsl = createScript("test command")
@@ -847,6 +914,8 @@ internal class JobDslTest : DslTestBase() {
         val needsDsl = createNeeds("testNeeds")
         val cacheDsl = createCache("testCache")
         val artifactsDsl = createArtifacts("testArt")
+        val onlyDsl = createOnlyExcept("testOnly")
+        val exceptDsl = createOnlyExcept("testExcept")
         val beforeScriptDsl = createBeforeScript("before")
         val afterScriptDsl = createAfterScript("after")
         val variablesDsl = createVariables {
@@ -867,6 +936,8 @@ internal class JobDslTest : DslTestBase() {
             dependencies = mutableSetOf("testDep")
             cache = cacheDsl
             artifacts = artifactsDsl
+            only = onlyDsl
+            except = exceptDsl
             beforeScript = beforeScriptDsl
             afterScript = afterScriptDsl
             variables = variablesDsl
@@ -898,6 +969,12 @@ internal class JobDslTest : DslTestBase() {
                     artifacts:
                       paths:
                       - "testArt"
+                    only:
+                      refs:
+                      - "testOnly"
+                    except:
+                      refs:
+                      - "testExcept"
                     before_script:
                     - "before"
                     script:

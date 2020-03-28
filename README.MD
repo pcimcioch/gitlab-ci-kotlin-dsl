@@ -37,10 +37,10 @@ Project is currently in development and is not available in maven central yet
 | retry          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#retry>                          |
 | timeout        | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#timeout>                        |
 | parallel       | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#parallel>                       |
-| trigger        | No        | <https://docs.gitlab.com/ee/ci/yaml/#trigger>                        | [//]: # (3)
+| trigger        | No        | <https://docs.gitlab.com/ee/ci/yaml/#trigger>                        |
 | interruptible  | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#interruptible>                  |
 | resource_group | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#resource_group>                 |
-| include        | No        | <https://docs.gitlab.com/ee/ci/yaml/#include>                        | [//]: # (2)
+| include        | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#include>                        |
 | extends        | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#extends>                        |
 | pages          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#pages>                          |
 | variables      | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#variables>                      |

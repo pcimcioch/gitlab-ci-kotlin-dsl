@@ -1,10 +1,7 @@
 package pcimcioch.gitlabci.dsl.default
 
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import pcimcioch.gitlabci.dsl.DslTestBase
-import pcimcioch.gitlabci.dsl.gitlabCi
 import pcimcioch.gitlabci.dsl.job.createAfterScript
 import pcimcioch.gitlabci.dsl.job.createBeforeScript
 import pcimcioch.gitlabci.dsl.job.createCache
@@ -16,46 +13,58 @@ internal class DefaultDslTest : DslTestBase() {
     @Test
     fun `should validate nested objects`() {
         // when
-        val thrown = assertThrows<IllegalArgumentException> {
-            gitlabCi(writer = writer) {
-                default {
-                    beforeScript("before 1", "before 2")
-                    afterScript("after 1", "after 2")
+        val testee = DefaultDsl().apply {
+            beforeScript("before 1", "before 2")
+            afterScript("after 1", "after 2")
 
-                    image("")
-                    services("service 1", "")
-                    cache {
-                        paths("path")
-                        key {
-                            prefix = "pre/fix"
-                            files("file")
-                        }
-                    }
+            image("")
+            services("service 1", "")
+            cache {
+                paths("path")
+                key {
+                    prefix = "pre/fix"
+                    files("file")
                 }
             }
         }
 
         // then
-        assertThat(thrown).hasMessage("""
-            Configuration validation failed
-            [default][image] name '' is incorrect
-            [default][service name=''] name '' is incorrect
-            [default][cache][key] prefix value 'pre/fix' can't contain '/' nor '%2F'
-            Validation can be disabled by calling 'gitlabCi(validate = false) {}'""".trimIndent())
-        assertThat(writer.toString()).isEmpty()
+        assertDsl(DefaultDsl.serializer(), testee,
+                """
+                    image:
+                      name: ""
+                    services:
+                    - name: "service 1"
+                    - name: ""
+                    cache:
+                      paths:
+                      - "path"
+                      key:
+                        prefix: "pre/fix"
+                        files:
+                        - "file"
+                    before_script:
+                    - "before 1"
+                    - "before 2"
+                    after_script:
+                    - "after 1"
+                    - "after 2"
+                """.trimIndent(),
+                "[default][image] name '' is incorrect",
+                "[default][service name=''] name '' is incorrect",
+                "[default][cache][key] prefix value 'pre/fix' can't contain '/' nor '%2F'"
+        )
     }
 
     @Test
     fun `should create empty default`() {
         // given
-        gitlabCi(writer = writer) {
-            default {}
-        }
+        val testee = DefaultDsl()
 
         // then
-        assertThat(writer.toString()).isEqualTo(
+        assertDsl(DefaultDsl.serializer(), testee,
                 """
-                    "default": {}
+                    {}
                 """.trimIndent()
         )
     }
@@ -63,31 +72,28 @@ internal class DefaultDslTest : DslTestBase() {
     @Test
     fun `should create full default`() {
         // given
-        gitlabCi(writer = writer) {
-            default {
-                image("testImage")
-                services("testService")
-                cache("testCache")
-                beforeScript("before")
-                afterScript("after")
-            }
+        val testee = DefaultDsl().apply {
+            image("testImage")
+            services("testService")
+            cache("testCache")
+            beforeScript("before")
+            afterScript("after")
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo(
+        assertDsl(DefaultDsl.serializer(), testee,
                 """
-                    "default":
-                      image:
-                        name: "testImage"
-                      services:
-                      - name: "testService"
-                      cache:
-                        paths:
-                        - "testCache"
-                      before_script:
-                      - "before"
-                      after_script:
-                      - "after"
+                    image:
+                      name: "testImage"
+                    services:
+                    - name: "testService"
+                    cache:
+                      paths:
+                      - "testCache"
+                    before_script:
+                    - "before"
+                    after_script:
+                    - "after"
                 """.trimIndent()
         )
     }
@@ -95,24 +101,21 @@ internal class DefaultDslTest : DslTestBase() {
     @Test
     fun `should allow different beforeScript options`() {
         // given
-        gitlabCi(writer = writer) {
-            default {
-                beforeScript {
-                    +"command 1"
-                }
-                beforeScript("command 2")
-                beforeScript(listOf("command 3"))
+        val testee = DefaultDsl().apply {
+            beforeScript {
+                +"command 1"
             }
+            beforeScript("command 2")
+            beforeScript(listOf("command 3"))
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo(
+        assertDsl(DefaultDsl.serializer(), testee,
                 """
-                    "default":
-                      before_script:
-                      - "command 1"
-                      - "command 2"
-                      - "command 3"
+                    before_script:
+                    - "command 1"
+                    - "command 2"
+                    - "command 3"
                 """.trimIndent()
         )
     }
@@ -120,24 +123,21 @@ internal class DefaultDslTest : DslTestBase() {
     @Test
     fun `should allow different afterScript options`() {
         // given
-        gitlabCi(writer = writer) {
-            default {
-                afterScript {
-                    +"command 1"
-                }
-                afterScript("command 2")
-                afterScript(listOf("command 3"))
+        val testee = DefaultDsl().apply {
+            afterScript {
+                +"command 1"
             }
+            afterScript("command 2")
+            afterScript(listOf("command 3"))
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo(
+        assertDsl(DefaultDsl.serializer(), testee,
                 """
-                    "default":
-                      after_script:
-                      - "command 1"
-                      - "command 2"
-                      - "command 3"
+                    after_script:
+                    - "command 1"
+                    - "command 2"
+                    - "command 3"
                 """.trimIndent()
         )
     }
@@ -145,18 +145,15 @@ internal class DefaultDslTest : DslTestBase() {
     @Test
     fun `should allow image by name configuration `() {
         // given
-        gitlabCi(writer = writer) {
-            default {
-                image("image:1")
-            }
+        val testee = DefaultDsl().apply {
+            image("image:1")
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo(
+        assertDsl(DefaultDsl.serializer(), testee,
                 """
-                    "default":
-                      image:
-                        name: "image:1"
+                    image:
+                      name: "image:1"
                 """.trimIndent()
         )
     }
@@ -164,20 +161,17 @@ internal class DefaultDslTest : DslTestBase() {
     @Test
     fun `should allow image by block configuration `() {
         // given
-        gitlabCi(writer = writer) {
-            default {
-                image {
-                    name = "image:1"
-                }
+        val testee = DefaultDsl().apply {
+            image {
+                name = "image:1"
             }
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo(
+        assertDsl(DefaultDsl.serializer(), testee,
                 """
-                    "default":
-                      image:
-                        name: "image:1"
+                    image:
+                      name: "image:1"
                 """.trimIndent()
         )
     }
@@ -185,23 +179,20 @@ internal class DefaultDslTest : DslTestBase() {
     @Test
     fun `should allow image by name and block configuration `() {
         // given
-        gitlabCi(writer = writer) {
-            default {
-                image("image:1") {
-                    entrypoint("entry", "point")
-                }
+        val testee = DefaultDsl().apply {
+            image("image:1") {
+                entrypoint("entry", "point")
             }
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo(
+        assertDsl(DefaultDsl.serializer(), testee,
                 """
-                    "default":
-                      image:
-                        name: "image:1"
-                        entrypoint:
-                        - "entry"
-                        - "point"
+                    image:
+                      name: "image:1"
+                      entrypoint:
+                      - "entry"
+                      - "point"
                 """.trimIndent()
         )
     }
@@ -209,24 +200,21 @@ internal class DefaultDslTest : DslTestBase() {
     @Test
     fun `should allow different services options`() {
         // given
-        gitlabCi(writer = writer) {
-            default {
-                services("ser1")
-                services(listOf("ser2"))
-                services {
-                    service("ser3")
-                }
+        val testee = DefaultDsl().apply {
+            services("ser1")
+            services(listOf("ser2"))
+            services {
+                service("ser3")
             }
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo(
+        assertDsl(DefaultDsl.serializer(), testee,
                 """
-                    "default":
-                      services:
-                      - name: "ser1"
-                      - name: "ser2"
-                      - name: "ser3"
+                    services:
+                    - name: "ser1"
+                    - name: "ser2"
+                    - name: "ser3"
                 """.trimIndent()
         )
     }
@@ -234,25 +222,22 @@ internal class DefaultDslTest : DslTestBase() {
     @Test
     fun `should allow different cache options`() {
         // given
-        gitlabCi(writer = writer) {
-            default {
-                cache {
-                    paths("p1")
-                }
-                cache("p2")
-                cache(listOf("p3"))
+        val testee = DefaultDsl().apply {
+            cache {
+                paths("p1")
             }
+            cache("p2")
+            cache(listOf("p3"))
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo(
+        assertDsl(DefaultDsl.serializer(), testee,
                 """
-                    "default":
-                      cache:
-                        paths:
-                        - "p1"
-                        - "p2"
-                        - "p3"
+                    cache:
+                      paths:
+                      - "p1"
+                      - "p2"
+                      - "p3"
                 """.trimIndent()
         )
     }
@@ -266,31 +251,28 @@ internal class DefaultDslTest : DslTestBase() {
         val beforeScriptDsl = createBeforeScript("before")
         val afterScriptDsl = createAfterScript("after")
 
-        gitlabCi(writer = writer) {
-            default {
-                image = imageDsl
-                services = servicesDsl
-                cache = cacheDsl
-                beforeScript = beforeScriptDsl
-                afterScript = afterScriptDsl
-            }
+        val testee = DefaultDsl().apply {
+            image = imageDsl
+            services = servicesDsl
+            cache = cacheDsl
+            beforeScript = beforeScriptDsl
+            afterScript = afterScriptDsl
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo(
+        assertDsl(DefaultDsl.serializer(), testee,
                 """
-                    "default":
-                      image:
-                        name: "testImage"
-                      services:
-                      - name: "testService"
-                      cache:
-                        paths:
-                        - "testCache"
-                      before_script:
-                      - "before"
-                      after_script:
-                      - "after"
+                    image:
+                      name: "testImage"
+                    services:
+                    - name: "testService"
+                    cache:
+                      paths:
+                      - "testCache"
+                    before_script:
+                    - "before"
+                    after_script:
+                    - "after"
                 """.trimIndent()
         )
     }

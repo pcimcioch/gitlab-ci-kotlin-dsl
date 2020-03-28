@@ -150,6 +150,54 @@ internal class GitlabCiDslTest : DslTestBase() {
     }
 
     @Test
+    fun `should create include from vararg`() {
+        // when
+        gitlabCi(writer = writer) {
+            include("include 1", "include 2")
+        }
+
+        // then
+        assertThat(writer.toString()).isEqualTo("""
+            "include":
+            - local: "include 1"
+            - local: "include 2"
+        """.trimIndent())
+    }
+
+    @Test
+    fun `should create include from list`() {
+        // when
+        gitlabCi(writer = writer) {
+            include(listOf("include 1", "include 2"))
+        }
+
+        // then
+        assertThat(writer.toString()).isEqualTo("""
+            "include":
+            - local: "include 1"
+            - local: "include 2"
+        """.trimIndent())
+    }
+
+    @Test
+    fun `should create include from block`() {
+        // when
+        gitlabCi(writer = writer) {
+            include{
+                local("local 1")
+                remote("remote 1")
+            }
+        }
+
+        // then
+        assertThat(writer.toString()).isEqualTo("""
+            "include":
+            - local: "local 1"
+            - remote: "remote 1"
+        """.trimIndent())
+    }
+
+    @Test
     fun `should create job from name`() {
         // when
         gitlabCi(validate = false, writer = writer) {
@@ -220,6 +268,8 @@ internal class GitlabCiDslTest : DslTestBase() {
                 }
             }
 
+            include("include 1", "include 2")
+
             stages("build", "test", "release")
 
             default {
@@ -254,6 +304,9 @@ internal class GitlabCiDslTest : DslTestBase() {
             "workflow":
               rules:
               - if: "condition"
+            "include":
+            - local: "include 1"
+            - local: "include 2"
             "stages":
             - "build"
             - "test"

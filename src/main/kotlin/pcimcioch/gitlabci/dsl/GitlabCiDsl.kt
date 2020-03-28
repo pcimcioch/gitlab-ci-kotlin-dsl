@@ -7,6 +7,7 @@ import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.default.DefaultDsl
+import pcimcioch.gitlabci.dsl.include.IncludeDsl
 import pcimcioch.gitlabci.dsl.job.JobDsl
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 import pcimcioch.gitlabci.dsl.stage.StagesDsl
@@ -21,6 +22,7 @@ class GitlabCiDsl : DslBase() {
     private var stages: StagesDsl? = null
     private var default: DefaultDsl? = null
     private var workflow: WorkflowDsl? = null
+    private var include: IncludeDsl? = null
 
     fun job(name: String, block: JobDsl.() -> Unit) = addAndReturn(jobs, JobDsl(name)).apply(block)
     operator fun JobDsl.unaryPlus() = this@GitlabCiDsl.jobs.add(this)
@@ -33,24 +35,30 @@ class GitlabCiDsl : DslBase() {
 
     fun workflow(block: WorkflowDsl.() -> Unit) = ensureWorkflow().apply(block)
 
+    fun include(block: IncludeDsl.() -> Unit) = ensureInclude().apply(block)
+    fun include(vararg elements: String) = include(elements.toList())
+    fun include(elements: Iterable<String>) = ensureInclude().apply { elements.forEach { local(it) } }
+
     fun pages(block: JobDsl.() -> Unit) = job("pages") {
         artifacts("public")
         only("master")
     }.apply(block)
 
     override fun validate(errors: MutableList<String>) {
-        addErrors(errors, "", workflow, stages, default)
+        addErrors(errors, "", workflow, stages, default, include)
         addErrors(errors, "", jobs)
     }
 
     private fun ensureStages() = stages ?: StagesDsl().also { stages = it }
     private fun ensureDefault() = default ?: DefaultDsl().also { default = it }
     private fun ensureWorkflow() = workflow ?: WorkflowDsl().also { workflow = it }
+    private fun ensureInclude() = include ?: IncludeDsl().also { include = it }
 
     private fun asMap(): Map<String, DslBase> {
         val map = mutableMapOf<String, DslBase>()
 
         workflow?.also { map["workflow"] = it }
+        include?.also { map["include"] = it }
         stages?.also { map["stages"] = it }
         default?.also { map["default"] = it }
         jobs.forEach { map[it.name] = it }

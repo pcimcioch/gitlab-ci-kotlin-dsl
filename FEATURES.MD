@@ -90,6 +90,15 @@ gitlabCi {
             // more details in 'rules' section of this document
         }
     }
+
+    // local include can be added using varargs
+    include("file 1", "file 2")
+    // or any iterable
+    include(listOf("file 3", "file 4"))
+    // or block
+    include {
+        // more details in 'include' section of this document
+    }
     
     // stages can be added using varargs
     stages("stage 1", "stage 2")
@@ -1148,7 +1157,22 @@ gitlabCi {
 
 <https://docs.gitlab.com/ee/ci/yaml/#include>  
 
-Not supported yet
+```kotlin
+gitlabCi {
+    // local include can be added using varargs
+    include("file 1", "file 2")
+    // or any iterable
+    include(listOf("file 3", "file 4"))
+    // or block
+    include {
+        local("localFile")
+        file("project", "file")
+        file("project", "file", "ref")
+        template("template")
+        remote("remoteFile")
+    }
+}
+```
 
 ## extends
 

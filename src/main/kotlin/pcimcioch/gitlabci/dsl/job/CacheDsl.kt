@@ -6,14 +6,12 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.DslBase
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.MultiTypeSerializer
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
 @Serializable
-class CacheDsl : DslBase {
+class CacheDsl : DslBase() {
     var paths: MutableSet<String>? = null
     var untracked: Boolean? = null
     var policy: CachePolicy? = null
@@ -54,6 +52,12 @@ class CacheDsl : DslBase {
             mapOf(
                     String::class to String.serializer(),
                     CacheKeyDsl::class to CacheKeyDsl.serializer()))
+
+    companion object {
+        init {
+            addSerializer(CacheDsl::class, serializer())
+        }
+    }
 }
 
 fun createCache(block: CacheDsl.() -> Unit) = CacheDsl().apply(block)
@@ -61,7 +65,7 @@ fun createCache(vararg elements: String) = createCache(elements.toList())
 fun createCache(elements: Iterable<String>) = CacheDsl().apply { paths(elements) }
 
 @Serializable
-class CacheKeyDsl : DslBase {
+class CacheKeyDsl : DslBase() {
     var prefix: String? = null
     var files: MutableSet<String>? = null
 
@@ -79,6 +83,12 @@ class CacheKeyDsl : DslBase {
     }
 
     private fun ensureFiles() = files ?: mutableSetOf<String>().also { files = it }
+
+    companion object {
+        init {
+            addSerializer(CacheKeyDsl::class, serializer())
+        }
+    }
 }
 
 fun createCacheKey(block: CacheKeyDsl.() -> Unit) = CacheKeyDsl().apply(block)

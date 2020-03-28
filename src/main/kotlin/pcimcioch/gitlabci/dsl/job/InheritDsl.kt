@@ -12,7 +12,7 @@ import pcimcioch.gitlabci.dsl.serializer.MultiTypeSerializer
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
 @Serializable
-class InheritDsl : DslBase {
+class InheritDsl : DslBase() {
     @Transient
     private var defaultBoolean: Boolean? = null
 
@@ -71,6 +71,12 @@ class InheritDsl : DslBase {
             mapOf(
                     Boolean::class to Boolean.serializer(),
                     Set::class to InheritDefaultType.InheritDefaultTypeSerializer.set))
+
+    companion object {
+        init {
+            addSerializer(InheritDsl::class, serializer())
+        }
+    }
 }
 
 fun createInherit(block: InheritDsl.() -> Unit) = InheritDsl().apply(block)

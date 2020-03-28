@@ -4,9 +4,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import pcimcioch.gitlabci.dsl.DslBase
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
-import pcimcioch.gitlabci.dsl.DslBase.Companion.isEmpty
 import pcimcioch.gitlabci.dsl.Duration
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
@@ -15,7 +12,7 @@ import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 class JobDsl(
         @Transient
         val name: String = ""
-) : DslBase {
+) : DslBase() {
     var extends: MutableList<String>? = null
     var image: ImageDsl? = null
     var stage: String? = null
@@ -167,6 +164,12 @@ class JobDsl(
 
     private object Validation {
         val RESTRICTED_NAMES = listOf("image", "services", "stages", "types", "before_script", "after_script", "variables", "cache", "include")
+    }
+
+    companion object {
+        init {
+            addSerializer(JobDsl::class, serializer())
+        }
     }
 }
 

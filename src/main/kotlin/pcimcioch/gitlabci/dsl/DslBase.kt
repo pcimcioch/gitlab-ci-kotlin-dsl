@@ -1,11 +1,22 @@
 package pcimcioch.gitlabci.dsl
 
-// TODO maybe serializable could be on this level?
-interface DslBase {
+import kotlinx.serialization.Decoder
+import kotlinx.serialization.Encoder
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.PrimitiveDescriptor
+import kotlinx.serialization.PrimitiveKind
+import kotlinx.serialization.Serializable
+import kotlin.reflect.KClass
 
-    fun validate(errors: MutableList<String>) {}
+@GitlabCiDslMarker
+@Serializable(with = DslBase.DslBaseSerializer::class)
+abstract class DslBase {
+
+    open fun validate(errors: MutableList<String>) {}
 
     companion object {
+        private val serializers: MutableMap<KClass<out DslBase>, KSerializer<out DslBase>> = mutableMapOf()
+
         internal fun addError(errors: MutableList<String>, condition: Boolean?, message: String) {
             if (condition == true) {
                 errors.add(message)
@@ -28,5 +39,32 @@ interface DslBase {
         }
 
         internal fun isEmpty(tested: String?) = (tested == null || "" == tested)
+
+        internal fun <T : DslBase> addSerializer(clazz: KClass<T>, serializer: KSerializer<T>) {
+            serializers[clazz] = serializer
+        }
+    }
+
+    object DslBaseSerializer: KSerializer<DslBase> {
+        override val descriptor = PrimitiveDescriptor("DslBase", PrimitiveKind.STRING)
+
+        override fun deserialize(decoder: Decoder): DslBase {
+            throw IllegalStateException(descriptor.serialName)
+        }
+
+        override fun serialize(encoder: Encoder, value: DslBase) {
+            getSerializer(value).serialize(encoder, value)
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        private fun <T : DslBase> getSerializer(value: T): KSerializer<T> {
+            for (serializer in serializers) {
+                if (serializer.key.isInstance(value)) {
+                    return serializer.value as KSerializer<T>
+                }
+            }
+
+            throw IllegalStateException("No serializer found for value of type '${value.javaClass.kotlin.qualifiedName}'")
+        }
     }
 }

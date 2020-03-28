@@ -7,13 +7,18 @@ import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
 @Serializable(with = AfterScriptDsl.AfterScriptDslSerializer::class)
-class AfterScriptDsl : DslBase {
+class AfterScriptDsl : DslBase() {
     var commands: MutableList<String> = mutableListOf()
 
     fun exec(command: String) = commands.add(command)
     operator fun String.unaryPlus() = this@AfterScriptDsl.commands.add(this)
 
     object AfterScriptDslSerializer : ValueSerializer<AfterScriptDsl, List<String>>(String.serializer().list, AfterScriptDsl::commands)
+    companion object {
+        init {
+            addSerializer(AfterScriptDsl::class, serializer())
+        }
+    }
 }
 
 fun createAfterScript(block: AfterScriptDsl.() -> Unit) = AfterScriptDsl().apply(block)

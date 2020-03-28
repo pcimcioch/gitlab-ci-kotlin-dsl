@@ -7,11 +7,16 @@ import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
 @Serializable(with = StagesDsl.StagesDslSerializer::class)
-class StagesDsl : DslBase {
+class StagesDsl : DslBase() {
     var stages: MutableList<String> = mutableListOf()
 
     fun stage(stage: String) = stages.add(stage)
     operator fun String.unaryPlus() = this@StagesDsl.stages.add(this)
 
     object StagesDslSerializer : ValueSerializer<StagesDsl, List<String>>(String.serializer().list, StagesDsl::stages)
+    companion object {
+        init {
+            addSerializer(StagesDsl::class, serializer())
+        }
+    }
 }

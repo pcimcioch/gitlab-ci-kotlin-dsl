@@ -3,13 +3,12 @@ package pcimcioch.gitlabci.dsl.job
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.Duration
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
 @Serializable
-class ArtifactsDsl : DslBase {
+class ArtifactsDsl : DslBase() {
     var name: String? = null
     @SerialName("expose_as")
     var exposeAs: String? = null
@@ -32,6 +31,12 @@ class ArtifactsDsl : DslBase {
 
     private fun ensureReports() = reports ?: ArtifactsReportsDsl().also { reports = it }
     private fun ensurePaths() = paths ?: mutableSetOf<String>().also { paths = it }
+
+    companion object {
+        init {
+            addSerializer(ArtifactsDsl::class, serializer())
+        }
+    }
 }
 
 fun createArtifacts(block: ArtifactsDsl.() -> Unit) = ArtifactsDsl().apply(block)
@@ -50,7 +55,7 @@ enum class WhenUploadType(
 }
 
 @Serializable
-class ArtifactsReportsDsl : DslBase {
+class ArtifactsReportsDsl : DslBase() {
     var junit: MutableSet<String>? = null
     var dotenv: MutableSet<String>? = null
     var codequality: MutableSet<String>? = null
@@ -107,6 +112,12 @@ class ArtifactsReportsDsl : DslBase {
     private fun ensureLicenseScanning() = licenseScanning ?: mutableSetOf<String>().also { licenseScanning = it }
     private fun ensurePerformance() = performance ?: mutableSetOf<String>().also { performance = it }
     private fun ensureMetrics() = metrics ?: mutableSetOf<String>().also { metrics = it }
+
+    companion object {
+        init {
+            addSerializer(ArtifactsReportsDsl::class, serializer())
+        }
+    }
 }
 
 fun createArtifactsReports(block: ArtifactsReportsDsl.() -> Unit) = ArtifactsReportsDsl().apply(block)

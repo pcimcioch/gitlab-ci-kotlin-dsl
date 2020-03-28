@@ -2,17 +2,12 @@ package pcimcioch.gitlabci.dsl
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
-import kotlinx.serialization.PrimitiveDescriptor
-import kotlinx.serialization.PrimitiveKind
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addAndReturn
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.default.DefaultDsl
 import pcimcioch.gitlabci.dsl.job.JobDsl
-import pcimcioch.gitlabci.dsl.serializer.MultiTypeSerializer
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 import pcimcioch.gitlabci.dsl.stage.StagesDsl
 import pcimcioch.gitlabci.dsl.workflow.WorkflowDsl
@@ -21,7 +16,7 @@ import java.io.Writer
 import kotlin.collections.set
 
 @Serializable(with = GitlabCiDsl.GitlabCiDslSerializer::class)
-class GitlabCiDsl : DslBase {
+class GitlabCiDsl : DslBase() {
     private val jobs: MutableList<JobDsl> = mutableListOf()
     private var stages: StagesDsl? = null
     private var default: DefaultDsl? = null
@@ -63,15 +58,12 @@ class GitlabCiDsl : DslBase {
         return map
     }
 
-    object ElementSerializer : MultiTypeSerializer<DslBase>(
-            PrimitiveDescriptor("Elements", PrimitiveKind.STRING),
-            mapOf(
-                    JobDsl::class to JobDsl.serializer(),
-                    StagesDsl::class to StagesDsl.serializer(),
-                    DefaultDsl::class to DefaultDsl.serializer(),
-                    WorkflowDsl::class to WorkflowDsl.serializer()))
-
-    object GitlabCiDslSerializer : ValueSerializer<GitlabCiDsl, Map<String, DslBase>>(MapSerializer(String.serializer(), ElementSerializer), GitlabCiDsl::asMap)
+    object GitlabCiDslSerializer : ValueSerializer<GitlabCiDsl, Map<String, DslBase>>(MapSerializer(String.serializer(), DslBase.serializer()), GitlabCiDsl::asMap)
+    companion object {
+        init {
+            addSerializer(GitlabCiDsl::class, serializer())
+        }
+    }
 }
 
 fun gitlabCi(validate: Boolean = true, writer: Writer? = null, block: GitlabCiDsl.() -> Unit) {

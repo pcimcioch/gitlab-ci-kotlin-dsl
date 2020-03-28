@@ -4,11 +4,10 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.list
 import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.DslBase
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
 @Serializable(with = ScriptDsl.ScriptDslSerializer::class)
-class ScriptDsl : DslBase {
+class ScriptDsl : DslBase() {
     var commands: MutableList<String> = mutableListOf()
 
     fun exec(command: String) = commands.add(command)
@@ -19,6 +18,11 @@ class ScriptDsl : DslBase {
     }
 
     object ScriptDslSerializer : ValueSerializer<ScriptDsl, List<String>>(String.serializer().list, ScriptDsl::commands)
+    companion object {
+        init {
+            addSerializer(ScriptDsl::class, serializer())
+        }
+    }
 }
 
 fun createScript(block: ScriptDsl.() -> Unit) = ScriptDsl().apply(block)

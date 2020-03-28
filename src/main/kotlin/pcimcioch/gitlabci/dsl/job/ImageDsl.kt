@@ -2,13 +2,11 @@ package pcimcioch.gitlabci.dsl.job
 
 import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
-import pcimcioch.gitlabci.dsl.DslBase.Companion.isEmpty
 
 @Serializable
 class ImageDsl(
         var name: String? = null
-) : DslBase {
+) : DslBase() {
     var entrypoint: MutableList<String>? = null
 
     fun entrypoint(vararg elements: String) = entrypoint(elements.toList())
@@ -19,6 +17,12 @@ class ImageDsl(
     }
 
     private fun ensureEntrypoint() = entrypoint ?: mutableListOf<String>().also { entrypoint = it }
+
+    companion object {
+        init {
+            addSerializer(ImageDsl::class, serializer())
+        }
+    }
 }
 
 fun createImage(name: String) = ImageDsl(name)

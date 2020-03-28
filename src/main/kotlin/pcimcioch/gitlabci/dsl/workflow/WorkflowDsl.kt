@@ -2,11 +2,10 @@ package pcimcioch.gitlabci.dsl.workflow
 
 import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.job.RuleListDsl
 
 @Serializable
-class WorkflowDsl : DslBase {
+class WorkflowDsl : DslBase() {
     var rules: RuleListDsl? = null
 
     fun rules(block: RuleListDsl.() -> Unit) = ensureRules().apply(block)
@@ -16,4 +15,10 @@ class WorkflowDsl : DslBase {
     }
 
     private fun ensureRules() = rules ?: RuleListDsl().also { rules = it }
+
+    companion object {
+        init {
+            addSerializer(WorkflowDsl::class, serializer())
+        }
+    }
 }

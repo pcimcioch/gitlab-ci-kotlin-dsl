@@ -4,13 +4,12 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.DslBase
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
 @Serializable(with = VariablesDsl.VariablesDslSerializer::class)
-class VariablesDsl : DslBase {
+class VariablesDsl : DslBase() {
     var variables: MutableMap<String, String> = mutableMapOf()
 
     fun add(name: String, value: Any) = variables.put(name, value.toString())
@@ -35,6 +34,11 @@ class VariablesDsl : DslBase {
     }
 
     object VariablesDslSerializer : ValueSerializer<VariablesDsl, Map<String, String>>(MapSerializer(String.serializer(), String.serializer()), VariablesDsl::variables)
+    companion object {
+        init {
+            addSerializer(VariablesDsl::class, serializer())
+        }
+    }
 }
 
 fun createVariables(block: VariablesDsl.() -> Unit) = VariablesDsl().apply(block)

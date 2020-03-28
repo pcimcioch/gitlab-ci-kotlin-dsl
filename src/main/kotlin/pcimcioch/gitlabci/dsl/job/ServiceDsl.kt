@@ -3,16 +3,12 @@ package pcimcioch.gitlabci.dsl.job
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.list
 import pcimcioch.gitlabci.dsl.DslBase
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addAndReturn
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
-import pcimcioch.gitlabci.dsl.DslBase.Companion.isEmpty
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
 @Serializable
 class ServiceDsl(
         var name: String? = null
-) : DslBase {
+) : DslBase() {
     var alias: String? = null
     var cmd: MutableList<String>? = null
     var entrypoint: MutableList<String>? = null
@@ -29,6 +25,12 @@ class ServiceDsl(
 
     private fun ensureEntrypoint() = entrypoint ?: mutableListOf<String>().also { entrypoint = it }
     private fun ensureCmd() = cmd ?: mutableListOf<String>().also { cmd = it }
+
+    companion object {
+        init {
+            addSerializer(ServiceDsl::class, serializer())
+        }
+    }
 }
 
 fun createService(block: ServiceDsl.() -> Unit) = ServiceDsl().apply(block)
@@ -36,7 +38,7 @@ fun createService(name: String) = ServiceDsl(name)
 fun createService(name: String, block: ServiceDsl.() -> Unit) = ServiceDsl(name).apply(block)
 
 @Serializable(with = ServiceListDsl.ServiceListDslSerializer::class)
-class ServiceListDsl : DslBase {
+class ServiceListDsl : DslBase() {
     private val services: MutableList<ServiceDsl> = mutableListOf()
 
     fun service(block: ServiceDsl.() -> Unit) = addAndReturn(services, ServiceDsl().apply(block))
@@ -49,6 +51,11 @@ class ServiceListDsl : DslBase {
     }
 
     object ServiceListDslSerializer : ValueSerializer<ServiceListDsl, List<ServiceDsl>>(ServiceDsl.serializer().list, ServiceListDsl::services)
+    companion object {
+        init {
+            addSerializer(ServiceListDsl::class, serializer())
+        }
+    }
 }
 
 fun createServices(block: ServiceListDsl.() -> Unit) = ServiceListDsl().apply(block)

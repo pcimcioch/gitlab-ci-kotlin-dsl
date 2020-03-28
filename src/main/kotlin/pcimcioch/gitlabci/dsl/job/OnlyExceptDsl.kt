@@ -6,7 +6,7 @@ import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
 @Serializable
-class OnlyExceptDsl : DslBase {
+class OnlyExceptDsl : DslBase() {
     var refs: MutableSet<String>? = null
     var changes: MutableSet<String>? = null
     var variables: MutableSet<String>? = null
@@ -38,6 +38,12 @@ class OnlyExceptDsl : DslBase {
     private fun ensureRefs() = refs ?: mutableSetOf<String>().also { refs = it }
     private fun ensureVariables() = variables ?: mutableSetOf<String>().also { variables = it }
     private fun ensureChanges() = changes ?: mutableSetOf<String>().also { changes = it }
+
+    companion object {
+        init {
+            addSerializer(OnlyExceptDsl::class, serializer())
+        }
+    }
 }
 
 fun createOnlyExcept(block: OnlyExceptDsl.() -> Unit) = OnlyExceptDsl().apply(block)

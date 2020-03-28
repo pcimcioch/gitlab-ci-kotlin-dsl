@@ -3,22 +3,24 @@ package pcimcioch.gitlabci.dsl.job
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.list
 import pcimcioch.gitlabci.dsl.DslBase
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addAndReturn
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
-import pcimcioch.gitlabci.dsl.DslBase.Companion.isEmpty
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
 @Serializable
 class NeedJobDsl(
         var job: String? = null
-) : DslBase {
+) : DslBase() {
     var artifacts: Boolean? = null
     var project: String? = null
     var ref: String? = null
 
     override fun validate(errors: MutableList<String>) {
         addError(errors, isEmpty(job), "[need job='$job'] job '$job' is incorrect")
+    }
+
+    companion object {
+        init {
+            addSerializer(NeedJobDsl::class, serializer())
+        }
     }
 }
 
@@ -29,7 +31,7 @@ fun createNeedJob(job: JobDsl) = NeedJobDsl(job.name)
 fun createNeedJob(job: JobDsl, block: NeedJobDsl.() -> Unit) = NeedJobDsl(job.name).apply(block)
 
 @Serializable(with = NeedsListDsl.NeedsListDslSerializer::class)
-class NeedsListDsl : DslBase {
+class NeedsListDsl : DslBase() {
     private val needs: MutableList<NeedJobDsl> = mutableListOf()
 
     fun needJob(block: NeedJobDsl.() -> Unit) = addAndReturn(needs, NeedJobDsl().apply(block))
@@ -44,6 +46,11 @@ class NeedsListDsl : DslBase {
     }
 
     object NeedsListDslSerializer : ValueSerializer<NeedsListDsl, List<NeedJobDsl>>(NeedJobDsl.serializer().list, NeedsListDsl::needs)
+    companion object {
+        init {
+            addSerializer(NeedsListDsl::class, serializer())
+        }
+    }
 }
 
 fun createNeeds(block: NeedsListDsl.() -> Unit) = NeedsListDsl().apply(block)

@@ -3,9 +3,6 @@ package pcimcioch.gitlabci.dsl.job
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
-import pcimcioch.gitlabci.dsl.DslBase.Companion.isEmpty
 import pcimcioch.gitlabci.dsl.Duration
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
@@ -13,7 +10,7 @@ import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 @Serializable
 class EnvironmentDsl(
         var name: String? = null
-) : DslBase {
+) : DslBase() {
     var url: String? = null
 
     @SerialName("on_stop")
@@ -46,6 +43,12 @@ class EnvironmentDsl(
     object Validation {
         val NAME_PATTERN = Regex("[a-zA-Z0-9_{}\$/ -]*")
     }
+
+    companion object {
+        init {
+            addSerializer(EnvironmentDsl::class, serializer())
+        }
+    }
 }
 
 fun createEnvironment(name: String) = EnvironmentDsl(name)
@@ -55,7 +58,13 @@ fun createEnvironment(name: String, block: EnvironmentDsl.() -> Unit) = Environm
 @Serializable
 class KubernetesEnvironmentDsl(
         var namespace: String? = null
-) : DslBase
+) : DslBase() {
+    companion object {
+        init {
+            addSerializer(KubernetesEnvironmentDsl::class, serializer())
+        }
+    }
+}
 
 fun createKubernetesEnvironment(namespace: String) = KubernetesEnvironmentDsl(namespace)
 fun createKubernetesEnvironment(block: KubernetesEnvironmentDsl.() -> Unit) = KubernetesEnvironmentDsl().apply(block)

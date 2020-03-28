@@ -20,7 +20,7 @@ open class MultiTypeSerializer<S: Any>(
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T : Any> getSerializer(value: T): KSerializer<T> {
+    private fun <T : S> getSerializer(value: T): KSerializer<T> {
         for (serializer in serializers) {
             if (serializer.key.isInstance(value)) {
                 return serializer.value as KSerializer<T>

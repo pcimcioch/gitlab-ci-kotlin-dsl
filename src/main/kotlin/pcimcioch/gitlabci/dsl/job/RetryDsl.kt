@@ -3,14 +3,13 @@ package pcimcioch.gitlabci.dsl.job
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
-import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
 @Serializable
 class RetryDsl(
         var max: Int? = null
-) : DslBase {
+) : DslBase() {
     @SerialName("when")
     var whenRetry: MutableSet<WhenRetryType>? = null
 
@@ -22,6 +21,12 @@ class RetryDsl(
     }
 
     private fun ensureWhenRetry() = whenRetry ?: mutableSetOf<WhenRetryType>().also { whenRetry = it }
+
+    companion object {
+        init {
+            addSerializer(RetryDsl::class, serializer())
+        }
+    }
 }
 
 fun createRetry(max: Int) = RetryDsl(max)

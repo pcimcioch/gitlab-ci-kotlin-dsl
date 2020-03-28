@@ -8,12 +8,8 @@ import pcimcioch.gitlabci.dsl.Duration
 import pcimcioch.gitlabci.dsl.gitlabCi
 import pcimcioch.gitlabci.dsl.job.WhenRunType
 import pcimcioch.gitlabci.dsl.job.createRules
-import java.io.StringWriter
 
 internal class WorkflowDslTest : DslTestBase() {
-
-    // TODO move to TestBase?
-    private val writer = StringWriter()
 
     @Test
     fun `should validate nested objects`() {

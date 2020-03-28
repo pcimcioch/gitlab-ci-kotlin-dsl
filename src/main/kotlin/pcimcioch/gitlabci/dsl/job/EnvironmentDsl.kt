@@ -5,10 +5,10 @@ import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
+import pcimcioch.gitlabci.dsl.DslBase.Companion.isEmpty
 import pcimcioch.gitlabci.dsl.Duration
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.StringRepresentation
-import pcimcioch.gitlabci.dsl.isEmpty
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
 @GitlabCiDslMarker
@@ -40,7 +40,7 @@ class EnvironmentDsl(
         addError(errors, isEmpty(name), "$prefix name '$name' is incorrect. Cannot be empty")
         addError(errors, name?.matches(Validation.NAME_PATTERN) == false, "$prefix name '$name' is incorrect. Contains forbidden characters")
 
-        addErrors(errors, kubernetes, prefix)
+        addErrors(errors, prefix, kubernetes)
     }
 
     private fun ensureKubernetes() = kubernetes ?: KubernetesEnvironmentDsl().also { kubernetes = it }

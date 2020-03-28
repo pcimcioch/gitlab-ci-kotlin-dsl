@@ -3,11 +3,11 @@ package pcimcioch.gitlabci.dsl.job
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.list
 import pcimcioch.gitlabci.dsl.DslBase
+import pcimcioch.gitlabci.dsl.DslBase.Companion.addAndReturn
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
+import pcimcioch.gitlabci.dsl.DslBase.Companion.isEmpty
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
-import pcimcioch.gitlabci.dsl.addAndReturn
-import pcimcioch.gitlabci.dsl.isEmpty
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
 @GitlabCiDslMarker
@@ -43,7 +43,7 @@ class NeedsListDsl : DslBase {
     operator fun NeedJobDsl.unaryPlus() = this@NeedsListDsl.needs.add(this)
 
     override fun validate(errors: MutableList<String>) {
-        addErrors(errors, needs, "")
+        addErrors(errors, "", needs)
     }
 
     object NeedsListDslSerializer : ValueSerializer<NeedsListDsl, List<NeedJobDsl>>(NeedJobDsl.serializer().list, NeedsListDsl::needs)

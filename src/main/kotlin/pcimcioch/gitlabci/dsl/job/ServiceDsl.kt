@@ -3,11 +3,11 @@ package pcimcioch.gitlabci.dsl.job
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.list
 import pcimcioch.gitlabci.dsl.DslBase
+import pcimcioch.gitlabci.dsl.DslBase.Companion.addAndReturn
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
+import pcimcioch.gitlabci.dsl.DslBase.Companion.isEmpty
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
-import pcimcioch.gitlabci.dsl.addAndReturn
-import pcimcioch.gitlabci.dsl.isEmpty
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
 @GitlabCiDslMarker
@@ -48,7 +48,7 @@ class ServiceListDsl : DslBase {
     operator fun ServiceDsl.unaryPlus() = this@ServiceListDsl.services.add(this)
 
     override fun validate(errors: MutableList<String>) {
-        addErrors(errors, services, "")
+        addErrors(errors, "", services)
     }
 
     object ServiceListDslSerializer : ValueSerializer<ServiceListDsl, List<ServiceDsl>>(ServiceDsl.serializer().list, ServiceListDsl::services)

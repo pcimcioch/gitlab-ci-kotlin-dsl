@@ -4,11 +4,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 import pcimcioch.gitlabci.dsl.gitlabCi
-import java.io.StringWriter
 
 internal class StagesDslTest : DslTestBase() {
-
-    private val writer = StringWriter()
 
     @Test
     fun `should create stages from block`() {

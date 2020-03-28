@@ -45,13 +45,7 @@ class DefaultDsl : DslBase {
     fun cache(elements: Iterable<String>) = ensureCache().apply { paths(elements) }
 
     override fun validate(errors: MutableList<String>) {
-        val prefix = "[default]"
-
-        addErrors(errors, beforeScript, prefix)
-        addErrors(errors, afterScript, prefix)
-        addErrors(errors, image, prefix)
-        addErrors(errors, services, prefix)
-        addErrors(errors, cache, prefix)
+        addErrors(errors, "[default]", beforeScript, afterScript, image, services, cache)
     }
 
     private fun ensureImage() = image ?: ImageDsl().also { image = it }

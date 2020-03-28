@@ -10,11 +10,8 @@ import pcimcioch.gitlabci.dsl.job.createBeforeScript
 import pcimcioch.gitlabci.dsl.job.createCache
 import pcimcioch.gitlabci.dsl.job.createImage
 import pcimcioch.gitlabci.dsl.job.createServices
-import java.io.StringWriter
 
 internal class DefaultDslTest : DslTestBase() {
-
-    private val writer = StringWriter()
 
     @Test
     fun `should validate nested objects`() {

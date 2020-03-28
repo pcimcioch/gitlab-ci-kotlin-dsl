@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
+import pcimcioch.gitlabci.dsl.DslBase.Companion.addAndReturn
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.default.DefaultDsl
 import pcimcioch.gitlabci.dsl.job.JobDsl
@@ -44,10 +45,8 @@ class GitlabCiDsl : DslBase {
     }.apply(block)
 
     override fun validate(errors: MutableList<String>) {
-        addErrors(errors, workflow, "")
-        addErrors(errors, stages, "")
-        addErrors(errors, default, "")
-        addErrors(errors, jobs, "")
+        addErrors(errors, "", workflow, stages, default)
+        addErrors(errors, "", jobs)
     }
 
     private fun ensureStages() = stages ?: StagesDsl().also { stages = it }

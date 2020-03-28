@@ -6,6 +6,8 @@ import java.io.StringWriter
 
 internal abstract class DslTestBase {
 
+    internal val writer = StringWriter()
+
     internal fun <T : DslBase> assertDsl(strategy: SerializationStrategy<T>, testee: T, expectedYaml: String, vararg validationErrors: String) {
         val yaml = serialize(strategy, testee)
         assertThat(yaml).isEqualTo(expectedYaml)
@@ -16,7 +18,6 @@ internal abstract class DslTestBase {
     }
 
     private fun <T : DslBase> serialize(strategy: SerializationStrategy<T>, value: T): String {
-        val writer = StringWriter()
         writer.use { serializeToYaml(strategy, value, writer) }
         return writer.toString()
     }

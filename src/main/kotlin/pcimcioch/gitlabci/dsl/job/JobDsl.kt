@@ -6,10 +6,10 @@ import kotlinx.serialization.Transient
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
+import pcimcioch.gitlabci.dsl.DslBase.Companion.isEmpty
 import pcimcioch.gitlabci.dsl.Duration
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.StringRepresentation
-import pcimcioch.gitlabci.dsl.isEmpty
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
 @GitlabCiDslMarker
@@ -145,21 +145,7 @@ class JobDsl(
         addError(errors, script == null, "$prefix at least one script command must be configured")
         addError(errors, parallel != null && (parallel!! < 2 || parallel!! > 50), "$prefix parallel must be in range [2, 50]")
 
-        addErrors(errors, beforeScript, prefix)
-        addErrors(errors, afterScript, prefix)
-        addErrors(errors, inherit, prefix)
-        addErrors(errors, retry, prefix)
-        addErrors(errors, image, prefix)
-        addErrors(errors, script, prefix)
-        addErrors(errors, services, prefix)
-        addErrors(errors, needs, prefix)
-        addErrors(errors, variables, prefix)
-        addErrors(errors, cache, prefix)
-        addErrors(errors, artifacts, prefix)
-        addErrors(errors, only, prefix)
-        addErrors(errors, except, prefix)
-        addErrors(errors, rules, prefix)
-        addErrors(errors, environment, prefix)
+        addErrors(errors, prefix, beforeScript, afterScript, inherit, retry, image, script, services, needs, variables, cache, artifacts, only, except, rules, environment)
     }
 
     private fun ensureInherit() = inherit ?: InheritDsl().also { inherit = it }

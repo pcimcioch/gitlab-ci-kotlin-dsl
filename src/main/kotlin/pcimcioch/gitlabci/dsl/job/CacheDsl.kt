@@ -45,7 +45,7 @@ class CacheDsl : DslBase {
     }
 
     override fun validate(errors: MutableList<String>) {
-        addErrors(errors, keyDsl, "[cache]")
+        addErrors(errors, "[cache]", keyDsl)
     }
 
     private fun ensureKeyDsl(): CacheKeyDsl = keyDsl ?: CacheKeyDsl().also { keyDsl = it }

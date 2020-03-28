@@ -4,11 +4,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.list
 import pcimcioch.gitlabci.dsl.DslBase
+import pcimcioch.gitlabci.dsl.DslBase.Companion.addAndReturn
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.Duration
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
-import pcimcioch.gitlabci.dsl.addAndReturn
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
 @GitlabCiDslMarker
@@ -52,7 +52,7 @@ class RuleListDsl : DslBase {
     operator fun RuleDsl.unaryPlus() = this@RuleListDsl.rules.add(this)
 
     override fun validate(errors: MutableList<String>) {
-        addErrors(errors, rules, "")
+        addErrors(errors, "", rules)
     }
 
     object RuleListDslSerializer : ValueSerializer<RuleListDsl, List<RuleDsl>>(RuleDsl.serializer().list, RuleListDsl::rules)

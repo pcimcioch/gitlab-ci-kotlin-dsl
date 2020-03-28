@@ -11,18 +11,21 @@ interface DslBase {
             }
         }
 
-        internal fun addErrors(errors: MutableList<String>, objs: Collection<DslBase>, messagePrefix: String) {
-            objs.forEach { addErrors(errors, it, messagePrefix) }
+        internal fun addErrors(errors: MutableList<String>, messagePrefix: String, objs: Collection<DslBase>) {
+            objs.forEach { addErrors(errors, messagePrefix, it) }
         }
 
-        // TODO get vararg of dsl bases
-        internal fun addErrors(errors: MutableList<String>, obj: DslBase?, messagePrefix: String) {
-            if (obj == null) {
-                return
-            }
+        internal fun addErrors(errors: MutableList<String>, messagePrefix: String, vararg obj: DslBase?) {
             val objErrors = mutableListOf<String>()
-            obj.validate(objErrors)
+            obj.forEach { it?.validate(objErrors) }
             objErrors.forEach { errors.add("$messagePrefix$it") }
         }
+
+        internal fun <T> addAndReturn(list: MutableList<T>, element: T): T {
+            list.add(element)
+            return element
+        }
+
+        internal fun isEmpty(tested: String?) = (tested == null || "" == tested)
     }
 }

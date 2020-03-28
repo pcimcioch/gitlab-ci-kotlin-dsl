@@ -29,7 +29,7 @@ class ArtifactsDsl : DslBase {
     fun reports(block: ArtifactsReportsDsl.() -> Unit) = ensureReports().apply(block)
 
     override fun validate(errors: MutableList<String>) {
-        addErrors(errors, reports, "[artifacts]")
+        addErrors(errors, "[artifacts]", reports)
     }
 
     private fun ensureReports() = reports ?: ArtifactsReportsDsl().also { reports = it }

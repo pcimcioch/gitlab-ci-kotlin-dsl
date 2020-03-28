@@ -14,7 +14,7 @@ class WorkflowDsl : DslBase {
     fun rules(block: RuleListDsl.() -> Unit) = ensureRules().apply(block)
 
     override fun validate(errors: MutableList<String>) {
-        addErrors(errors, rules, "[workflow]")
+        addErrors(errors, "[workflow]", rules)
     }
 
     private fun ensureRules() = rules ?: RuleListDsl().also { rules = it }

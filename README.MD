@@ -24,7 +24,7 @@ Project is currently in development and is not available in maven central yet
 | stage          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#stage>                          |
 | only           | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#onlyexcept-basic>               |
 | except         | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#onlyexcept-basic>               |
-| rules          | No        | <https://docs.gitlab.com/ee/ci/yaml/#rules>                          | [//]: # (1)
+| rules          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#rules>                          |
 | tags           | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#tags>                           |
 | allow_failure  | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#allow_failure>                  |
 | when           | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#when>                           |

@@ -187,6 +187,12 @@ internal class JobDslTest : DslTestBase() {
                 }
             }
             artifacts("artifact")
+            rules {
+                rule {
+                    whenRun = WhenRunType.MANUAL
+                    startIn = Duration(hours = 1)
+                }
+            }
             environment("env#")
         }
 
@@ -215,6 +221,9 @@ internal class JobDslTest : DslTestBase() {
                     artifacts:
                       paths:
                       - "artifact"
+                    rules:
+                    - when: "manual"
+                      start_in: "1 hr"
                     before_script:
                     - "before 1"
                     - "before 2"
@@ -234,6 +243,7 @@ internal class JobDslTest : DslTestBase() {
                 "[job name='test'][need job=''] job '' is incorrect",
                 "[job name='test'][variables] variables map cannot be empty",
                 "[job name='test'][cache][key] prefix value 'pre/fix' can't contain '/' nor '%2F'",
+                "[job name='test'][rule] startIn can be used only with when=delayed jobs",
                 "[job name='test'][environment name='env#'] name 'env#' is incorrect. Contains forbidden characters"
         )
     }
@@ -281,6 +291,11 @@ internal class JobDslTest : DslTestBase() {
             artifacts("testArt")
             only("onlyBranch")
             except("exceptBranch")
+            rules {
+                rule {
+                    ifCondition = "condition"
+                }
+            }
             beforeScript("before")
             afterScript("after")
             coverage = "/Code coverage: \\d+\\.\\d+/"
@@ -329,6 +344,8 @@ internal class JobDslTest : DslTestBase() {
                     except:
                       refs:
                       - "exceptBranch"
+                    rules:
+                    - if: "condition"
                     before_script:
                     - "before"
                     script:
@@ -989,6 +1006,11 @@ internal class JobDslTest : DslTestBase() {
         val artifactsDsl = createArtifacts("testArt")
         val onlyDsl = createOnlyExcept("testOnly")
         val exceptDsl = createOnlyExcept("testExcept")
+        val rulesDsl = createRules {
+            rule {
+                ifCondition = "condition"
+            }
+        }
         val beforeScriptDsl = createBeforeScript("before")
         val afterScriptDsl = createAfterScript("after")
         val variablesDsl = createVariables {
@@ -1012,6 +1034,7 @@ internal class JobDslTest : DslTestBase() {
             artifacts = artifactsDsl
             only = onlyDsl
             except = exceptDsl
+            rules = rulesDsl
             beforeScript = beforeScriptDsl
             afterScript = afterScriptDsl
             variables = variablesDsl
@@ -1050,6 +1073,8 @@ internal class JobDslTest : DslTestBase() {
                     except:
                       refs:
                       - "testExcept"
+                    rules:
+                    - if: "condition"
                     before_script:
                     - "before"
                     script:

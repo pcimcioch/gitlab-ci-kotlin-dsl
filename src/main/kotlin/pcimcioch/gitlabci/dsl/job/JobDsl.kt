@@ -46,6 +46,7 @@ class JobDsl(
     var artifacts: ArtifactsDsl? = null
     var only: OnlyExceptDsl? = null
     var except: OnlyExceptDsl? = null
+    var rules: RuleListDsl? = null
 
     @SerialName("before_script")
     var beforeScript: BeforeScriptDsl? = null
@@ -130,6 +131,8 @@ class JobDsl(
     fun except(vararg elements: String) = except(elements.toList())
     fun except(elements: Iterable<String>) = ensureExcept().apply { refs(elements) }
 
+    fun rules(block: RuleListDsl.() -> Unit) = ensureRules().apply(block)
+
     fun environment(name: String) = ensureEnvironment().apply { this.name = name }
     fun environment(block: EnvironmentDsl.() -> Unit) = ensureEnvironment().apply(block)
     fun environment(name: String, block: EnvironmentDsl.() -> Unit) = ensureEnvironment().apply { this.name = name }.apply(block)
@@ -155,6 +158,7 @@ class JobDsl(
         addErrors(errors, artifacts, prefix)
         addErrors(errors, only, prefix)
         addErrors(errors, except, prefix)
+        addErrors(errors, rules, prefix)
         addErrors(errors, environment, prefix)
     }
 
@@ -169,6 +173,7 @@ class JobDsl(
     private fun ensureArtifacts() = artifacts ?: ArtifactsDsl().also { artifacts = it }
     private fun ensureOnly() = only ?: OnlyExceptDsl().also { only = it }
     private fun ensureExcept() = except ?: OnlyExceptDsl().also { except = it }
+    private fun ensureRules() = rules ?: RuleListDsl().also { rules = it }
     private fun ensureBeforeScript() = beforeScript ?: BeforeScriptDsl().also { beforeScript = it }
     private fun ensureAfterScript() = afterScript ?: AfterScriptDsl().also { afterScript = it }
     private fun ensureTags() = tags ?: mutableSetOf<String>().also { tags = it }
@@ -191,7 +196,8 @@ enum class WhenRunType(
     ON_FAILURE("on_failure"),
     ALWAYS("always"),
     MANUAL("manual"),
-    DELAYED("delayed");
+    DELAYED("delayed"),
+    NEVER("never");
 
     object WhenRuntTypeSerializer : StringRepresentationSerializer<WhenRunType>("WhenRunType")
 }

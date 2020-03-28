@@ -15,6 +15,7 @@ interface DslBase {
             objs.forEach { addErrors(errors, it, messagePrefix) }
         }
 
+        // TODO get vararg of dsl bases
         internal fun addErrors(errors: MutableList<String>, obj: DslBase?, messagePrefix: String) {
             if (obj == null) {
                 return

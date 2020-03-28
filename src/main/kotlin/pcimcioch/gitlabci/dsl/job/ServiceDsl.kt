@@ -6,6 +6,7 @@ import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
+import pcimcioch.gitlabci.dsl.addAndReturn
 import pcimcioch.gitlabci.dsl.isEmpty
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
@@ -41,9 +42,9 @@ fun createService(name: String, block: ServiceDsl.() -> Unit) = ServiceDsl(name)
 class ServiceListDsl : DslBase {
     private val services: MutableList<ServiceDsl> = mutableListOf()
 
-    fun service(block: ServiceDsl.() -> Unit) = services.add(ServiceDsl().apply(block))
-    fun service(name: String) = services.add(ServiceDsl(name))
-    fun service(name: String, block: ServiceDsl.() -> Unit) = services.add(ServiceDsl(name).apply(block))
+    fun service(block: ServiceDsl.() -> Unit) = addAndReturn(services, ServiceDsl().apply(block))
+    fun service(name: String) = addAndReturn(services, ServiceDsl(name))
+    fun service(name: String, block: ServiceDsl.() -> Unit) = addAndReturn(services, ServiceDsl(name).apply(block))
     operator fun ServiceDsl.unaryPlus() = this@ServiceListDsl.services.add(this)
 
     override fun validate(errors: MutableList<String>) {

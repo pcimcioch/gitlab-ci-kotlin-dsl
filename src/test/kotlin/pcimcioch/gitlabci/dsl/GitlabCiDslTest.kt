@@ -3,6 +3,7 @@ package pcimcioch.gitlabci.dsl
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import pcimcioch.gitlabci.dsl.job.WhenRunType
 import pcimcioch.gitlabci.dsl.job.createJob
 import java.io.StringWriter
 
@@ -15,6 +16,15 @@ internal class GitlabCiDslTest : DslTestBase() {
         // when
         val thrown = assertThrows<IllegalArgumentException> {
             gitlabCi(writer = writer) {
+                workflow {
+                    rules {
+                        rule {
+                            whenRun = WhenRunType.MANUAL
+                            startIn = Duration(minutes = 10)
+                        }
+                    }
+                }
+
                 stages("build", "test", "release")
 
                 default {
@@ -33,6 +43,7 @@ internal class GitlabCiDslTest : DslTestBase() {
         // then
         assertThat(thrown).hasMessage("""
             Configuration validation failed
+            [workflow][rule] startIn can be used only with when=delayed jobs
             [default][image] name '' is incorrect
             [job name='image'] name 'image' is incorrect
             [job name='cache'] name 'cache' is incorrect
@@ -44,6 +55,15 @@ internal class GitlabCiDslTest : DslTestBase() {
     fun `should disable validation`() {
         // when
         gitlabCi(validate = false, writer = writer) {
+            workflow {
+                rules {
+                    rule {
+                        whenRun = WhenRunType.MANUAL
+                        startIn = Duration(minutes = 10)
+                    }
+                }
+            }
+
             stages("build", "test", "release")
 
             default {
@@ -60,6 +80,10 @@ internal class GitlabCiDslTest : DslTestBase() {
 
         // then
         assertThat(writer.toString()).isEqualTo("""
+            "workflow":
+              rules:
+              - when: "manual"
+                start_in: "10 min"
             "stages":
             - "build"
             - "test"
@@ -191,6 +215,14 @@ internal class GitlabCiDslTest : DslTestBase() {
     fun `should generate full`() {
         // when
         gitlabCi(validate = false, writer = writer) {
+            workflow {
+                rules {
+                    rule {
+                        ifCondition = "condition"
+                    }
+                }
+            }
+
             stages("build", "test", "release")
 
             default {
@@ -222,6 +254,9 @@ internal class GitlabCiDslTest : DslTestBase() {
 
         // then
         assertThat(writer.toString()).isEqualTo("""
+            "workflow":
+              rules:
+              - if: "condition"
             "stages":
             - "build"
             - "test"

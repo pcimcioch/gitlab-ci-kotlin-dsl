@@ -85,6 +85,12 @@ println(str)
 Main `gitlabCi` block can be configured using different methods:
 ```kotlin
 gitlabCi {
+    workflow {
+        rules {
+            // more details in 'rules' section of this document
+        }
+    }
+    
     // stages can be added using varargs
     stages("stage 1", "stage 2")
     // or any iterable
@@ -586,7 +592,50 @@ gitlabCi {
 
 <https://docs.gitlab.com/ee/ci/yaml/#rules>
 
-Not supported yet
+```kotlin
+gitlabCi {
+    job("jobName") {
+        rules {
+            rule {
+                ifCondition = "condition"
+                whenRun = WhenRunType.DELAYED
+                startIn = Duration(months = 1)
+                allowFailure = true
+                // changes and exists can be added as vararg arguments
+                changes("file 1", "file 2")
+                exists("file 3", "file 4")
+                // or any iterable
+                changes(listOf("file 5", "file 6"))
+                exists(listOf("file 7", "file 8"))
+                // they can also be accessed directly. Note that this will override any previously configured changes and exists in this rule
+                changes = mutableSetOf("file 1", "file 2")
+                exists = mutableSetOf("fiule 3", "file 4")
+            }
+        }
+    }
+}
+
+// rule and rules can also be created outside of gitlabCi
+val rule1 = createRule { 
+    ifCondition = "condition"
+}
+
+val rules1 = createRules {
+    // rule can be added using unary plus operator
+    +rule1
+}
+
+// it can later be added to any job. It may be useful to reuse rules blocks
+gitlabCi {
+    job("firstJob") {
+        // Note that this will override any previously configured rules in this job
+        rules = rules1
+    }
+    job("secondJob") {
+        rules = rules1
+    }
+}
+```
 
 ## tags
 

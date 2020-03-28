@@ -7,7 +7,7 @@ import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
 @Serializable(with = IncludeDsl.IncludeDslSerializer::class)
 class IncludeDsl : DslBase() {
-    private val includes = mutableListOf<DslBase>()
+    private val includes = mutableListOf<IncludeDetailsDsl>()
 
     fun local(file: String) = includes.add(IncludeLocalDsl(file))
     fun file(project: String, file: String, ref: String? = null) = includes.add(IncludeFileDsl(project, file, ref))
@@ -18,7 +18,7 @@ class IncludeDsl : DslBase() {
         addErrors(errors,"[include]", includes)
     }
 
-    object IncludeDslSerializer : ValueSerializer<IncludeDsl, List<DslBase>>(DslBase.serializer().list, IncludeDsl::includes)
+    object IncludeDslSerializer : ValueSerializer<IncludeDsl, List<IncludeDetailsDsl>>(DslBase.serializer().list, IncludeDsl::includes)
     companion object {
         init {
             addSerializer(IncludeDsl::class, serializer())
@@ -26,10 +26,12 @@ class IncludeDsl : DslBase() {
     }
 }
 
+abstract class IncludeDetailsDsl : DslBase()
+
 @Serializable
 class IncludeLocalDsl(
         var local: String? = null
-) : DslBase() {
+) : IncludeDetailsDsl() {
     companion object {
         init {
             addSerializer(IncludeLocalDsl::class, serializer())
@@ -42,7 +44,7 @@ class IncludeFileDsl(
         var project: String? = null,
         var file: String? = null,
         var ref: String? = null
-) : DslBase() {
+) : IncludeDetailsDsl() {
     companion object {
         init {
             addSerializer(IncludeFileDsl::class, serializer())
@@ -53,7 +55,7 @@ class IncludeFileDsl(
 @Serializable
 class IncludeTemplateDsl(
         var template: String? = null
-) : DslBase() {
+) : IncludeDetailsDsl() {
     companion object {
         init {
             addSerializer(IncludeTemplateDsl::class, serializer())
@@ -64,7 +66,7 @@ class IncludeTemplateDsl(
 @Serializable
 class IncludeRemoteDsl(
         var remote: String? = null
-) : DslBase() {
+) : IncludeDetailsDsl() {
     companion object {
         init {
             addSerializer(IncludeRemoteDsl::class, serializer())

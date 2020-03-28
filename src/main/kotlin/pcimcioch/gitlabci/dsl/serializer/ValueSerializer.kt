@@ -6,7 +6,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialDescriptor
 
 open class ValueSerializer<T, K>(
-        private val valueSerializer: KSerializer<K>,
+        private val valueSerializer: KSerializer<in K>,
         private val transform: (T) -> K
 ) : KSerializer<T> {
     override val descriptor: SerialDescriptor = valueSerializer.descriptor

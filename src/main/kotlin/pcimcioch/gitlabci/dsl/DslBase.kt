@@ -1,7 +1,6 @@
 package pcimcioch.gitlabci.dsl
 
 // TODO maybe serializable could be on this level?
-// TODO maybe GitlabCiDslMarker could be on this level?
 interface DslBase {
 
     fun validate(errors: MutableList<String>) {}

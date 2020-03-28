@@ -8,11 +8,9 @@ import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.DslBase.Companion.isEmpty
 import pcimcioch.gitlabci.dsl.Duration
-import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
-@GitlabCiDslMarker
 @Serializable
 class JobDsl(
         @Transient

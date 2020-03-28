@@ -5,11 +5,9 @@ import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.Duration
-import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
-@GitlabCiDslMarker
 @Serializable
 class ArtifactsDsl : DslBase {
     var name: String? = null
@@ -51,7 +49,6 @@ enum class WhenUploadType(
     object WhenUploadTypeSerializer : StringRepresentationSerializer<WhenUploadType>("WhenUploadType")
 }
 
-@GitlabCiDslMarker
 @Serializable
 class ArtifactsReportsDsl : DslBase {
     var junit: MutableSet<String>? = null

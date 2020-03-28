@@ -7,11 +7,9 @@ import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.DslBase.Companion.isEmpty
 import pcimcioch.gitlabci.dsl.Duration
-import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
-@GitlabCiDslMarker
 @Serializable
 class EnvironmentDsl(
         var name: String? = null
@@ -54,7 +52,6 @@ fun createEnvironment(name: String) = EnvironmentDsl(name)
 fun createEnvironment(block: EnvironmentDsl.() -> Unit) = EnvironmentDsl().apply(block)
 fun createEnvironment(name: String, block: EnvironmentDsl.() -> Unit) = EnvironmentDsl(name).apply(block)
 
-@GitlabCiDslMarker
 @Serializable
 class KubernetesEnvironmentDsl(
         var namespace: String? = null

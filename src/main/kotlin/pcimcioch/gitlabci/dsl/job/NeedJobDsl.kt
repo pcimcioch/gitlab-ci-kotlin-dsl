@@ -7,10 +7,8 @@ import pcimcioch.gitlabci.dsl.DslBase.Companion.addAndReturn
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.DslBase.Companion.isEmpty
-import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
-@GitlabCiDslMarker
 @Serializable
 class NeedJobDsl(
         var job: String? = null
@@ -30,7 +28,6 @@ fun createNeedJob(job: String, block: NeedJobDsl.() -> Unit) = NeedJobDsl(job).a
 fun createNeedJob(job: JobDsl) = NeedJobDsl(job.name)
 fun createNeedJob(job: JobDsl, block: NeedJobDsl.() -> Unit) = NeedJobDsl(job.name).apply(block)
 
-@GitlabCiDslMarker
 @Serializable(with = NeedsListDsl.NeedsListDslSerializer::class)
 class NeedsListDsl : DslBase {
     private val needs: MutableList<NeedJobDsl> = mutableListOf()

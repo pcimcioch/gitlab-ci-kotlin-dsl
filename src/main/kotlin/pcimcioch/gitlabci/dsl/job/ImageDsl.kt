@@ -4,9 +4,7 @@ import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.isEmpty
-import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 
-@GitlabCiDslMarker
 @Serializable
 class ImageDsl(
         var name: String? = null

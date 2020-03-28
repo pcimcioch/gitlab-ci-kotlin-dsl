@@ -5,12 +5,10 @@ import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
-import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
-@GitlabCiDslMarker
 @Serializable(with = VariablesDsl.VariablesDslSerializer::class)
 class VariablesDsl : DslBase {
     var variables: MutableMap<String, String> = mutableMapOf()

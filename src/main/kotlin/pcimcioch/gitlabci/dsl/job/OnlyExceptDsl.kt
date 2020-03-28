@@ -2,11 +2,9 @@ package pcimcioch.gitlabci.dsl.job
 
 import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
-import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
-@GitlabCiDslMarker
 @Serializable
 class OnlyExceptDsl : DslBase {
     var refs: MutableSet<String>? = null

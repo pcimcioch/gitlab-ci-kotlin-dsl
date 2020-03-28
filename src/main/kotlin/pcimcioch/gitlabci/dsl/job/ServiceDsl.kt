@@ -7,10 +7,8 @@ import pcimcioch.gitlabci.dsl.DslBase.Companion.addAndReturn
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.DslBase.Companion.isEmpty
-import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
-@GitlabCiDslMarker
 @Serializable
 class ServiceDsl(
         var name: String? = null
@@ -37,7 +35,6 @@ fun createService(block: ServiceDsl.() -> Unit) = ServiceDsl().apply(block)
 fun createService(name: String) = ServiceDsl(name)
 fun createService(name: String, block: ServiceDsl.() -> Unit) = ServiceDsl(name).apply(block)
 
-@GitlabCiDslMarker
 @Serializable(with = ServiceListDsl.ServiceListDslSerializer::class)
 class ServiceListDsl : DslBase {
     private val services: MutableList<ServiceDsl> = mutableListOf()

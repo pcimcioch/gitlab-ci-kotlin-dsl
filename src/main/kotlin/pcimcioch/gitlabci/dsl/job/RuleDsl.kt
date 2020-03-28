@@ -8,10 +8,8 @@ import pcimcioch.gitlabci.dsl.DslBase.Companion.addAndReturn
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
 import pcimcioch.gitlabci.dsl.Duration
-import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
-@GitlabCiDslMarker
 @Serializable
 class RuleDsl : DslBase {
     @SerialName("if")
@@ -43,7 +41,6 @@ class RuleDsl : DslBase {
 
 fun createRule(block: RuleDsl.() -> Unit) = RuleDsl().apply(block)
 
-@GitlabCiDslMarker
 @Serializable(with = RuleListDsl.RuleListDslSerializer::class)
 class RuleListDsl : DslBase {
     private val rules: MutableList<RuleDsl> = mutableListOf()

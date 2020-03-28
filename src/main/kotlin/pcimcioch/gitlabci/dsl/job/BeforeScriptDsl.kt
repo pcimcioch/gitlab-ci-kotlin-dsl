@@ -4,10 +4,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.list
 import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.DslBase
-import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
-@GitlabCiDslMarker
 @Serializable(with = BeforeScriptDsl.BeforeScriptDslSerializer::class)
 class BeforeScriptDsl : DslBase {
     var commands: MutableList<String> = mutableListOf()

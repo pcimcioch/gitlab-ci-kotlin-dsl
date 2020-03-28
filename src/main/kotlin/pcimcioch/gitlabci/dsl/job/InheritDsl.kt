@@ -7,12 +7,10 @@ import kotlinx.serialization.Transient
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.builtins.set
 import pcimcioch.gitlabci.dsl.DslBase
-import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.MultiTypeSerializer
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
-@GitlabCiDslMarker
 @Serializable
 class InheritDsl : DslBase {
     @Transient

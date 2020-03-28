@@ -8,12 +8,10 @@ import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addError
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
-import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.MultiTypeSerializer
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
-@GitlabCiDslMarker
 @Serializable
 class CacheDsl : DslBase {
     var paths: MutableSet<String>? = null
@@ -62,7 +60,6 @@ fun createCache(block: CacheDsl.() -> Unit) = CacheDsl().apply(block)
 fun createCache(vararg elements: String) = createCache(elements.toList())
 fun createCache(elements: Iterable<String>) = CacheDsl().apply { paths(elements) }
 
-@GitlabCiDslMarker
 @Serializable
 class CacheKeyDsl : DslBase {
     var prefix: String? = null

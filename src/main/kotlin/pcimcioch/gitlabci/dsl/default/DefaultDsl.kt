@@ -4,14 +4,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.DslBase.Companion.addErrors
-import pcimcioch.gitlabci.dsl.GitlabCiDslMarker
 import pcimcioch.gitlabci.dsl.job.AfterScriptDsl
 import pcimcioch.gitlabci.dsl.job.BeforeScriptDsl
 import pcimcioch.gitlabci.dsl.job.CacheDsl
 import pcimcioch.gitlabci.dsl.job.ImageDsl
 import pcimcioch.gitlabci.dsl.job.ServiceListDsl
 
-@GitlabCiDslMarker
 @Serializable
 class DefaultDsl : DslBase {
     var image: ImageDsl? = null

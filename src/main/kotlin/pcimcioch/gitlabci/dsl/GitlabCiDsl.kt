@@ -20,7 +20,6 @@ import java.io.FileWriter
 import java.io.Writer
 import kotlin.collections.set
 
-@GitlabCiDslMarker
 @Serializable(with = GitlabCiDsl.GitlabCiDslSerializer::class)
 class GitlabCiDsl : DslBase {
     private val jobs: MutableList<JobDsl> = mutableListOf()

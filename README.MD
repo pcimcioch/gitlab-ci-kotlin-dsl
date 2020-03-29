@@ -37,7 +37,7 @@ Project is currently in development and is not available in maven central yet
 | retry          | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#retry>                          |
 | timeout        | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#timeout>                        |
 | parallel       | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#parallel>                       |
-| trigger        | No        | <https://docs.gitlab.com/ee/ci/yaml/#trigger>                        |
+| trigger        | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#trigger>                        |
 | interruptible  | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#interruptible>                  |
 | resource_group | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#resource_group>                 |
 | include        | Yes       | <https://docs.gitlab.com/ee/ci/yaml/#include>                        |
@@ -48,3 +48,8 @@ Project is currently in development and is not available in maven central yet
 # Documentation
 
 All supported features are documented in [Features Page](/FEATURES.MD)
+
+// TODO how to run
+// TODO 1. simple gradle project
+// TODO 2. simple KScript project?
+// TODO 3. child pipelines

@@ -298,6 +298,7 @@ internal class JobDslTest : DslTestBase() {
             }
             beforeScript("before")
             afterScript("after")
+            trigger("testProject")
             coverage = "/Code coverage: \\d+\\.\\d+/"
             environment("env")
             variables {
@@ -352,6 +353,8 @@ internal class JobDslTest : DslTestBase() {
                     - "test command"
                     after_script:
                     - "after"
+                    trigger:
+                      project: "testProject"
                     coverage: "/Code coverage: \\d+\\.\\d+/"
                     environment:
                       name: "env"
@@ -927,6 +930,117 @@ internal class JobDslTest : DslTestBase() {
     }
 
     @Test
+    fun `should allow trigger from project name`() {
+        // given
+        val testee = createJob("test") {
+            script("test command")
+
+            trigger("testProject")
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    script:
+                    - "test command"
+                    trigger:
+                      project: "testProject"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow trigger from project name, branch and strategy`() {
+        // given
+        val testee = createJob("test") {
+            script("test command")
+
+            trigger("testProject", "test-branch", TriggerStrategy.DEPEND)
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    script:
+                    - "test command"
+                    trigger:
+                      project: "testProject"
+                      branch: "test-branch"
+                      strategy: "depend"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow trigger from block`() {
+        // given
+        val testee = createJob("test") {
+            script("test command")
+
+            trigger {
+                project = "testProject"
+            }
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    script:
+                    - "test command"
+                    trigger:
+                      project: "testProject"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow trigger from project name, branch, strategy and block`() {
+        // given
+        val testee = createJob("test") {
+            script("test command")
+
+            trigger("testProject", "test-branch", TriggerStrategy.DEPEND) {
+                branch = "test-branch-2"
+            }
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    script:
+                    - "test command"
+                    trigger:
+                      project: "testProject"
+                      branch: "test-branch-2"
+                      strategy: "depend"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow trigger from project name and block`() {
+        // given
+        val testee = createJob("test") {
+            script("test command")
+
+            trigger("testProject") {
+                branch = "test-branch-2"
+            }
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    script:
+                    - "test command"
+                    trigger:
+                      project: "testProject"
+                      branch: "test-branch-2"
+                """.trimIndent()
+        )
+    }
+
+    @Test
     fun `should allow environment by name configuration`() {
         // given
         val testee = createJob("test") {
@@ -1013,6 +1127,7 @@ internal class JobDslTest : DslTestBase() {
         }
         val beforeScriptDsl = createBeforeScript("before")
         val afterScriptDsl = createAfterScript("after")
+        val triggerDsl = createTrigger("testProject")
         val variablesDsl = createVariables {
             add("KEY1", "VALUE1")
         }
@@ -1037,6 +1152,7 @@ internal class JobDslTest : DslTestBase() {
             rules = rulesDsl
             beforeScript = beforeScriptDsl
             afterScript = afterScriptDsl
+            trigger = triggerDsl
             variables = variablesDsl
             environment = environmentDsl
         }
@@ -1081,6 +1197,8 @@ internal class JobDslTest : DslTestBase() {
                     - "test command"
                     after_script:
                     - "after"
+                    trigger:
+                      project: "testProject"
                     environment:
                       name: "production"
                     variables:

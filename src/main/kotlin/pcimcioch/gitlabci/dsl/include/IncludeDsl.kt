@@ -19,7 +19,7 @@ class IncludeDsl : DslBase() {
         addErrors(errors, "[include]", includes)
     }
 
-    object IncludeDslSerializer : ValueSerializer<IncludeDsl, List<IncludeDetailsDsl>>(DslBase.serializer().list, IncludeDsl::includes)
+    object IncludeDslSerializer : ValueSerializer<IncludeDsl, List<IncludeDetailsDsl>>(IncludeDetailsDsl.serializer().list, IncludeDsl::includes)
     companion object {
         init {
             addSerializer(IncludeDsl::class, serializer())
@@ -27,6 +27,7 @@ class IncludeDsl : DslBase() {
     }
 }
 
+@Serializable(with = DslBase.DslBaseSerializer::class)
 sealed class IncludeDetailsDsl : DslBase()
 
 @Serializable

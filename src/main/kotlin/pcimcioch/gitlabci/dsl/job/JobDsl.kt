@@ -49,6 +49,7 @@ class JobDsl(
 
     @SerialName("after_script")
     var afterScript: AfterScriptDsl? = null
+    var trigger: TriggerDsl? = null
     var coverage: String? = null
     var environment: EnvironmentDsl? = null
     var variables: VariablesDsl? = null
@@ -132,6 +133,19 @@ class JobDsl(
     fun environment(block: EnvironmentDsl.() -> Unit) = ensureEnvironment().apply(block)
     fun environment(name: String, block: EnvironmentDsl.() -> Unit) = ensureEnvironment().apply { this.name = name }.apply(block)
 
+    fun trigger(block: TriggerDsl.() -> Unit) = ensureTrigger().apply(block)
+    fun trigger(project: String, branch: String? = null, strategy: TriggerStrategy? = null) = ensureTrigger().apply {
+        this.project = project
+        this.branch = branch
+        this.strategy = strategy
+    }
+
+    fun trigger(project: String, branch: String? = null, strategy: TriggerStrategy? = null, block: TriggerDsl.() -> Unit) = ensureTrigger().apply {
+        this.project = project
+        this.branch = branch
+        this.strategy = strategy
+    }.apply(block)
+
     override fun validate(errors: MutableList<String>) {
         val prefix = "[job name='$name']"
 
@@ -140,7 +154,7 @@ class JobDsl(
         addError(errors, script == null, "$prefix at least one script command must be configured")
         addError(errors, parallel != null && (parallel!! < 2 || parallel!! > 50), "$prefix parallel must be in range [2, 50]")
 
-        addErrors(errors, prefix, beforeScript, afterScript, inherit, retry, image, script, services, needs, variables, cache, artifacts, only, except, rules, environment)
+        addErrors(errors, prefix, beforeScript, afterScript, inherit, retry, image, script, services, needs, variables, cache, artifacts, only, except, rules, environment, trigger)
     }
 
     private fun ensureInherit() = inherit ?: InheritDsl().also { inherit = it }
@@ -161,6 +175,7 @@ class JobDsl(
     private fun ensureExtends() = extends ?: mutableListOf<String>().also { extends = it }
     private fun ensureDependencies() = dependencies ?: mutableSetOf<String>().also { dependencies = it }
     private fun ensureEnvironment() = environment ?: EnvironmentDsl().also { environment = it }
+    private fun ensureTrigger() = trigger ?: TriggerDsl().also { trigger = it }
 
     private object Validation {
         val RESTRICTED_NAMES = listOf("image", "services", "stages", "types", "before_script", "after_script", "variables", "cache", "include")

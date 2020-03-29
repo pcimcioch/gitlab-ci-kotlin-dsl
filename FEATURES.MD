@@ -1127,7 +1127,79 @@ gitlabCi {
 
 <https://docs.gitlab.com/ee/ci/yaml/#trigger>  
 
-Not supported yet
+```kotlin
+gitlabCi { 
+    job("jobName") {
+        // trigger can be created from project name
+        trigger("test/project")
+        // optionally, branch and strategy can be passed
+        trigger("test/project", "test-branch", TriggerStrategy.DEPEND)
+        // or project name and block
+        trigger("test/project") {
+            branch = "test-branch"
+        }
+        // optionally, branch and strategy can be passed
+        trigger("test/project", "test-branch", TriggerStrategy.DEPEND) {
+            branch = "test-branch-2"
+        }
+        // or from block
+        trigger {
+            project = "test/project"
+            branch = "test-branch"
+            strategy = TriggerStrategy.DEPEND
+            include { 
+                local("localFile")
+                artifact("file", "job1")
+            }
+        }
+    }
+    
+    // include artifact in trigger also accepts job
+    val job = job("job1") {}
+    job("lastJob") {
+        trigger {
+            include {
+                artifact("file", job)
+            }
+        }
+    }
+}
+
+// include can also be created outside of gitlabCi block
+val include1 = createTriggerInclude { 
+    local("localFile")
+}
+
+// trigger can also be created outside of gitlabCi
+// from project name
+val trigger1 = createTrigger("test/project")
+// optionally, branch and strategy can be passed
+val trigger2 = createTrigger("test/project", "test-branch", TriggerStrategy.DEPEND)
+// or project name and block
+val trigger3 = createTrigger("test/project") {
+    branch = "test-branch"
+}
+// optionally, branch and strategy can be passed
+val trigger4 = createTrigger("test/project", "test-branch", TriggerStrategy.DEPEND) {
+    branch = "test-branch-2"
+}
+// or block
+val trigger5 = createTrigger {
+    // include can be accessed directly
+    include = include1
+}
+
+// it can later be added to any job. It may be useful to reuse trigger blocks
+gitlabCi {
+    job("firstJob") {
+        // Note that this will override any previously configured trigger in this job
+        trigger = trigger1
+    }
+    job("secondJob") {
+        trigger = trigger1
+    }
+}
+```
 
 ## interruptible
 

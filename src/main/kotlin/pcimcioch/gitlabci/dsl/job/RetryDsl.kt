@@ -29,9 +29,7 @@ class RetryDsl(
     }
 }
 
-fun createRetry(max: Int) = RetryDsl(max)
-fun createRetry(block: RetryDsl.() -> Unit) = RetryDsl().apply(block)
-fun createRetry(max: Int, block: RetryDsl.() -> Unit) = RetryDsl(max).apply(block)
+fun createRetry(max: Int? = null, block: RetryDsl.() -> Unit = {}) = RetryDsl(max).apply(block)
 
 @Serializable(with = WhenRetryType.WhenRetryTypeSerializer::class)
 enum class WhenRetryType(

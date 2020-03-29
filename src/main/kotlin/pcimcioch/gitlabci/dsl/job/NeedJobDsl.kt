@@ -24,21 +24,15 @@ class NeedJobDsl(
     }
 }
 
-fun createNeedJob(block: NeedJobDsl.() -> Unit) = NeedJobDsl().apply(block)
-fun createNeedJob(job: String) = NeedJobDsl(job)
-fun createNeedJob(job: String, block: NeedJobDsl.() -> Unit) = NeedJobDsl(job).apply(block)
-fun createNeedJob(job: JobDsl) = NeedJobDsl(job.name)
-fun createNeedJob(job: JobDsl, block: NeedJobDsl.() -> Unit) = NeedJobDsl(job.name).apply(block)
+fun createNeedJob(job: String? = null, block: NeedJobDsl.() -> Unit = {}) = NeedJobDsl(job).apply(block)
+fun createNeedJob(job: JobDsl, block: NeedJobDsl.() -> Unit = {}) = NeedJobDsl(job.name).apply(block)
 
 @Serializable(with = NeedsListDsl.NeedsListDslSerializer::class)
 class NeedsListDsl : DslBase() {
     private val needs: MutableList<NeedJobDsl> = mutableListOf()
 
-    fun needJob(block: NeedJobDsl.() -> Unit) = addAndReturn(needs, NeedJobDsl().apply(block))
-    fun needJob(job: String) = addAndReturn(needs, NeedJobDsl(job))
-    fun needJob(job: String, block: NeedJobDsl.() -> Unit) = addAndReturn(needs, NeedJobDsl(job).apply(block))
-    fun needJob(job: JobDsl) = addAndReturn(needs, NeedJobDsl(job.name))
-    fun needJob(job: JobDsl, block: NeedJobDsl.() -> Unit) = addAndReturn(needs, NeedJobDsl(job.name).apply(block))
+    fun needJob(job: String? = null, block: NeedJobDsl.() -> Unit = {}) = addAndReturn(needs, NeedJobDsl(job).apply(block))
+    fun needJob(job: JobDsl, block: NeedJobDsl.() -> Unit = {}) = addAndReturn(needs, NeedJobDsl(job.name).apply(block))
     operator fun NeedJobDsl.unaryPlus() = this@NeedsListDsl.needs.add(this)
 
     override fun validate(errors: MutableList<String>) {

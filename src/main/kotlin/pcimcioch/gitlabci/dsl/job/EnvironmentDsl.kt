@@ -25,9 +25,7 @@ class EnvironmentDsl(
         onStop = job.name
     }
 
-    fun kubernetes(namespace: String) = ensureKubernetes().apply { this.namespace = namespace }
-    fun kubernetes(block: KubernetesEnvironmentDsl.() -> Unit) = ensureKubernetes().apply(block)
-    fun kubernetes(namespace: String, block: KubernetesEnvironmentDsl.() -> Unit) = ensureKubernetes().apply { this.namespace = namespace }.apply(block)
+    fun kubernetes(namespace: String? = null, block: KubernetesEnvironmentDsl.() -> Unit = {}) = ensureKubernetes().apply { this.namespace = namespace }.apply(block)
 
     override fun validate(errors: MutableList<String>) {
         val prefix = "[environment name='$name']"
@@ -51,9 +49,7 @@ class EnvironmentDsl(
     }
 }
 
-fun createEnvironment(name: String) = EnvironmentDsl(name)
-fun createEnvironment(block: EnvironmentDsl.() -> Unit) = EnvironmentDsl().apply(block)
-fun createEnvironment(name: String, block: EnvironmentDsl.() -> Unit) = EnvironmentDsl(name).apply(block)
+fun createEnvironment(name: String? = null, block: EnvironmentDsl.() -> Unit = {}) = EnvironmentDsl(name).apply(block)
 
 @Serializable
 class KubernetesEnvironmentDsl(
@@ -66,9 +62,7 @@ class KubernetesEnvironmentDsl(
     }
 }
 
-fun createKubernetesEnvironment(namespace: String) = KubernetesEnvironmentDsl(namespace)
-fun createKubernetesEnvironment(block: KubernetesEnvironmentDsl.() -> Unit) = KubernetesEnvironmentDsl().apply(block)
-fun createKubernetesEnvironment(namespace: String, block: KubernetesEnvironmentDsl.() -> Unit) = KubernetesEnvironmentDsl(namespace).apply(block)
+fun createKubernetesEnvironment(namespace: String? = null, block: KubernetesEnvironmentDsl.() -> Unit = {}) = KubernetesEnvironmentDsl(namespace).apply(block)
 
 @Serializable(with = EnvironmentAction.EnvironmentActionSerializer::class)
 enum class EnvironmentAction(

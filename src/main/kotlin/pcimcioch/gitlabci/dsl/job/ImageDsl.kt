@@ -25,6 +25,4 @@ class ImageDsl(
     }
 }
 
-fun createImage(name: String) = ImageDsl(name)
-fun createImage(block: ImageDsl.() -> Unit) = ImageDsl().apply(block)
-fun createImage(name: String, block: ImageDsl.() -> Unit) = ImageDsl(name).apply(block)
+fun createImage(name: String? = null, block: ImageDsl.() -> Unit = {}) = ImageDsl(name).apply(block)

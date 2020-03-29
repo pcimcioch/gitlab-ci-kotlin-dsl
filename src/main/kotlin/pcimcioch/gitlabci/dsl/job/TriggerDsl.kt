@@ -30,19 +30,15 @@ class TriggerDsl(
     }
 }
 
-fun createTrigger(block: TriggerDsl.() -> Unit) = TriggerDsl().apply(block)
-fun createTrigger(project: String, branch: String? = null, strategy: TriggerStrategy? = null) = TriggerDsl(project, branch, strategy)
-// TODO merge last block as default value
-fun createTrigger(project: String, branch: String? = null, strategy: TriggerStrategy? = null, block: TriggerDsl.() -> Unit) = TriggerDsl(project, branch, strategy).apply(block)
+fun createTrigger(project: String? = null, branch: String? = null, strategy: TriggerStrategy? = null, block: TriggerDsl.() -> Unit = {}) = TriggerDsl(project, branch, strategy).apply(block)
 
 @Serializable(with = TriggerIncludeDsl.TriggerIncludeDslSerializer::class)
 class TriggerIncludeDsl : DslBase() {
     private val includes = mutableListOf<TriggerIncludeDetailsDsl>()
 
-    fun local(local: String) = includes.add(TriggerIncludeLocalDsl(local))
-    fun artifact(artifact: String, job: String) = includes.add(TriggerIncludeArtifactDsl(artifact, job))
-    fun artifact(artifact: String, job: JobDsl) = includes.add(TriggerIncludeArtifactDsl(artifact, job))
-            // TODO where unary plus on dsl there addAndReturn
+    fun local(local: String) = addAndReturn(includes, TriggerIncludeLocalDsl(local))
+    fun artifact(artifact: String, job: String) = addAndReturn(includes, TriggerIncludeArtifactDsl(artifact, job))
+    fun artifact(artifact: String, job: JobDsl) = addAndReturn(includes, TriggerIncludeArtifactDsl(artifact, job))
     operator fun TriggerIncludeDetailsDsl.unaryPlus() = this@TriggerIncludeDsl.includes.add(this)
 
     override fun validate(errors: MutableList<String>) {

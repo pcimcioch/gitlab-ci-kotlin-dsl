@@ -33,17 +33,13 @@ class ServiceDsl(
     }
 }
 
-fun createService(block: ServiceDsl.() -> Unit) = ServiceDsl().apply(block)
-fun createService(name: String) = ServiceDsl(name)
-fun createService(name: String, block: ServiceDsl.() -> Unit) = ServiceDsl(name).apply(block)
+fun createService(name: String? = null, block: ServiceDsl.() -> Unit = {}) = ServiceDsl(name).apply(block)
 
 @Serializable(with = ServiceListDsl.ServiceListDslSerializer::class)
 class ServiceListDsl : DslBase() {
     private val services: MutableList<ServiceDsl> = mutableListOf()
 
-    fun service(block: ServiceDsl.() -> Unit) = addAndReturn(services, ServiceDsl().apply(block))
-    fun service(name: String) = addAndReturn(services, ServiceDsl(name))
-    fun service(name: String, block: ServiceDsl.() -> Unit) = addAndReturn(services, ServiceDsl(name).apply(block))
+    fun service(name: String? = null, block: ServiceDsl.() -> Unit = {}) = addAndReturn(services, ServiceDsl(name).apply(block))
     operator fun ServiceDsl.unaryPlus() = this@ServiceListDsl.services.add(this)
 
     override fun validate(errors: MutableList<String>) {

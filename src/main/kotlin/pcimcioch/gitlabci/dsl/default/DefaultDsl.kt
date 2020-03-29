@@ -29,9 +29,7 @@ class DefaultDsl : DslBase() {
     fun afterScript(vararg elements: String) = afterScript(elements.toList())
     fun afterScript(elements: Iterable<String>) = ensureAfterScript().apply { elements.forEach { exec(it) } }
 
-    fun image(name: String) = ensureImage().apply { this.name = name }
-    fun image(block: ImageDsl.() -> Unit) = ensureImage().apply(block)
-    fun image(name: String, block: ImageDsl.() -> Unit) = ensureImage().apply { this.name = name }.apply(block)
+    fun image(name: String? = null, block: ImageDsl.() -> Unit = {}) = ensureImage().apply { this.name = name }.apply(block)
 
     fun services(vararg elements: String) = services(elements.toList())
     fun services(elements: Iterable<String>) = ensureServices().apply { elements.forEach { service(it) } }

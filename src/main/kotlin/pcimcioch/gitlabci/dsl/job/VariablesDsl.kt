@@ -41,15 +41,10 @@ class VariablesDsl : DslBase() {
     }
 }
 
-fun createVariables(block: VariablesDsl.() -> Unit) = VariablesDsl().apply(block)
-fun createVariables(elements: Map<String, Any>) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }
-fun createVariables(elements: Map<String, Any>, block: VariablesDsl.() -> Unit) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+fun createVariables(elements: Map<String, Any> = mapOf(), block: VariablesDsl.() -> Unit = {}) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
 
 @JvmName("variablesEnum")
-fun <T : Enum<T>> createVariables(elements: Map<T, Any>) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }
-
-@JvmName("variablesEnum")
-fun <T : Enum<T>> createVariables(elements: Map<T, Any>, block: VariablesDsl.() -> Unit) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+fun <T : Enum<T>> createVariables(elements: Map<T, Any> = mapOf(), block: VariablesDsl.() -> Unit = {}) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
 
 enum class RunnerSettingsVariables {
     GIT_STRATEGY,

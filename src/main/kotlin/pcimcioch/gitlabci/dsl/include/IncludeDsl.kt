@@ -9,10 +9,10 @@ import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 class IncludeDsl : DslBase() {
     private val includes = mutableListOf<IncludeDetailsDsl>()
 
-    fun local(local: String) = includes.add(IncludeLocalDsl(local))
-    fun file(project: String, file: String, ref: String? = null) = includes.add(IncludeFileDsl(project, file, ref))
-    fun template(template: String) = includes.add(IncludeTemplateDsl(template))
-    fun remote(remote: String) = includes.add(IncludeRemoteDsl(remote))
+    fun local(local: String) = addAndReturn(includes, IncludeLocalDsl(local))
+    fun file(project: String, file: String, ref: String? = null) = addAndReturn(includes, IncludeFileDsl(project, file, ref))
+    fun template(template: String) = addAndReturn(includes, IncludeTemplateDsl(template))
+    fun remote(remote: String) = addAndReturn(includes, IncludeRemoteDsl(remote))
     operator fun IncludeDetailsDsl.unaryPlus() = this@IncludeDsl.includes.add(this)
 
     override fun validate(errors: MutableList<String>) {

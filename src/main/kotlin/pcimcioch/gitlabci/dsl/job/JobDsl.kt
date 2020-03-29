@@ -68,9 +68,7 @@ class JobDsl(
 
     fun inherit(block: InheritDsl.() -> Unit) = ensureInherit().apply(block)
 
-    fun image(name: String) = ensureImage().apply { this.name = name }
-    fun image(block: ImageDsl.() -> Unit) = ensureImage().apply(block)
-    fun image(name: String, block: ImageDsl.() -> Unit) = ensureImage().apply { this.name = name }.apply(block)
+    fun image(name: String? = null, block: ImageDsl.() -> Unit = {}) = ensureImage().apply { this.name = name }.apply(block)
 
     fun services(vararg elements: String) = services(elements.toList())
     fun services(elements: Iterable<String>) = ensureServices().apply { elements.forEach { service(it) } }
@@ -87,9 +85,7 @@ class JobDsl(
     fun tags(vararg elements: String) = tags(elements.toList())
     fun tags(elements: Iterable<String>) = ensureTags().addAll(elements)
 
-    fun retry(max: Int) = ensureRetry().apply { this.max = max }
-    fun retry(block: RetryDsl.() -> Unit) = ensureRetry().apply(block)
-    fun retry(max: Int, block: RetryDsl.() -> Unit) = ensureRetry().apply { this.max = max }.apply(block)
+    fun retry(max: Int? = null, block: RetryDsl.() -> Unit = {}) = ensureRetry().apply { this.max = max }.apply(block)
 
     fun extends(vararg elements: String) = extends(elements.toList())
     fun extends(elements: Iterable<String>) = ensureExtends().addAll(elements)
@@ -101,15 +97,10 @@ class JobDsl(
     fun dependencies(vararg elements: JobDsl) = dependencies(elements.toList())
     fun dependencies(elements: Iterable<JobDsl>) = ensureDependencies().apply { elements.forEach { add(it.name) } }
 
-    fun variables(block: VariablesDsl.() -> Unit) = ensureVariables().apply(block)
-    fun variables(elements: Map<String, Any>) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }
-    fun variables(elements: Map<String, Any>, block: VariablesDsl.() -> Unit) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+    fun variables(elements: Map<String, Any> = mapOf(), block: VariablesDsl.() -> Unit = {}) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
 
     @JvmName("variablesEnum")
-    fun <T : Enum<T>> variables(elements: Map<T, Any>) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }
-
-    @JvmName("variablesEnum")
-    fun <T : Enum<T>> variables(elements: Map<T, Any>, block: VariablesDsl.() -> Unit) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+    fun <T : Enum<T>> variables(elements: Map<T, Any> = mapOf(), block: VariablesDsl.() -> Unit = {}) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
 
     fun cache(block: CacheDsl.() -> Unit) = ensureCache().apply(block)
     fun cache(vararg elements: String) = cache(elements.toList())
@@ -129,18 +120,9 @@ class JobDsl(
 
     fun rules(block: RuleListDsl.() -> Unit) = ensureRules().apply(block)
 
-    fun environment(name: String) = ensureEnvironment().apply { this.name = name }
-    fun environment(block: EnvironmentDsl.() -> Unit) = ensureEnvironment().apply(block)
-    fun environment(name: String, block: EnvironmentDsl.() -> Unit) = ensureEnvironment().apply { this.name = name }.apply(block)
+    fun environment(name: String? = null, block: EnvironmentDsl.() -> Unit = {}) = ensureEnvironment().apply { this.name = name }.apply(block)
 
-    fun trigger(block: TriggerDsl.() -> Unit) = ensureTrigger().apply(block)
-    fun trigger(project: String, branch: String? = null, strategy: TriggerStrategy? = null) = ensureTrigger().apply {
-        this.project = project
-        this.branch = branch
-        this.strategy = strategy
-    }
-
-    fun trigger(project: String, branch: String? = null, strategy: TriggerStrategy? = null, block: TriggerDsl.() -> Unit) = ensureTrigger().apply {
+    fun trigger(project: String? = null, branch: String? = null, strategy: TriggerStrategy? = null, block: TriggerDsl.() -> Unit = {}) = ensureTrigger().apply {
         this.project = project
         this.branch = branch
         this.strategy = strategy

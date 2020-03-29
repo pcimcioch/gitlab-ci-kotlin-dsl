@@ -4,11 +4,15 @@ This is the Kotlin DSL to generate Gitlab CI yaml file
 
 # Example
 
-TODO
+Not created yet
+
+[//]: # (TODO provide example)
 
 # How to download
 
 Project is currently in development and is not available in maven central yet
+
+[//]: # (TODO release to maven central)
 
 # Supported Gitlab CI configuration parameters
 
@@ -49,7 +53,7 @@ Project is currently in development and is not available in maven central yet
 
 All supported features are documented in [Features Page](/FEATURES.MD)
 
-// TODO how to run
-// TODO 1. simple gradle project
-// TODO 2. simple KScript project?
-// TODO 3. child pipelines
+[//]: # (TODO how to run)
+[//]: # (TODO 1. simple gradle project)
+[//]: # (TODO 2. simple KScript project?)
+[//]: # (TODO 3. child pipelines)

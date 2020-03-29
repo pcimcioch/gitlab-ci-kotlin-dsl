@@ -15,7 +15,7 @@ class TriggerDsl(
 ) : DslBase() {
     var include: TriggerIncludeDsl? = null
 
-    fun include(block: TriggerIncludeDsl.() -> Unit) = ensureInclude().apply(block)
+    fun include(block: TriggerIncludeDsl.() -> Unit = {}) = ensureInclude().apply(block)
 
     override fun validate(errors: MutableList<String>) {
         addErrors(errors, "[trigger]", include)
@@ -53,7 +53,7 @@ class TriggerIncludeDsl : DslBase() {
     }
 }
 
-fun createTriggerInclude(block: TriggerIncludeDsl.() -> Unit) = TriggerIncludeDsl().apply(block)
+fun createTriggerInclude(block: TriggerIncludeDsl.() -> Unit = {}) = TriggerIncludeDsl().apply(block)
 
 @Serializable(with = DslBase.DslBaseSerializer::class)
 sealed class TriggerIncludeDetailsDsl : DslBase()

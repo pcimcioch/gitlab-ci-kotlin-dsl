@@ -47,10 +47,10 @@ class NeedsListDsl : DslBase() {
     }
 }
 
-fun createNeeds(block: NeedsListDsl.() -> Unit) = NeedsListDsl().apply(block)
-fun createNeeds(vararg elements: String) = createNeeds(elements.toList())
-fun createNeeds(elements: Iterable<String>) = NeedsListDsl().apply { elements.forEach { needJob(it) } }
-fun createNeeds(vararg elements: JobDsl) = createNeeds(elements.toList())
+fun createNeeds(block: NeedsListDsl.() -> Unit = {}) = NeedsListDsl().apply(block)
+fun createNeeds(vararg elements: String, block: NeedsListDsl.() -> Unit = {}) = createNeeds(elements.toList(), block)
+fun createNeeds(elements: Iterable<String>, block: NeedsListDsl.() -> Unit = {}) = NeedsListDsl().apply { elements.forEach { needJob(it) } }.apply(block)
+fun createNeeds(vararg elements: JobDsl, block: NeedsListDsl.() -> Unit = {}) = createNeeds(elements.toList(), block)
 
 @JvmName("createNeedsJob")
-fun createNeeds(elements: Iterable<JobDsl>) = NeedsListDsl().apply { elements.forEach { needJob(it) } }
+fun createNeeds(elements: Iterable<JobDsl>, block: NeedsListDsl.() -> Unit = {}) = NeedsListDsl().apply { elements.forEach { needJob(it) } }.apply(block)

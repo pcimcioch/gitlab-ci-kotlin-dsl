@@ -39,9 +39,9 @@ class ArtifactsDsl : DslBase() {
     }
 }
 
-fun createArtifacts(block: ArtifactsDsl.() -> Unit) = ArtifactsDsl().apply(block)
-fun createArtifacts(vararg elements: String) = createArtifacts(elements.toList())
-fun createArtifacts(elements: Iterable<String>) = ArtifactsDsl().apply { paths(elements) }
+fun createArtifacts(block: ArtifactsDsl.() -> Unit = {}) = ArtifactsDsl().apply(block)
+fun createArtifacts(vararg elements: String, block: ArtifactsDsl.() -> Unit = {}) = createArtifacts(elements.toList(), block)
+fun createArtifacts(elements: Iterable<String>, block: ArtifactsDsl.() -> Unit = {}) = ArtifactsDsl().apply { paths(elements) }.apply(block)
 
 @Serializable(with = WhenUploadType.WhenUploadTypeSerializer::class)
 enum class WhenUploadType(
@@ -120,4 +120,4 @@ class ArtifactsReportsDsl : DslBase() {
     }
 }
 
-fun createArtifactsReports(block: ArtifactsReportsDsl.() -> Unit) = ArtifactsReportsDsl().apply(block)
+fun createArtifactsReports(block: ArtifactsReportsDsl.() -> Unit = {}) = ArtifactsReportsDsl().apply(block)

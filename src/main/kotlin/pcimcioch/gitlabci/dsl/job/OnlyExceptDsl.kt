@@ -46,9 +46,9 @@ class OnlyExceptDsl : DslBase() {
     }
 }
 
-fun createOnlyExcept(block: OnlyExceptDsl.() -> Unit) = OnlyExceptDsl().apply(block)
-fun createOnlyExcept(vararg elements: String) = createOnlyExcept(elements.toList())
-fun createOnlyExcept(elements: Iterable<String>) = OnlyExceptDsl().apply { elements.forEach { refs(it) } }
+fun createOnlyExcept(block: OnlyExceptDsl.() -> Unit = {}) = OnlyExceptDsl().apply(block)
+fun createOnlyExcept(vararg elements: String, block: OnlyExceptDsl.() -> Unit = {}) = createOnlyExcept(elements.toList(), block)
+fun createOnlyExcept(elements: Iterable<String>, block: OnlyExceptDsl.() -> Unit = {}) = OnlyExceptDsl().apply { elements.forEach { refs(it) } }.apply(block)
 
 @Serializable(with = KubernetesState.KubernetesStateSerializer::class)
 enum class KubernetesState(

@@ -54,6 +54,6 @@ class ServiceListDsl : DslBase() {
     }
 }
 
-fun createServices(block: ServiceListDsl.() -> Unit) = ServiceListDsl().apply(block)
-fun createServices(vararg elements: String) = createServices(elements.toList())
-fun createServices(elements: Iterable<String>) = ServiceListDsl().apply { elements.forEach { service(it) } }
+fun createServices(block: ServiceListDsl.() -> Unit = {}) = ServiceListDsl().apply(block)
+fun createServices(vararg elements: String, block: ServiceListDsl.() -> Unit = {}) = createServices(elements.toList(), block)
+fun createServices(elements: Iterable<String>, block: ServiceListDsl.() -> Unit = {}) = ServiceListDsl().apply { elements.forEach { service(it) } }.apply(block)

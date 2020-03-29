@@ -21,6 +21,6 @@ class BeforeScriptDsl : DslBase() {
     }
 }
 
-fun createBeforeScript(block: BeforeScriptDsl.() -> Unit) = BeforeScriptDsl().apply(block)
-fun createBeforeScript(vararg elements: String) = createBeforeScript(elements.toList())
-fun createBeforeScript(elements: Iterable<String>) = BeforeScriptDsl().apply { elements.forEach { exec(it) } }
+fun createBeforeScript(block: BeforeScriptDsl.() -> Unit = {}) = BeforeScriptDsl().apply(block)
+fun createBeforeScript(vararg elements: String, block: BeforeScriptDsl.() -> Unit = {}) = createBeforeScript(elements.toList(), block)
+fun createBeforeScript(elements: Iterable<String>, block: BeforeScriptDsl.() -> Unit = {}) = BeforeScriptDsl().apply { elements.forEach { exec(it) } }.apply(block)

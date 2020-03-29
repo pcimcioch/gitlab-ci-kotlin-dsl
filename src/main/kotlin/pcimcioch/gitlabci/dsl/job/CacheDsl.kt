@@ -60,9 +60,9 @@ class CacheDsl : DslBase() {
     }
 }
 
-fun createCache(block: CacheDsl.() -> Unit) = CacheDsl().apply(block)
-fun createCache(vararg elements: String) = createCache(elements.toList())
-fun createCache(elements: Iterable<String>) = CacheDsl().apply { paths(elements) }
+fun createCache(block: CacheDsl.() -> Unit = {}) = CacheDsl().apply(block)
+fun createCache(vararg elements: String, block: CacheDsl.() -> Unit = {}) = createCache(elements.toList(), block)
+fun createCache(elements: Iterable<String>, block: CacheDsl.() -> Unit = {}) = CacheDsl().apply { paths(elements) }.apply(block)
 
 @Serializable
 class CacheKeyDsl : DslBase() {
@@ -91,7 +91,7 @@ class CacheKeyDsl : DslBase() {
     }
 }
 
-fun createCacheKey(block: CacheKeyDsl.() -> Unit) = CacheKeyDsl().apply(block)
+fun createCacheKey(block: CacheKeyDsl.() -> Unit = {}) = CacheKeyDsl().apply(block)
 
 @Serializable(with = CachePolicy.CachePolicySerializer::class)
 enum class CachePolicy(

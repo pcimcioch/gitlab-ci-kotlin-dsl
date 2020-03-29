@@ -25,6 +25,6 @@ class ScriptDsl : DslBase() {
     }
 }
 
-fun createScript(block: ScriptDsl.() -> Unit) = ScriptDsl().apply(block)
-fun createScript(vararg elements: String) = createScript(elements.toList())
-fun createScript(elements: Iterable<String>) = ScriptDsl().apply { elements.forEach { exec(it) } }
+fun createScript(block: ScriptDsl.() -> Unit = {}) = ScriptDsl().apply(block)
+fun createScript(vararg elements: String, block: ScriptDsl.() -> Unit = {}) = createScript(elements.toList(), block)
+fun createScript(elements: Iterable<String>, block: ScriptDsl.() -> Unit = {}) = ScriptDsl().apply { elements.forEach { exec(it) } }.apply(block)

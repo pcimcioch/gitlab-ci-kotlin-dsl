@@ -21,6 +21,6 @@ class AfterScriptDsl : DslBase() {
     }
 }
 
-fun createAfterScript(block: AfterScriptDsl.() -> Unit) = AfterScriptDsl().apply(block)
-fun createAfterScript(vararg elements: String) = createAfterScript(elements.toList())
-fun createAfterScript(elements: Iterable<String>) = AfterScriptDsl().apply { elements.forEach { exec(it) } }
+fun createAfterScript(block: AfterScriptDsl.() -> Unit = {}) = AfterScriptDsl().apply(block)
+fun createAfterScript(vararg elements: String, block: AfterScriptDsl.() -> Unit = {}) = createAfterScript(elements.toList(), block)
+fun createAfterScript(elements: Iterable<String>, block: AfterScriptDsl.() -> Unit = {}) = AfterScriptDsl().apply { elements.forEach { exec(it) } }.apply(block)

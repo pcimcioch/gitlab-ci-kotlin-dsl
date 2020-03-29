@@ -21,23 +21,23 @@ class DefaultDsl : DslBase() {
     @SerialName("after_script")
     var afterScript: AfterScriptDsl? = null
 
-    fun beforeScript(block: BeforeScriptDsl.() -> Unit) = ensureBeforeScript().apply(block)
-    fun beforeScript(vararg elements: String) = beforeScript(elements.toList())
-    fun beforeScript(elements: Iterable<String>) = ensureBeforeScript().apply { elements.forEach { exec(it) } }
+    fun beforeScript(block: BeforeScriptDsl.() -> Unit = {}) = ensureBeforeScript().apply(block)
+    fun beforeScript(vararg elements: String, block: BeforeScriptDsl.() -> Unit = {}) = beforeScript(elements.toList(), block)
+    fun beforeScript(elements: Iterable<String>, block: BeforeScriptDsl.() -> Unit = {}) = ensureBeforeScript().apply { elements.forEach { exec(it) } }.apply(block)
 
-    fun afterScript(block: AfterScriptDsl.() -> Unit) = ensureAfterScript().apply(block)
-    fun afterScript(vararg elements: String) = afterScript(elements.toList())
-    fun afterScript(elements: Iterable<String>) = ensureAfterScript().apply { elements.forEach { exec(it) } }
+    fun afterScript(block: AfterScriptDsl.() -> Unit = {}) = ensureAfterScript().apply(block)
+    fun afterScript(vararg elements: String, block: AfterScriptDsl.() -> Unit = {}) = afterScript(elements.toList(), block)
+    fun afterScript(elements: Iterable<String>, block: AfterScriptDsl.() -> Unit = {}) = ensureAfterScript().apply { elements.forEach { exec(it) } }.apply(block)
 
     fun image(name: String? = null, block: ImageDsl.() -> Unit = {}) = ensureImage().apply { this.name = name }.apply(block)
 
-    fun services(vararg elements: String) = services(elements.toList())
-    fun services(elements: Iterable<String>) = ensureServices().apply { elements.forEach { service(it) } }
-    fun services(block: ServiceListDsl.() -> Unit) = ensureServices().apply(block)
+    fun services(block: ServiceListDsl.() -> Unit = {}) = ensureServices().apply(block)
+    fun services(vararg elements: String, block: ServiceListDsl.() -> Unit = {}) = services(elements.toList(), block)
+    fun services(elements: Iterable<String>, block: ServiceListDsl.() -> Unit = {}) = ensureServices().apply { elements.forEach { service(it) } }.apply(block)
 
-    fun cache(block: CacheDsl.() -> Unit) = ensureCache().apply(block)
-    fun cache(vararg elements: String) = cache(elements.toList())
-    fun cache(elements: Iterable<String>) = ensureCache().apply { paths(elements) }
+    fun cache(block: CacheDsl.() -> Unit = {}) = ensureCache().apply(block)
+    fun cache(vararg elements: String, block: CacheDsl.() -> Unit = {}) = cache(elements.toList(), block)
+    fun cache(elements: Iterable<String>, block: CacheDsl.() -> Unit = {}) = ensureCache().apply { paths(elements) }.apply(block)
 
     override fun validate(errors: MutableList<String>) {
         addErrors(errors, "[default]", beforeScript, afterScript, image, services, cache)

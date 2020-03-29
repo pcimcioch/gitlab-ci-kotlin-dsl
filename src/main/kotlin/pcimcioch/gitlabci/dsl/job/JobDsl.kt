@@ -54,33 +54,33 @@ class JobDsl(
     var environment: EnvironmentDsl? = null
     var variables: VariablesDsl? = null
 
-    fun script(block: ScriptDsl.() -> Unit) = ensureScript().apply(block)
-    fun script(vararg elements: String) = script(elements.toList())
-    fun script(elements: Iterable<String>) = ensureScript().apply { elements.forEach { exec(it) } }
+    fun script(block: ScriptDsl.() -> Unit = {}) = ensureScript().apply(block)
+    fun script(vararg elements: String, block: ScriptDsl.() -> Unit = {}) = script(elements.toList(), block)
+    fun script(elements: Iterable<String>, block: ScriptDsl.() -> Unit = {}) = ensureScript().apply { elements.forEach { exec(it) } }.apply(block)
 
-    fun beforeScript(block: BeforeScriptDsl.() -> Unit) = ensureBeforeScript().apply(block)
-    fun beforeScript(vararg elements: String) = beforeScript(elements.toList())
-    fun beforeScript(elements: Iterable<String>) = ensureBeforeScript().apply { elements.forEach { exec(it) } }
+    fun beforeScript(block: BeforeScriptDsl.() -> Unit = {}) = ensureBeforeScript().apply(block)
+    fun beforeScript(vararg elements: String, block: BeforeScriptDsl.() -> Unit = {}) = beforeScript(elements.toList(), block)
+    fun beforeScript(elements: Iterable<String>, block: BeforeScriptDsl.() -> Unit = {}) = ensureBeforeScript().apply { elements.forEach { exec(it) } }.apply(block)
 
-    fun afterScript(block: AfterScriptDsl.() -> Unit) = ensureAfterScript().apply(block)
-    fun afterScript(vararg elements: String) = afterScript(elements.toList())
-    fun afterScript(elements: Iterable<String>) = ensureAfterScript().apply { elements.forEach { exec(it) } }
+    fun afterScript(block: AfterScriptDsl.() -> Unit = {}) = ensureAfterScript().apply(block)
+    fun afterScript(vararg elements: String, block: AfterScriptDsl.() -> Unit = {}) = afterScript(elements.toList(), block)
+    fun afterScript(elements: Iterable<String>, block: AfterScriptDsl.() -> Unit = {}) = ensureAfterScript().apply { elements.forEach { exec(it) } }.apply(block)
 
-    fun inherit(block: InheritDsl.() -> Unit) = ensureInherit().apply(block)
+    fun inherit(block: InheritDsl.() -> Unit = {}) = ensureInherit().apply(block)
 
     fun image(name: String? = null, block: ImageDsl.() -> Unit = {}) = ensureImage().apply { this.name = name }.apply(block)
 
-    fun services(vararg elements: String) = services(elements.toList())
-    fun services(elements: Iterable<String>) = ensureServices().apply { elements.forEach { service(it) } }
-    fun services(block: ServiceListDsl.() -> Unit) = ensureServices().apply(block)
+    fun services(block: ServiceListDsl.() -> Unit = {}) = ensureServices().apply(block)
+    fun services(vararg elements: String, block: ServiceListDsl.() -> Unit = {}) = services(elements.toList(), block)
+    fun services(elements: Iterable<String>, block: ServiceListDsl.() -> Unit = {}) = ensureServices().apply { elements.forEach { service(it) } }.apply(block)
 
-    fun needs(vararg elements: String) = needs(elements.toList())
-    fun needs(elements: Iterable<String>) = ensureNeeds().apply { elements.forEach { needJob(it) } }
-    fun needs(vararg elements: JobDsl) = needs(elements.toList())
+    fun needs(block: NeedsListDsl.() -> Unit = {}) = ensureNeeds().apply(block)
+    fun needs(vararg elements: String, block: NeedsListDsl.() -> Unit = {}) = needs(elements.toList(), block)
+    fun needs(elements: Iterable<String>, block: NeedsListDsl.() -> Unit = {}) = ensureNeeds().apply { elements.forEach { needJob(it) } }.apply(block)
+    fun needs(vararg elements: JobDsl, block: NeedsListDsl.() -> Unit = {}) = needs(elements.toList(), block)
 
     @JvmName("needsJob")
-    fun needs(elements: Iterable<JobDsl>) = ensureNeeds().apply { elements.forEach { needJob(it) } }
-    fun needs(block: NeedsListDsl.() -> Unit) = ensureNeeds().apply(block)
+    fun needs(elements: Iterable<JobDsl>, block: NeedsListDsl.() -> Unit = {}) = ensureNeeds().apply { elements.forEach { needJob(it) } }.apply(block)
 
     fun tags(vararg elements: String) = tags(elements.toList())
     fun tags(elements: Iterable<String>) = ensureTags().addAll(elements)
@@ -102,23 +102,23 @@ class JobDsl(
     @JvmName("variablesEnum")
     fun <T : Enum<T>> variables(elements: Map<T, Any> = mapOf(), block: VariablesDsl.() -> Unit = {}) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
 
-    fun cache(block: CacheDsl.() -> Unit) = ensureCache().apply(block)
-    fun cache(vararg elements: String) = cache(elements.toList())
-    fun cache(elements: Iterable<String>) = ensureCache().apply { paths(elements) }
+    fun cache(block: CacheDsl.() -> Unit = {}) = ensureCache().apply(block)
+    fun cache(vararg elements: String, block: CacheDsl.() -> Unit = {}) = cache(elements.toList(), block)
+    fun cache(elements: Iterable<String>, block: CacheDsl.() -> Unit = {}) = ensureCache().apply { paths(elements) }.apply(block)
 
-    fun artifacts(block: ArtifactsDsl.() -> Unit) = ensureArtifacts().apply(block)
-    fun artifacts(vararg elements: String) = artifacts(elements.toList())
-    fun artifacts(elements: Iterable<String>) = ensureArtifacts().apply { paths(elements) }
+    fun artifacts(block: ArtifactsDsl.() -> Unit = {}) = ensureArtifacts().apply(block)
+    fun artifacts(vararg elements: String, block: ArtifactsDsl.() -> Unit = {}) = artifacts(elements.toList(), block)
+    fun artifacts(elements: Iterable<String>, block: ArtifactsDsl.() -> Unit = {}) = ensureArtifacts().apply { paths(elements) }.apply(block)
 
-    fun only(block: OnlyExceptDsl.() -> Unit) = ensureOnly().apply(block)
-    fun only(vararg elements: String) = only(elements.toList())
-    fun only(elements: Iterable<String>) = ensureOnly().apply { refs(elements) }
+    fun only(block: OnlyExceptDsl.() -> Unit = {}) = ensureOnly().apply(block)
+    fun only(vararg elements: String, block: OnlyExceptDsl.() -> Unit = {}) = only(elements.toList(), block)
+    fun only(elements: Iterable<String>, block: OnlyExceptDsl.() -> Unit = {}) = ensureOnly().apply { refs(elements) }.apply(block)
 
-    fun except(block: OnlyExceptDsl.() -> Unit) = ensureExcept().apply(block)
-    fun except(vararg elements: String) = except(elements.toList())
-    fun except(elements: Iterable<String>) = ensureExcept().apply { refs(elements) }
+    fun except(block: OnlyExceptDsl.() -> Unit = {}) = ensureExcept().apply(block)
+    fun except(vararg elements: String, block: OnlyExceptDsl.() -> Unit = {}) = except(elements.toList(), block)
+    fun except(elements: Iterable<String>, block: OnlyExceptDsl.() -> Unit = {}) = ensureExcept().apply { refs(elements) }.apply(block)
 
-    fun rules(block: RuleListDsl.() -> Unit) = ensureRules().apply(block)
+    fun rules(block: RuleListDsl.() -> Unit = {}) = ensureRules().apply(block)
 
     fun environment(name: String? = null, block: EnvironmentDsl.() -> Unit = {}) = ensureEnvironment().apply { this.name = name }.apply(block)
 

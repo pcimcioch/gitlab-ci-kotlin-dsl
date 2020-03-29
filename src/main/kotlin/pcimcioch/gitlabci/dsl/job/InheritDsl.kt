@@ -79,7 +79,7 @@ class InheritDsl : DslBase() {
     }
 }
 
-fun createInherit(block: InheritDsl.() -> Unit) = InheritDsl().apply(block)
+fun createInherit(block: InheritDsl.() -> Unit = {}) = InheritDsl().apply(block)
 
 @Serializable(with = InheritDefaultType.InheritDefaultTypeSerializer::class)
 enum class InheritDefaultType(

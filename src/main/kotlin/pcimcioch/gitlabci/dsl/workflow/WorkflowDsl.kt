@@ -8,7 +8,7 @@ import pcimcioch.gitlabci.dsl.job.RuleListDsl
 class WorkflowDsl : DslBase() {
     var rules: RuleListDsl? = null
 
-    fun rules(block: RuleListDsl.() -> Unit) = ensureRules().apply(block)
+    fun rules(block: RuleListDsl.() -> Unit = {}) = ensureRules().apply(block)
 
     override fun validate(errors: MutableList<String>) {
         addErrors(errors, "[workflow]", rules)

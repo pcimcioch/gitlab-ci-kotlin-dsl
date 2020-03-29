@@ -42,7 +42,7 @@ class RuleDsl : DslBase() {
     }
 }
 
-fun createRule(block: RuleDsl.() -> Unit) = RuleDsl().apply(block)
+fun createRule(block: RuleDsl.() -> Unit = {}) = RuleDsl().apply(block)
 
 @Serializable(with = RuleListDsl.RuleListDslSerializer::class)
 class RuleListDsl : DslBase() {

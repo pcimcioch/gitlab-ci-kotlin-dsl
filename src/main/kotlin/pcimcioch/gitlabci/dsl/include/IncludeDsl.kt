@@ -9,13 +9,14 @@ import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 class IncludeDsl : DslBase() {
     private val includes = mutableListOf<IncludeDetailsDsl>()
 
-    fun local(file: String) = includes.add(IncludeLocalDsl(file))
+    fun local(local: String) = includes.add(IncludeLocalDsl(local))
     fun file(project: String, file: String, ref: String? = null) = includes.add(IncludeFileDsl(project, file, ref))
     fun template(template: String) = includes.add(IncludeTemplateDsl(template))
     fun remote(remote: String) = includes.add(IncludeRemoteDsl(remote))
+    operator fun IncludeDetailsDsl.unaryPlus() = this@IncludeDsl.includes.add(this)
 
     override fun validate(errors: MutableList<String>) {
-        addErrors(errors,"[include]", includes)
+        addErrors(errors, "[include]", includes)
     }
 
     object IncludeDslSerializer : ValueSerializer<IncludeDsl, List<IncludeDetailsDsl>>(DslBase.serializer().list, IncludeDsl::includes)
@@ -26,11 +27,11 @@ class IncludeDsl : DslBase() {
     }
 }
 
-abstract class IncludeDetailsDsl : DslBase()
+sealed class IncludeDetailsDsl : DslBase()
 
 @Serializable
 class IncludeLocalDsl(
-        var local: String? = null
+        var local: String
 ) : IncludeDetailsDsl() {
     companion object {
         init {
@@ -39,10 +40,12 @@ class IncludeLocalDsl(
     }
 }
 
+fun createIncludeLocal(local: String) = IncludeLocalDsl(local)
+
 @Serializable
 class IncludeFileDsl(
-        var project: String? = null,
-        var file: String? = null,
+        var project: String,
+        var file: String,
         var ref: String? = null
 ) : IncludeDetailsDsl() {
     companion object {
@@ -52,9 +55,11 @@ class IncludeFileDsl(
     }
 }
 
+fun createIncludeFile(project: String, file: String, ref: String? = null) = IncludeFileDsl(project, file, ref)
+
 @Serializable
 class IncludeTemplateDsl(
-        var template: String? = null
+        var template: String
 ) : IncludeDetailsDsl() {
     companion object {
         init {
@@ -63,9 +68,11 @@ class IncludeTemplateDsl(
     }
 }
 
+fun createIncludeTemplate(template: String) = IncludeTemplateDsl(template)
+
 @Serializable
 class IncludeRemoteDsl(
-        var remote: String? = null
+        var remote: String
 ) : IncludeDetailsDsl() {
     companion object {
         init {
@@ -73,3 +80,5 @@ class IncludeRemoteDsl(
         }
     }
 }
+
+fun createIncludeRemote(remote: String) = IncludeRemoteDsl(remote)

@@ -81,20 +81,6 @@ internal class ScriptDslTest : DslTestBase() {
     }
 
     @Test
-    fun `should not validate script with no commands`() {
-        // given
-        val testee = createScript {}
-
-        // then
-        assertDsl(ScriptDsl.serializer(), testee,
-                """
-                    []
-                """.trimIndent(),
-                "[script] commands list cannot be empty"
-        )
-    }
-
-    @Test
     fun `should add commands with unary plus`() {
         // given
         val testee = createScript {

@@ -13,10 +13,6 @@ class ScriptDsl : DslBase() {
     fun exec(command: String) = commands.add(command)
     operator fun String.unaryPlus() = this@ScriptDsl.commands.add(this)
 
-    override fun validate(errors: MutableList<String>) {
-        addError(errors, commands.isEmpty(), "[script] commands list cannot be empty")
-    }
-
     object ScriptDslSerializer : ValueSerializer<ScriptDsl, List<String>>(String.serializer().list, ScriptDsl::commands)
     companion object {
         init {

@@ -133,7 +133,6 @@ class JobDsl(
 
         addError(errors, isEmpty(name) || Validation.RESTRICTED_NAMES.contains(name), "$prefix name '$name' is incorrect")
         addError(errors, startIn != null && whenRun != WhenRunType.DELAYED, "$prefix startIn can be used only with when=delayed jobs")
-        addError(errors, script == null, "$prefix at least one script command must be configured")
         addError(errors, parallel != null && (parallel!! < 2 || parallel!! > 50), "$prefix parallel must be in range [2, 50]")
 
         addErrors(errors, prefix, beforeScript, afterScript, inherit, retry, image, script, services, needs, variables, cache, artifacts, only, except, rules, environment, trigger)

@@ -97,36 +97,6 @@ internal class JobDslTest : DslTestBase() {
     }
 
     @Test
-    fun `should validate no script`() {
-        // given
-        val testee = createJob("test") {}
-
-        // then
-        assertDsl(JobDsl.serializer(), testee,
-                """
-                    {}
-                """.trimIndent(),
-                "[job name='test'] at least one script command must be configured"
-        )
-    }
-
-    @Test
-    fun `should validate empty script`() {
-        // given
-        val testee = createJob("test") {
-            script()
-        }
-
-        // then
-        assertDsl(JobDsl.serializer(), testee,
-                """
-                    script: []
-                """.trimIndent(),
-                "[job name='test'][script] commands list cannot be empty"
-        )
-    }
-
-    @Test
     fun `should validate too small parallel`() {
         // given
         val testee = createJob("test") {
@@ -258,8 +228,7 @@ internal class JobDslTest : DslTestBase() {
                 """
                     {}
                 """.trimIndent(),
-                "[job name=''] name '' is incorrect",
-                "[job name=''] at least one script command must be configured"
+                "[job name=''] name '' is incorrect"
         )
     }
 

@@ -5,7 +5,8 @@ stages:
 generate-config:
   image: "gradle:6.3.0-jdk8"
   stage: generate
-  script: gradle -b gitlab-ci.gradle.kts generateGitlabCi
+  script:
+    - gradle -b gitlab-ci.gradle.kts generateGitlabCi
   artifacts:
     paths:
       - .gitlab-ci-generated.yml
@@ -13,6 +14,7 @@ generate-config:
 child-pipeline:
   stage: run
   trigger:
+    strategy: depend
     include:
       - artifact: .gitlab-ci-generated.yml
         job: generate-config

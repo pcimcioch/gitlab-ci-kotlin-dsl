@@ -4,7 +4,7 @@ import pcimcioch.gitlabci.dsl.Duration
 import pcimcioch.gitlabci.dsl.gitlabCi
 import pcimcioch.gitlabci.dsl.job.WhenUploadType
 
-fun main(args: Array<String>) {
+fun main() {
     gitlabCi {
         default {
             image("openjdk:8u162")

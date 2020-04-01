@@ -1,4 +1,7 @@
+import pcimcioch.gitlabci.dsl.Duration
 import pcimcioch.gitlabci.dsl.gitlabCi
+import pcimcioch.gitlabci.dsl.job.WhenUploadType
+import java.io.FileWriter
 
 buildscript {
     repositories {
@@ -12,7 +15,7 @@ buildscript {
 
 tasks.register("generateGitlabCi") {
     doLast {
-        java.io.FileWriter(".gitlab-ci-generated.yml").use {
+        FileWriter(".gitlab-ci-generated.yml").use {
             gitlabCi(writer = it) {
                 default {
                     image("openjdk:8u162")
@@ -31,9 +34,9 @@ tasks.register("generateGitlabCi") {
                     stage = "test"
                     script("./gradlew clean build")
                     artifacts {
-                        whenUpload = pcimcioch.gitlabci.dsl.job.WhenUploadType.ALWAYS
+                        whenUpload = WhenUploadType.ALWAYS
                         paths("build/test-results", "build/reports")
-                        expireIn = pcimcioch.gitlabci.dsl.Duration(days = 7)
+                        expireIn = Duration(days = 7)
                         reports {
                             junit("build/test-results/test/TEST-*.xml")
                         }
@@ -47,9 +50,9 @@ tasks.register("generateGitlabCi") {
                         master()
                     }
                     artifacts {
-                        whenUpload = pcimcioch.gitlabci.dsl.job.WhenUploadType.ON_SUCCESS
+                        whenUpload = WhenUploadType.ON_SUCCESS
                         paths("build/libs")
-                        expireIn = pcimcioch.gitlabci.dsl.Duration(days = 7)
+                        expireIn = Duration(days = 7)
                     }
                 }
             }

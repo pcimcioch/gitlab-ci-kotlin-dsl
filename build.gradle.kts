@@ -1,5 +1,5 @@
 repositories {
-    mavenCentral()
+    jcenter()
 }
 
 plugins {
@@ -7,6 +7,7 @@ plugins {
     kotlin("plugin.serialization") version "1.3.70"
     `maven-publish`
     signing
+    id("org.jetbrains.dokka") version "0.10.1"
 }
 
 dependencies {
@@ -37,6 +38,13 @@ tasks {
     }
 }
 
+val dokkaJar by tasks.creating(Jar::class) {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Assembles Kotlin docs with Dokka"
+    archiveClassifier.set("javadoc")
+    from(tasks.dokka)
+}
+
 java {
     withSourcesJar()
 }
@@ -45,6 +53,7 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             from(components["java"])
+            artifact(dokkaJar)
 
             pom {
                 name.set("GitlabCi Kotlin DSL")
@@ -60,6 +69,13 @@ publishing {
                     connection.set("scm:git:git://github.com/pcimcioch/gitlab-ci-kotlin-dsl.git")
                     developerConnection.set("scm:git:git@github.com:pcimcioch/gitlab-ci-kotlin-dsl.git")
                     url.set("https://github.com/pcimcioch/gitlab-ci-kotlin-dsl")
+                }
+                developers {
+                    developer {
+                        id.set("pcimcioch")
+                        name.set("Przemysław Cimcioch")
+                        email.set("cimcioch.przemyslaw@gmail.com")
+                    }
                 }
             }
         }

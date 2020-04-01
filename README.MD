@@ -49,9 +49,18 @@ gitlabCi {
 
 # How to download
 
-Project is currently in development and is not available in maven central yet
+Library is available in Central Maven Repository
+```xml
+<dependency>
+  <groupId>com.github.pcimcioch</groupId>
+  <artifactId>gitlab-ci-kotlin-dsl</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
 
-[//]: # (TODO release to maven central)
+```
+implementation("com.github.pcimcioch:gitlab-ci-kotlin-dsl:1.0.0")
+```
 
 # Supported Gitlab CI configuration parameters
 

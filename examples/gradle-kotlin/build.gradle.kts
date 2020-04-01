@@ -1,6 +1,4 @@
 repositories {
-    // TODO after release remove local repo
-    mavenLocal()
     mavenCentral()
 }
 
@@ -12,8 +10,7 @@ plugins {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
-    // TODO after release use proper version
-    implementation("com.github.pcimcioch:gitlab-ci-kotlin-dsl:1-SNAPSHOT")
+    implementation("com.github.pcimcioch:gitlab-ci-kotlin-dsl:1.0.0")
 }
 
 application {

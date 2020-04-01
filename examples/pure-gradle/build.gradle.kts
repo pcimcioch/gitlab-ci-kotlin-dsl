@@ -2,14 +2,11 @@ import pcimcioch.gitlabci.dsl.gitlabCi
 
 buildscript {
     repositories {
-        // TODO after release remove local repo
-        mavenLocal()
         mavenCentral()
     }
 
     dependencies {
-        // TODO after release use proper version
-        classpath("com.github.pcimcioch:gitlab-ci-kotlin-dsl:1-SNAPSHOT")
+        classpath("com.github.pcimcioch:gitlab-ci-kotlin-dsl:1.0.0")
     }
 }
 

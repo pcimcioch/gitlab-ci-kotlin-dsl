@@ -1,6 +1,7 @@
 package pcimcioch.gitlabci.dsl.job
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.list
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.StringRepresentation
@@ -45,7 +46,7 @@ class TriggerIncludeDsl : DslBase() {
         addErrors(errors, "[include]", includes)
     }
 
-    object TriggerIncludeDslSerializer : ValueSerializer<TriggerIncludeDsl, List<TriggerIncludeDetailsDsl>>(TriggerIncludeDetailsDsl.serializer().list, TriggerIncludeDsl::includes)
+    object TriggerIncludeDslSerializer : ValueSerializer<TriggerIncludeDsl, List<TriggerIncludeDetailsDsl>>(ListSerializer(TriggerIncludeDetailsDsl.serializer()), TriggerIncludeDsl::includes)
     companion object {
         init {
             addSerializer(TriggerIncludeDsl::class, serializer())

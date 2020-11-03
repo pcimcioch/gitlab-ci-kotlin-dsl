@@ -2,6 +2,7 @@ package pcimcioch.gitlabci.dsl.job
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.list
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.Duration
@@ -55,7 +56,7 @@ class RuleListDsl : DslBase() {
         addErrors(errors, "", rules)
     }
 
-    object RuleListDslSerializer : ValueSerializer<RuleListDsl, List<RuleDsl>>(RuleDsl.serializer().list, RuleListDsl::rules)
+    object RuleListDslSerializer : ValueSerializer<RuleListDsl, List<RuleDsl>>(ListSerializer(RuleDsl.serializer()), RuleListDsl::rules)
     companion object {
         init {
             addSerializer(RuleListDsl::class, serializer())

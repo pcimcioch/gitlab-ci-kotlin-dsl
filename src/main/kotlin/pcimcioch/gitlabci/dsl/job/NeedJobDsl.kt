@@ -1,6 +1,7 @@
 package pcimcioch.gitlabci.dsl.job
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.list
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
@@ -39,7 +40,7 @@ class NeedsListDsl : DslBase() {
         addErrors(errors, "", needs)
     }
 
-    object NeedsListDslSerializer : ValueSerializer<NeedsListDsl, List<NeedJobDsl>>(NeedJobDsl.serializer().list, NeedsListDsl::needs)
+    object NeedsListDslSerializer : ValueSerializer<NeedsListDsl, List<NeedJobDsl>>(ListSerializer(NeedJobDsl.serializer()), NeedsListDsl::needs)
     companion object {
         init {
             addSerializer(NeedsListDsl::class, serializer())

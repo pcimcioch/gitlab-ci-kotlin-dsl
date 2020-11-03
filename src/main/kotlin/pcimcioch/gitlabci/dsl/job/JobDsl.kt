@@ -171,7 +171,7 @@ class JobDsl(
 
 fun createJob(name: String, block: JobDsl.() -> Unit) = JobDsl(name).apply(block)
 
-@Serializable(with = WhenRunType.WhenRuntTypeSerializer::class)
+@Serializable(with = WhenRunType.WhenRunTypeSerializer::class)
 enum class WhenRunType(
         override val stringRepresentation: String
 ) : StringRepresentation {
@@ -182,5 +182,5 @@ enum class WhenRunType(
     DELAYED("delayed"),
     NEVER("never");
 
-    object WhenRuntTypeSerializer : StringRepresentationSerializer<WhenRunType>("WhenRunType")
+    object WhenRunTypeSerializer : StringRepresentationSerializer<WhenRunType>("WhenRunType")
 }

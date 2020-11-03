@@ -1,9 +1,9 @@
 package pcimcioch.gitlabci.dsl.serializer
 
-import kotlinx.serialization.Decoder
-import kotlinx.serialization.Encoder
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 open class ValueSerializer<T, K>(
         private val valueSerializer: KSerializer<in K>,

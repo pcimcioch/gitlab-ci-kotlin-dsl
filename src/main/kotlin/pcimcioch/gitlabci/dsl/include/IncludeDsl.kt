@@ -1,6 +1,7 @@
 package pcimcioch.gitlabci.dsl.include
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.list
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
@@ -19,7 +20,7 @@ class IncludeDsl : DslBase() {
         addErrors(errors, "[include]", includes)
     }
 
-    object IncludeDslSerializer : ValueSerializer<IncludeDsl, List<IncludeDetailsDsl>>(IncludeDetailsDsl.serializer().list, IncludeDsl::includes)
+    object IncludeDslSerializer : ValueSerializer<IncludeDsl, List<IncludeDetailsDsl>>(ListSerializer(IncludeDetailsDsl.serializer()), IncludeDsl::includes)
     companion object {
         init {
             addSerializer(IncludeDsl::class, serializer())

@@ -1,6 +1,7 @@
 package pcimcioch.gitlabci.dsl.job
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.list
 import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.DslBase
@@ -13,7 +14,7 @@ class ScriptDsl : DslBase() {
     fun exec(command: String) = commands.add(command)
     operator fun String.unaryPlus() = this@ScriptDsl.commands.add(this)
 
-    object ScriptDslSerializer : ValueSerializer<ScriptDsl, List<String>>(String.serializer().list, ScriptDsl::commands)
+    object ScriptDslSerializer : ValueSerializer<ScriptDsl, List<String>>(ListSerializer(String.serializer()), ScriptDsl::commands)
     companion object {
         init {
             addSerializer(ScriptDsl::class, serializer())

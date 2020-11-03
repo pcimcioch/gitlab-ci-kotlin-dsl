@@ -1,6 +1,7 @@
 package pcimcioch.gitlabci.dsl.job
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.list
 import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.DslBase
@@ -13,7 +14,7 @@ class AfterScriptDsl : DslBase() {
     fun exec(command: String) = commands.add(command)
     operator fun String.unaryPlus() = this@AfterScriptDsl.commands.add(this)
 
-    object AfterScriptDslSerializer : ValueSerializer<AfterScriptDsl, List<String>>(String.serializer().list, AfterScriptDsl::commands)
+    object AfterScriptDslSerializer : ValueSerializer<AfterScriptDsl, List<String>>(ListSerializer(String.serializer()), AfterScriptDsl::commands)
     companion object {
         init {
             addSerializer(AfterScriptDsl::class, serializer())

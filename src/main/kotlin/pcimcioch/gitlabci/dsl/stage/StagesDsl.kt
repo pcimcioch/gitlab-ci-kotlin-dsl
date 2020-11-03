@@ -1,7 +1,7 @@
 package pcimcioch.gitlabci.dsl.stage
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.list
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
@@ -13,7 +13,7 @@ class StagesDsl : DslBase() {
     fun stage(stage: String) = stages.add(stage)
     operator fun String.unaryPlus() = this@StagesDsl.stages.add(this)
 
-    object StagesDslSerializer : ValueSerializer<StagesDsl, List<String>>(String.serializer().list, StagesDsl::stages)
+    object StagesDslSerializer : ValueSerializer<StagesDsl, List<String>>(ListSerializer(String.serializer()), StagesDsl::stages)
     companion object {
         init {
             addSerializer(StagesDsl::class, serializer())

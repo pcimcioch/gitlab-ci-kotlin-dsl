@@ -1,10 +1,10 @@
 package pcimcioch.gitlabci.dsl.job
 
-import kotlinx.serialization.PrimitiveDescriptor
-import kotlinx.serialization.PrimitiveKind
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.MultiTypeSerializer
@@ -48,7 +48,7 @@ class CacheDsl : DslBase() {
     private fun ensurePaths() = paths ?: mutableSetOf<String>().also { paths = it }
 
     object KeySerializer : MultiTypeSerializer<Any>(
-            PrimitiveDescriptor("Key", PrimitiveKind.STRING),
+            PrimitiveSerialDescriptor("Key", PrimitiveKind.STRING),
             mapOf(
                     String::class to String.serializer(),
                     CacheKeyDsl::class to CacheKeyDsl.serializer()))

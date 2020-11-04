@@ -29,6 +29,7 @@ internal class ArtifactsDslTest : DslTestBase() {
             whenUpload = WhenUploadType.ALWAYS
             expireIn = Duration(days = 1)
             paths("p 1")
+            exclude("e 1")
             reports {
                 junit("junit 1")
             }
@@ -44,6 +45,8 @@ internal class ArtifactsDslTest : DslTestBase() {
                     expire_in: "1 day"
                     paths:
                     - "p 1"
+                    exclude:
+                    - "e 1"
                     reports:
                       junit:
                       - "junit 1"
@@ -100,10 +103,11 @@ internal class ArtifactsDslTest : DslTestBase() {
     }
 
     @Test
-    fun `should create single path artifacts`() {
+    fun `should create single collection artifacts`() {
         // given
         val testee = createArtifacts {
             paths("p 1")
+            exclude("e 1")
         }
 
         // then
@@ -111,15 +115,18 @@ internal class ArtifactsDslTest : DslTestBase() {
                 """
                     paths:
                     - "p 1"
+                    exclude:
+                    - "e 1"
                 """.trimIndent()
         )
     }
 
     @Test
-    fun `should create multiple paths artifacts`() {
+    fun `should create multiple collections artifacts`() {
         // given
         val testee = createArtifacts {
             paths("p 1", "p 2")
+            exclude("e 1", "e 2")
         }
 
         // then
@@ -128,31 +135,38 @@ internal class ArtifactsDslTest : DslTestBase() {
                     paths:
                     - "p 1"
                     - "p 2"
+                    exclude:
+                    - "e 1"
+                    - "e 2"
                 """.trimIndent()
         )
     }
 
     @Test
-    fun `should create no paths artifacts`() {
+    fun `should create empty collection artifacts`() {
         // given
         val testee = createArtifacts {
             paths()
+            exclude()
         }
 
         // then
         assertDsl(ArtifactsDsl.serializer(), testee,
                 """
                     paths: []
+                    exclude: []
                 """.trimIndent()
         )
     }
 
     @Test
-    fun `should merge paths`() {
+    fun `should merge collections`() {
         // given
         val testee = createArtifacts {
             paths("p 1", "p 2")
             paths(listOf("p 3", "p 4"))
+            exclude("e 1", "e 2")
+            exclude(listOf("e 3", "e 4"))
         }
 
         // then
@@ -163,6 +177,11 @@ internal class ArtifactsDslTest : DslTestBase() {
                     - "p 2"
                     - "p 3"
                     - "p 4"
+                    exclude:
+                    - "e 1"
+                    - "e 2"
+                    - "e 3"
+                    - "e 4"
                 """.trimIndent()
         )
     }
@@ -176,6 +195,7 @@ internal class ArtifactsDslTest : DslTestBase() {
 
         val testee = createArtifacts {
             paths = mutableSetOf("p 1", "p 2")
+            exclude = mutableSetOf("e 1", "e 2")
             reports = r
         }
 
@@ -185,6 +205,9 @@ internal class ArtifactsDslTest : DslTestBase() {
                     paths:
                     - "p 1"
                     - "p 2"
+                    exclude:
+                    - "e 1"
+                    - "e 2"
                     reports:
                       junit:
                       - "junit 1"
@@ -223,6 +246,9 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
             licenseScanning("licenseScanning 1")
             performance("performance 1")
             metrics("metrics 1")
+            cobertura("cobertura 1")
+            loadPerformance("loadPerformance 1")
+            terraform("terraform 1")
         }
 
         // then
@@ -236,20 +262,26 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
                     - "codequality 1"
                     sast:
                     - "sast 1"
-                    dependencyScanning:
+                    dependency_scanning:
                     - "dependencyScanning 1"
-                    containerScanning:
+                    container_scanning:
                     - "containerScanning 1"
                     dast:
                     - "dast 1"
-                    licenseManagement:
+                    license_management:
                     - "licenseManagement 1"
-                    licenseScanning:
+                    license_scanning:
                     - "licenseScanning 1"
                     performance:
                     - "performance 1"
                     metrics:
                     - "metrics 1"
+                    cobertura:
+                    - "cobertura 1"
+                    load_performance:
+                    - "loadPerformance 1"
+                    terraform:
+                    - "terraform 1"
                 """.trimIndent()
         )
     }
@@ -269,6 +301,9 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
             licenseScanning("licenseScanning 1", "licenseScanning 2")
             performance("performance 1", "performance 2")
             metrics("metrics 1", "metrics 2")
+            cobertura("cobertura 1", "cobertura 2")
+            loadPerformance("loadPerformance 1", "loadPerformance 2")
+            terraform("terraform 1", "terraform 2")
         }
 
         // then
@@ -286,19 +321,19 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
                     sast:
                     - "sast 1"
                     - "sast 2"
-                    dependencyScanning:
+                    dependency_scanning:
                     - "dependencyScanning 1"
                     - "dependencyScanning 2"
-                    containerScanning:
+                    container_scanning:
                     - "containerScanning 1"
                     - "containerScanning 2"
                     dast:
                     - "dast 1"
                     - "dast 2"
-                    licenseManagement:
+                    license_management:
                     - "licenseManagement 1"
                     - "licenseManagement 2"
-                    licenseScanning:
+                    license_scanning:
                     - "licenseScanning 1"
                     - "licenseScanning 2"
                     performance:
@@ -307,6 +342,15 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
                     metrics:
                     - "metrics 1"
                     - "metrics 2"
+                    cobertura:
+                    - "cobertura 1"
+                    - "cobertura 2"
+                    load_performance:
+                    - "loadPerformance 1"
+                    - "loadPerformance 2"
+                    terraform:
+                    - "terraform 1"
+                    - "terraform 2"
                 """.trimIndent()
         )
     }
@@ -326,6 +370,9 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
             licenseScanning()
             performance()
             metrics()
+            cobertura()
+            loadPerformance()
+            terraform()
         }
 
         // then
@@ -335,13 +382,16 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
                     dotenv: []
                     codequality: []
                     sast: []
-                    dependencyScanning: []
-                    containerScanning: []
+                    dependency_scanning: []
+                    container_scanning: []
                     dast: []
-                    licenseManagement: []
-                    licenseScanning: []
+                    license_management: []
+                    license_scanning: []
                     performance: []
                     metrics: []
+                    cobertura: []
+                    load_performance: []
+                    terraform: []
                 """.trimIndent()
         )
     }
@@ -361,6 +411,9 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
             licenseScanning("licenseScanning 1")
             performance("performance 1")
             metrics("metrics 1")
+            cobertura("cobertura 1")
+            loadPerformance("loadPerformance 1")
+            terraform("terraform 1")
 
             junit(listOf("junit 2", "junit 3"))
             dotenv(listOf("dotenv 2", "dotenv 3"))
@@ -373,6 +426,9 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
             licenseScanning(listOf("licenseScanning 2", "licenseScanning 3"))
             performance(listOf("performance 2", "performance 3"))
             metrics(listOf("metrics 2", "metrics 3"))
+            cobertura(listOf("cobertura 2", "cobertura 3"))
+            loadPerformance(listOf("loadPerformance 2", "loadPerformance 3"))
+            terraform("terraform 2", "terraform 3")
         }
 
         // then
@@ -394,11 +450,11 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
                     - "sast 1"
                     - "sast 2"
                     - "sast 3"
-                    dependencyScanning:
+                    dependency_scanning:
                     - "dependencyScanning 1"
                     - "dependencyScanning 2"
                     - "dependencyScanning 3"
-                    containerScanning:
+                    container_scanning:
                     - "containerScanning 1"
                     - "containerScanning 2"
                     - "containerScanning 3"
@@ -406,11 +462,11 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
                     - "dast 1"
                     - "dast 2"
                     - "dast 3"
-                    licenseManagement:
+                    license_management:
                     - "licenseManagement 1"
                     - "licenseManagement 2"
                     - "licenseManagement 3"
-                    licenseScanning:
+                    license_scanning:
                     - "licenseScanning 1"
                     - "licenseScanning 2"
                     - "licenseScanning 3"
@@ -422,6 +478,18 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
                     - "metrics 1"
                     - "metrics 2"
                     - "metrics 3"
+                    cobertura:
+                    - "cobertura 1"
+                    - "cobertura 2"
+                    - "cobertura 3"
+                    load_performance:
+                    - "loadPerformance 1"
+                    - "loadPerformance 2"
+                    - "loadPerformance 3"
+                    terraform:
+                    - "terraform 1"
+                    - "terraform 2"
+                    - "terraform 3"
                 """.trimIndent()
         )
     }
@@ -441,6 +509,9 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
             licenseScanning = mutableSetOf("licenseScanning 1", "licenseScanning 2")
             performance = mutableSetOf("performance 1", "performance 2")
             metrics = mutableSetOf("metrics 1", "metrics 2")
+            cobertura = mutableSetOf("cobertura 1", "cobertura 2")
+            loadPerformance = mutableSetOf("loadPerformance 1", "loadPerformance 2")
+            terraform = mutableSetOf("terraform 1", "terraform 2")
         }
 
         // then
@@ -458,19 +529,19 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
                     sast:
                     - "sast 1"
                     - "sast 2"
-                    dependencyScanning:
+                    dependency_scanning:
                     - "dependencyScanning 1"
                     - "dependencyScanning 2"
-                    containerScanning:
+                    container_scanning:
                     - "containerScanning 1"
                     - "containerScanning 2"
                     dast:
                     - "dast 1"
                     - "dast 2"
-                    licenseManagement:
+                    license_management:
                     - "licenseManagement 1"
                     - "licenseManagement 2"
-                    licenseScanning:
+                    license_scanning:
                     - "licenseScanning 1"
                     - "licenseScanning 2"
                     performance:
@@ -479,6 +550,15 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
                     metrics:
                     - "metrics 1"
                     - "metrics 2"
+                    cobertura:
+                    - "cobertura 1"
+                    - "cobertura 2"
+                    load_performance:
+                    - "loadPerformance 1"
+                    - "loadPerformance 2"
+                    terraform:
+                    - "terraform 1"
+                    - "terraform 2"
                 """.trimIndent()
         )
     }

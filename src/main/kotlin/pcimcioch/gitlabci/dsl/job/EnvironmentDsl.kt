@@ -69,6 +69,7 @@ enum class EnvironmentAction(
         override val stringRepresentation: String
 ) : StringRepresentation {
     START("start"),
+    PREPARE("prepare"),
     STOP("stop");
 
     object EnvironmentActionSerializer : StringRepresentationSerializer<EnvironmentAction>("EnvironmentAction")

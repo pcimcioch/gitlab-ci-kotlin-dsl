@@ -83,7 +83,7 @@ internal class ServiceDslTest : DslTestBase() {
     fun `should allow direct access`() {
         // given
         val testee = createService("name") {
-            cmd = mutableListOf("c 1", "c 2")
+            command = mutableListOf("c 1", "c 2")
             entrypoint = mutableListOf("e 1", "e 2")
         }
 
@@ -91,7 +91,7 @@ internal class ServiceDslTest : DslTestBase() {
         assertDsl(ServiceDsl.serializer(), testee,
                 """
                     name: "name"
-                    cmd:
+                    command:
                     - "c 1"
                     - "c 2"
                     entrypoint:
@@ -115,7 +115,7 @@ internal class ServiceDslTest : DslTestBase() {
         assertDsl(ServiceDsl.serializer(), testee,
                 """
                     name: "name"
-                    cmd:
+                    command:
                     - "c 1"
                     - "c 2"
                     - "c 10"
@@ -141,7 +141,7 @@ internal class ServiceDslTest : DslTestBase() {
         assertDsl(ServiceDsl.serializer(), testee,
                 """
                     name: "name"
-                    cmd: []
+                    command: []
                     entrypoint: []
                 """.trimIndent()
         )
@@ -159,7 +159,7 @@ internal class ServiceDslTest : DslTestBase() {
         assertDsl(ServiceDsl.serializer(), testee,
                 """
                     name: "name"
-                    cmd:
+                    command:
                     - "c 1"
                     entrypoint:
                     - "e 1"
@@ -179,7 +179,7 @@ internal class ServiceDslTest : DslTestBase() {
         assertDsl(ServiceDsl.serializer(), testee,
                 """
                     name: "name"
-                    cmd:
+                    command:
                     - "c 1"
                     - "c 2"
                     entrypoint:
@@ -297,7 +297,7 @@ internal class ServiceListDslTest : DslTestBase() {
                 """
                     - name: "test 1"
                       alias: "alias 1"
-                      cmd:
+                      command:
                       - "c 1"
                       - "c 2"
                     - name: "test 2"

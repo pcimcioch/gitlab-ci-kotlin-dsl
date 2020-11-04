@@ -11,7 +11,7 @@ class ServiceDsl(
         var name: String? = null
 ) : DslBase() {
     var alias: String? = null
-    var cmd: MutableList<String>? = null
+    var command: MutableList<String>? = null
     var entrypoint: MutableList<String>? = null
 
     fun cmd(vararg elements: String) = cmd(elements.toList())
@@ -25,7 +25,7 @@ class ServiceDsl(
     }
 
     private fun ensureEntrypoint() = entrypoint ?: mutableListOf<String>().also { entrypoint = it }
-    private fun ensureCmd() = cmd ?: mutableListOf<String>().also { cmd = it }
+    private fun ensureCmd() = command ?: mutableListOf<String>().also { command = it }
 
     companion object {
         init {

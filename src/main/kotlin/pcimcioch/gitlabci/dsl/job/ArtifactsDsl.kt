@@ -18,10 +18,14 @@ class ArtifactsDsl : DslBase() {
     @SerialName("expire_in")
     var expireIn: Duration? = null
     var paths: MutableSet<String>? = null
+    var exclude: MutableSet<String>? = null
     var reports: ArtifactsReportsDsl? = null
 
     fun paths(vararg elements: String) = paths(elements.toList())
     fun paths(elements: Iterable<String>) = ensurePaths().addAll(elements)
+
+    fun exclude(vararg elements: String) = exclude(elements.toList())
+    fun exclude(elements: Iterable<String>) = ensureExclude().addAll(elements)
 
     fun reports(block: ArtifactsReportsDsl.() -> Unit) = ensureReports().apply(block)
 
@@ -31,6 +35,7 @@ class ArtifactsDsl : DslBase() {
 
     private fun ensureReports() = reports ?: ArtifactsReportsDsl().also { reports = it }
     private fun ensurePaths() = paths ?: mutableSetOf<String>().also { paths = it }
+    private fun ensureExclude() = exclude ?: mutableSetOf<String>().also { exclude = it }
 
     companion object {
         init {
@@ -60,13 +65,21 @@ class ArtifactsReportsDsl : DslBase() {
     var dotenv: MutableSet<String>? = null
     var codequality: MutableSet<String>? = null
     var sast: MutableSet<String>? = null
+    @SerialName("dependency_scanning")
     var dependencyScanning: MutableSet<String>? = null
+    @SerialName("container_scanning")
     var containerScanning: MutableSet<String>? = null
     var dast: MutableSet<String>? = null
+    @SerialName("license_management")
     var licenseManagement: MutableSet<String>? = null
+    @SerialName("license_scanning")
     var licenseScanning: MutableSet<String>? = null
     var performance: MutableSet<String>? = null
     var metrics: MutableSet<String>? = null
+    var cobertura: MutableSet<String>? = null
+    @SerialName("load_performance")
+    var loadPerformance: MutableSet<String>? = null
+    var terraform: MutableSet<String>? = null
 
     fun junit(vararg elements: String) = junit(elements.toList())
     fun junit(elements: Iterable<String>) = ensureJunit().addAll(elements)
@@ -101,6 +114,15 @@ class ArtifactsReportsDsl : DslBase() {
     fun metrics(vararg elements: String) = metrics(elements.toList())
     fun metrics(elements: Iterable<String>) = ensureMetrics().addAll(elements)
 
+    fun cobertura(vararg elements: String) = cobertura(elements.toList())
+    fun cobertura(elements: Iterable<String>) = ensureCobertura().addAll(elements)
+
+    fun loadPerformance(vararg elements: String) = loadPerformance(elements.toList())
+    fun loadPerformance(elements: Iterable<String>) = ensureLoadPerformance().addAll(elements)
+
+    fun terraform(vararg elements: String) = terraform(elements.toList())
+    fun terraform(elements: Iterable<String>) = ensureTerraform().addAll(elements)
+
     private fun ensureJunit() = junit ?: mutableSetOf<String>().also { junit = it }
     private fun ensureDotenv() = dotenv ?: mutableSetOf<String>().also { dotenv = it }
     private fun ensureCodequality() = codequality ?: mutableSetOf<String>().also { codequality = it }
@@ -112,6 +134,9 @@ class ArtifactsReportsDsl : DslBase() {
     private fun ensureLicenseScanning() = licenseScanning ?: mutableSetOf<String>().also { licenseScanning = it }
     private fun ensurePerformance() = performance ?: mutableSetOf<String>().also { performance = it }
     private fun ensureMetrics() = metrics ?: mutableSetOf<String>().also { metrics = it }
+    private fun ensureCobertura() = cobertura ?: mutableSetOf<String>().also { cobertura = it }
+    private fun ensureLoadPerformance() = loadPerformance ?: mutableSetOf<String>().also { loadPerformance = it }
+    private fun ensureTerraform() = terraform ?: mutableSetOf<String>().also { terraform = it }
 
     companion object {
         init {

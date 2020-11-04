@@ -25,6 +25,7 @@ internal class CacheDslTest : DslTestBase() {
             paths("path1", "path2")
             untracked = true
             policy = CachePolicy.PULL_PUSH
+            whenCache = WhenCacheType.ON_SUCCESS
             key("key1")
         }
 
@@ -36,6 +37,7 @@ internal class CacheDslTest : DslTestBase() {
                     - "path2"
                     untracked: true
                     policy: "pull-push"
+                    when: "on_success"
                     key: "key1"
                 """.trimIndent()
         )

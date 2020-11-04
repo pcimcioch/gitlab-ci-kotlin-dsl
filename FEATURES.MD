@@ -773,6 +773,7 @@ gitlabCi {
         cache { 
             untracked = true
             policy = CachePolicy.PULL
+            whenCache = WhenCacheType.ALWAYS
             // paths can be added as vararg arguments
             paths("file5", "file6")
             // or any iterable
@@ -843,6 +844,13 @@ gitlabCi {
             // paths can also be accessed directly. Note that this will override any previously defined paths in this artifacts
             paths = mutableSetOf("file1", "file2")
 
+            // exclude can be added as vararg arguments
+            exclude("exclude1", "exclude2")
+            // or any iterable
+            exclude(listOf("exclude3", "exclude4"))
+            // paths can also be accessed directly. Note that this will override any previously defined paths in this artifacts
+            exclude = mutableSetOf("exclude1", "exclude2")
+
             reports {
                 // every predefined report files can be configured as varargs or any iterable
                 junit("junit 1", "junit 2")
@@ -889,6 +897,18 @@ gitlabCi {
                 metrics("metrics 1", "metrics 2")
                 metrics(listOf("metrics 3", "metrics 4"))
                 metrics = mutableSetOf("metrics 1", "metrics 2")
+
+                cobertura("cobertura 1", "cobertura 2")
+                cobertura(listOf("cobertura 3", "cobertura 4"))
+                cobertura = mutableSetOf("cobertura 1", "cobertura 2")
+
+                loadPerformance("loadPerformance 1", "loadPerformance 2")
+                loadPerformance(listOf("loadPerformance 3", "loadPerformance 4"))
+                loadPerformance = mutableSetOf("loadPerformance 1", "loadPerformance 2")
+
+                terraform("terraform 1", "terraform 2")
+                terraform(listOf("terraform 3", "terraform 4"))
+                terraform = mutableSetOf("terraform 1", "terraform 2")
             }
         }
     }

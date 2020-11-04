@@ -1,5 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.builtins.serializer
@@ -15,6 +16,9 @@ class CacheDsl : DslBase() {
     var paths: MutableSet<String>? = null
     var untracked: Boolean? = null
     var policy: CachePolicy? = null
+
+    @SerialName("when")
+    var whenCache: WhenCacheType? = null
 
     @Transient
     private var keyString: String? = null
@@ -97,9 +101,20 @@ fun createCacheKey(block: CacheKeyDsl.() -> Unit = {}) = CacheKeyDsl().apply(blo
 enum class CachePolicy(
         override val stringRepresentation: String
 ) : StringRepresentation {
-    PULL("push"),
+    PULL("pull"),
     PULL_PUSH("pull-push"),
     PUSH("push");
 
     object CachePolicySerializer : StringRepresentationSerializer<CachePolicy>("CachePolicy")
+}
+
+@Serializable(with = WhenCacheType.WhenCacheTypeSerializer::class)
+enum class WhenCacheType(
+        override val stringRepresentation: String
+) : StringRepresentation {
+    ON_SUCCESS("on_success"),
+    ON_FAILURE("on_failure"),
+    ALWAYS("always");
+
+    object WhenCacheTypeSerializer : StringRepresentationSerializer<WhenCacheType>("WhenCacheType")
 }

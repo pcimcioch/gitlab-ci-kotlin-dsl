@@ -3,7 +3,7 @@ stages:
   - run
 
 generate-config:
-  image: "gradle:6.3.0-jdk8"
+  image: "gradle:6.7.0-jdk8"
   stage: generate
   script:
     - gradle -b gitlab-ci.gradle.kts generateGitlabCi

@@ -22,12 +22,15 @@ class VariablesDsl : DslBase() {
     fun gitSubmoduleStrategy(strategy: GitSubmoduleStrategyType) = add(RunnerSettingsVariables.GIT_SUBMODULE_STRATEGY, strategy.stringRepresentation)
     fun gitCheckout(checkout: Boolean) = add(RunnerSettingsVariables.GIT_CHECKOUT, checkout)
     fun gitClean(flags: String) = add(RunnerSettingsVariables.GIT_CLEAN_FLAGS, flags)
+    fun gitFetchExtraFlags(flags: String) = add(RunnerSettingsVariables.GIT_FETCH_EXTRA_FLAGS, flags)
     fun disableGitClean() = gitClean("none")
     fun getResourcesAttempts(attempts: Int) = add(RunnerSettingsVariables.GET_SOURCES_ATTEMPTS, attempts)
     fun artifactDownloadAttempts(attempts: Int) = add(RunnerSettingsVariables.ARTIFACT_DOWNLOAD_ATTEMPTS, attempts)
     fun restoreCacheAttempts(attempts: Int) = add(RunnerSettingsVariables.RESTORE_CACHE_ATTEMPTS, attempts)
+    fun executorJobSectionAttempts(attempts: Int) = add(RunnerSettingsVariables.EXECUTOR_JOB_SECTION_ATTEMPTS, attempts)
     fun gitDepth(attempts: Int) = add(RunnerSettingsVariables.GIT_DEPTH, attempts)
     fun gitClonePath(path: String) = add(RunnerSettingsVariables.GIT_CLONE_PATH, path)
+    fun cacheFallbackKey(key: String) = add(RunnerSettingsVariables.CACHE_FALLBACK_KEY, key)
 
     override fun validate(errors: MutableList<String>) {
         addError(errors, variables.isEmpty(), "[variables] variables map cannot be empty")
@@ -51,11 +54,14 @@ enum class RunnerSettingsVariables {
     GIT_SUBMODULE_STRATEGY,
     GIT_CHECKOUT,
     GIT_CLEAN_FLAGS,
+    GIT_FETCH_EXTRA_FLAGS,
     GET_SOURCES_ATTEMPTS,
     ARTIFACT_DOWNLOAD_ATTEMPTS,
+    EXECUTOR_JOB_SECTION_ATTEMPTS,
     RESTORE_CACHE_ATTEMPTS,
     GIT_DEPTH,
-    GIT_CLONE_PATH
+    GIT_CLONE_PATH,
+    CACHE_FALLBACK_KEY
 }
 
 @Serializable(with = GitStrategyType.GitStrategyTypeSerializer::class)

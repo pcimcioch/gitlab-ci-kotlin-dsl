@@ -161,6 +161,8 @@ internal class TriggerIncludeDslTest : DslTestBase() {
         val testee = createTriggerInclude {
             local("localFile 1")
             local("localFile 2")
+            file("project 1", "file 1", "ref 1")
+            file("project 2", "file 2")
             artifact("artifact 1", job1)
             artifact("artifact 2", "job 2")
         }
@@ -170,6 +172,11 @@ internal class TriggerIncludeDslTest : DslTestBase() {
                 """
                     - local: "localFile 1"
                     - local: "localFile 2"
+                    - project: "project 1"
+                      file: "file 1"
+                      ref: "ref 1"
+                    - project: "project 2"
+                      file: "file 2"
                     - artifact: "artifact 1"
                       job: "job 1"
                     - artifact: "artifact 2"
@@ -184,11 +191,15 @@ internal class TriggerIncludeDslTest : DslTestBase() {
         val job1 = createJob("job 1") {}
         val local1 = createTriggerIncludeLocal("localFile 1")
         val local2 = createTriggerIncludeLocal("localFile 2")
+        val file1 = createTriggerIncludeFile("project 1", "file 1", "ref 1")
+        val file2 = createTriggerIncludeFile("project 2", "file 2")
         val artifact1 = createTriggerIncludeArtifact("artifact 1", job1)
         val artifact2 = createTriggerIncludeArtifact("artifact 2", "job 2")
         val testee = createTriggerInclude {
             +local1
             +local2
+            +file1
+            +file2
             +artifact1
             +artifact2
         }
@@ -198,6 +209,11 @@ internal class TriggerIncludeDslTest : DslTestBase() {
                 """
                     - local: "localFile 1"
                     - local: "localFile 2"
+                    - project: "project 1"
+                      file: "file 1"
+                      ref: "ref 1"
+                    - project: "project 2"
+                      file: "file 2"
                     - artifact: "artifact 1"
                       job: "job 1"
                     - artifact: "artifact 2"

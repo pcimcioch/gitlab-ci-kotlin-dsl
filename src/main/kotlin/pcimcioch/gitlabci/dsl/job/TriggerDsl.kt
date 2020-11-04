@@ -2,7 +2,6 @@ package pcimcioch.gitlabci.dsl.job
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.builtins.list
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
@@ -38,6 +37,7 @@ class TriggerIncludeDsl : DslBase() {
     private val includes = mutableListOf<TriggerIncludeDetailsDsl>()
 
     fun local(local: String) = addAndReturn(includes, TriggerIncludeLocalDsl(local))
+    fun file(project: String, file: String, ref: String? = null) = addAndReturn(includes, TriggerIncludeFileDsl(project, file, ref))
     fun artifact(artifact: String, job: String) = addAndReturn(includes, TriggerIncludeArtifactDsl(artifact, job))
     fun artifact(artifact: String, job: JobDsl) = addAndReturn(includes, TriggerIncludeArtifactDsl(artifact, job))
     operator fun TriggerIncludeDetailsDsl.unaryPlus() = this@TriggerIncludeDsl.includes.add(this)
@@ -71,6 +71,21 @@ class TriggerIncludeLocalDsl(
 }
 
 fun createTriggerIncludeLocal(local: String) = TriggerIncludeLocalDsl(local)
+
+@Serializable
+class TriggerIncludeFileDsl(
+        var project: String,
+        var file: String,
+        var ref: String? = null
+) : TriggerIncludeDetailsDsl() {
+    companion object {
+        init {
+            addSerializer(TriggerIncludeFileDsl::class, serializer())
+        }
+    }
+}
+
+fun createTriggerIncludeFile(project: String, file: String, ref: String? = null) = TriggerIncludeFileDsl(project, file, ref)
 
 @Serializable
 class TriggerIncludeArtifactDsl(

@@ -199,6 +199,9 @@ internal class VariablesDslTest : DslTestBase() {
             restoreCacheAttempts(1)
             gitDepth(4)
             gitClonePath("path/to/dir")
+            gitFetchExtraFlags("extra")
+            executorJobSectionAttempts(5)
+            cacheFallbackKey("key")
         }
 
         // then
@@ -213,6 +216,9 @@ internal class VariablesDslTest : DslTestBase() {
                     "RESTORE_CACHE_ATTEMPTS": "1"
                     "GIT_DEPTH": "4"
                     "GIT_CLONE_PATH": "path/to/dir"
+                    "GIT_FETCH_EXTRA_FLAGS": "extra"
+                    "EXECUTOR_JOB_SECTION_ATTEMPTS": "5"
+                    "CACHE_FALLBACK_KEY": "key"
                 """.trimIndent()
         )
     }

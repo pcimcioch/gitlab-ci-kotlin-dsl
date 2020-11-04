@@ -33,6 +33,8 @@
 - [extends](#extends)
 - [pages](#pages)
 - [variables](#variables)
+- [release](#release)
+- [secrets](#secrets)
 
 ## How to start
 
@@ -1148,6 +1150,8 @@ gitlabCi {
 }
 ```
 
+Note: `parallel:matrix` is currently not supported
+
 ## trigger
 
 <https://docs.gitlab.com/ee/ci/yaml/#trigger>  
@@ -1174,6 +1178,8 @@ gitlabCi {
             strategy = TriggerStrategy.DEPEND
             include { 
                 local("localFile")
+                file("project 1", "file 1", "ref 1")
+                file("project 2", "file 2")
                 artifact("file", "job1")
             }
         }
@@ -1345,6 +1351,9 @@ gitlabCi {
             gitDepth(4)
             gitClonePath("path/to/dir")
             disableGitClean()
+            gitFetchExtraFlags("extra")
+            executorJobSectionAttempts(5)
+            cacheFallbackKey("key")
         }
         // you can also mix map and block
         variables(mapOf("variable4" to "value4")) {
@@ -1383,3 +1392,15 @@ gitlabCi {
     }
 }
 ```
+
+## release
+
+<https://docs.gitlab.com/ee/ci/yaml/#release>
+
+Note: `release` is currently not supported
+
+## secrets
+
+<https://docs.gitlab.com/ee/ci/yaml/#secrets
+
+Note: `secrets` is currently not supported

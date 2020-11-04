@@ -143,6 +143,11 @@ gitlabCi {
         image("openjdk:8-alpine")
         services("service 1", "service 2")
         cache("file 1", "file 2")
+        tags("tag 1", "tag 2")
+        artifacts("artifact 1", "artifact 2")
+        retry(1)
+        timeout = Duration(days = 5)
+        interruptible = true
         beforeScript("command 1", "command 2")
         afterScript("command 1", "command 2")
     }

@@ -2,11 +2,8 @@ package pcimcioch.gitlabci.dsl.default
 
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
-import pcimcioch.gitlabci.dsl.job.createAfterScript
-import pcimcioch.gitlabci.dsl.job.createBeforeScript
-import pcimcioch.gitlabci.dsl.job.createCache
-import pcimcioch.gitlabci.dsl.job.createImage
-import pcimcioch.gitlabci.dsl.job.createServices
+import pcimcioch.gitlabci.dsl.Duration
+import pcimcioch.gitlabci.dsl.job.*
 
 internal class DefaultDslTest : DslTestBase() {
 
@@ -26,6 +23,11 @@ internal class DefaultDslTest : DslTestBase() {
                     files("file")
                 }
             }
+            tags("tag 1", "tag 2")
+            artifacts("art")
+            retry(5)
+            timeout = Duration(days = 5)
+            interruptible = true
         }
 
         // then
@@ -43,6 +45,16 @@ internal class DefaultDslTest : DslTestBase() {
                         prefix: "pre/fix"
                         files:
                         - "file"
+                    tags:
+                    - "tag 1"
+                    - "tag 2"
+                    artifacts:
+                      paths:
+                      - "art"
+                    retry:
+                      max: 5
+                    timeout: "5 day"
+                    interruptible: true
                     before_script:
                     - "before 1"
                     - "before 2"
@@ -52,7 +64,8 @@ internal class DefaultDslTest : DslTestBase() {
                 """.trimIndent(),
                 "[default][image] name '' is incorrect",
                 "[default][service name=''] name '' is incorrect",
-                "[default][cache][key] prefix value 'pre/fix' can't contain '/' nor '%2F'"
+                "[default][cache][key] prefix value 'pre/fix' can't contain '/' nor '%2F'",
+                "[default][retry] max attempts must be in range [0, 2]"
         )
     }
 
@@ -76,6 +89,11 @@ internal class DefaultDslTest : DslTestBase() {
             image("testImage")
             services("testService")
             cache("testCache")
+            tags("tag")
+            artifacts("art")
+            retry(2)
+            timeout = Duration(days = 5)
+            interruptible = true
             beforeScript("before")
             afterScript("after")
         }
@@ -90,10 +108,87 @@ internal class DefaultDslTest : DslTestBase() {
                     cache:
                       paths:
                       - "testCache"
+                    tags:
+                    - "tag"
+                    artifacts:
+                      paths:
+                      - "art"
+                    retry:
+                      max: 2
+                    timeout: "5 day"
+                    interruptible: true
                     before_script:
                     - "before"
                     after_script:
                     - "after"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should create default with empty collections`() {
+        // given
+        val testee = DefaultDsl().apply {
+            tags()
+        }
+
+        // then
+        assertDsl(DefaultDsl.serializer(), testee,
+                """
+                    tags: []
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should create default with single element collections`() {
+        // given
+        val testee = DefaultDsl().apply {
+            tags("tag 1")
+        }
+
+        // then
+        assertDsl(DefaultDsl.serializer(), testee,
+                """
+                    tags:
+                    - "tag 1"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should create default with multiple element collections`() {
+        // given
+        val testee = DefaultDsl().apply {
+            tags("tag 1", "tag 2")
+        }
+
+        // then
+        assertDsl(DefaultDsl.serializer(), testee,
+                """
+                    tags:
+                    - "tag 1"
+                    - "tag 2"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should merge collections`() {
+        // given
+        val testee = DefaultDsl().apply {
+            tags("tag 1", "tag 2")
+            tags(listOf("tag 3", "tag 4"))
+        }
+
+        // then
+        assertDsl(DefaultDsl.serializer(), testee,
+                """
+                    tags:
+                    - "tag 1"
+                    - "tag 2"
+                    - "tag 3"
+                    - "tag 4"
                 """.trimIndent()
         )
     }
@@ -243,11 +338,90 @@ internal class DefaultDslTest : DslTestBase() {
     }
 
     @Test
+    fun `should allow retry from number`() {
+        // given
+        val testee = DefaultDsl().apply {
+            retry(2)
+        }
+
+        // then
+        assertDsl(DefaultDsl.serializer(), testee,
+                """
+                    retry:
+                      max: 2
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow retry from block`() {
+        // given
+        val testee = DefaultDsl().apply {
+            retry {
+                max = 2
+            }
+        }
+
+        // then
+        assertDsl(DefaultDsl.serializer(), testee,
+                """
+                    retry:
+                      max: 2
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow retry from number and block`() {
+        // given
+        val testee = DefaultDsl().apply {
+            retry(2) {
+                whenRetry(WhenRetryType.API_FAILURE)
+            }
+        }
+
+        // then
+        assertDsl(DefaultDsl.serializer(), testee,
+                """
+                    retry:
+                      max: 2
+                      when:
+                      - "api_failure"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow different artifacts options`() {
+        // given
+        val testee = DefaultDsl().apply {
+            artifacts {
+                paths("a1")
+            }
+            artifacts("a2")
+            artifacts(listOf("a3"))
+        }
+
+        // then
+        assertDsl(DefaultDsl.serializer(), testee,
+                """
+                    artifacts:
+                      paths:
+                      - "a1"
+                      - "a2"
+                      - "a3"
+                """.trimIndent()
+        )
+    }
+
+    @Test
     fun `should allow direct access`() {
         // given
         val imageDsl = createImage("testImage")
         val servicesDsl = createServices("testService")
         val cacheDsl = createCache("testCache")
+        val artifactsDsl = createArtifacts("testArtifact")
+        val retryDsl = createRetry(1)
         val beforeScriptDsl = createBeforeScript("before")
         val afterScriptDsl = createAfterScript("after")
 
@@ -255,6 +429,9 @@ internal class DefaultDslTest : DslTestBase() {
             image = imageDsl
             services = servicesDsl
             cache = cacheDsl
+            tags = mutableSetOf("testTag")
+            artifacts = artifactsDsl
+            retry = retryDsl
             beforeScript = beforeScriptDsl
             afterScript = afterScriptDsl
         }
@@ -269,6 +446,13 @@ internal class DefaultDslTest : DslTestBase() {
                     cache:
                       paths:
                       - "testCache"
+                    tags:
+                    - "testTag"
+                    artifacts:
+                      paths:
+                      - "testArtifact"
+                    retry:
+                      max: 1
                     before_script:
                     - "before"
                     after_script:

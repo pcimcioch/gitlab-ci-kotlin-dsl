@@ -267,6 +267,7 @@ internal class JobDslTest : DslTestBase() {
             }
             beforeScript("before")
             afterScript("after")
+            release("tag 1")
             trigger("testProject")
             coverage = "/Code coverage: \\d+\\.\\d+/"
             environment("env")
@@ -322,6 +323,8 @@ internal class JobDslTest : DslTestBase() {
                     - "test command"
                     after_script:
                     - "after"
+                    release:
+                      tag_name: "tag 1"
                     trigger:
                       project: "testProject"
                     coverage: "/Code coverage: \\d+\\.\\d+/"
@@ -622,6 +625,91 @@ internal class JobDslTest : DslTestBase() {
                       - "point"
                     script:
                     - "test command"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should create release image`() {
+        // given
+        val testee = createJob("test") {
+            script("test command")
+
+            releaseImage()
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    image:
+                      name: "registry.gitlab.com/gitlab-org/release-cli:latest"
+                    script:
+                    - "test command"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow release by tag name configuration `() {
+        // given
+        val testee = createJob("test") {
+            script("test command")
+
+            release("tag 1")
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    script:
+                    - "test command"
+                    release:
+                      tag_name: "tag 1"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow release by block configuration `() {
+        // given
+        val testee = createJob("test") {
+            script("test command")
+
+            release {
+                tagName = "tag 1"
+            }
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    script:
+                    - "test command"
+                    release:
+                      tag_name: "tag 1"
+                """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should allow release by tag name and block configuration `() {
+        // given
+        val testee = createJob("test") {
+            script("test command")
+
+            release("tag 1") {
+                name = "name 1"
+            }
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    script:
+                    - "test command"
+                    release:
+                      tag_name: "tag 1"
+                      name: "name 1"
                 """.trimIndent()
         )
     }
@@ -1096,6 +1184,7 @@ internal class JobDslTest : DslTestBase() {
         }
         val beforeScriptDsl = createBeforeScript("before")
         val afterScriptDsl = createAfterScript("after")
+        val releaseDsl = createRelease("tag 1")
         val triggerDsl = createTrigger("testProject")
         val variablesDsl = createVariables {
             add("KEY1", "VALUE1")
@@ -1121,6 +1210,7 @@ internal class JobDslTest : DslTestBase() {
             rules = rulesDsl
             beforeScript = beforeScriptDsl
             afterScript = afterScriptDsl
+            release = releaseDsl
             trigger = triggerDsl
             variables = variablesDsl
             environment = environmentDsl
@@ -1166,6 +1256,8 @@ internal class JobDslTest : DslTestBase() {
                     - "test command"
                     after_script:
                     - "after"
+                    release:
+                      tag_name: "tag 1"
                     trigger:
                       project: "testProject"
                     environment:

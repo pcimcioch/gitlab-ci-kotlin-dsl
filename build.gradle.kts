@@ -1,5 +1,6 @@
 repositories {
     jcenter()
+    maven(url = "https://kotlin.bintray.com/kotlinx/") // remove when kotlinx-datetime moved to jcenter
 }
 
 plugins {
@@ -13,6 +14,7 @@ plugins {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:1.0-M1-1.4.0-rc")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.1.0")
     implementation("com.charleskorn.kaml:kaml:0.25.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")

@@ -49,6 +49,7 @@ class JobDsl(
 
     @SerialName("after_script")
     var afterScript: AfterScriptDsl? = null
+    var release: ReleaseDsl? = null
     var trigger: TriggerDsl? = null
     var coverage: String? = null
     var environment: EnvironmentDsl? = null
@@ -69,6 +70,11 @@ class JobDsl(
     fun inherit(block: InheritDsl.() -> Unit = {}) = ensureInherit().apply(block)
 
     fun image(name: String? = null, block: ImageDsl.() -> Unit = {}) = ensureImage().apply { this.name = name }.apply(block)
+    fun releaseImage() {
+        image = ImageDsl("registry.gitlab.com/gitlab-org/release-cli:latest")
+    }
+
+    fun release(tagName: String? = null, block: ReleaseDsl.() -> Unit = {}) = ensureRelease().apply { this.tagName = tagName }.apply(block)
 
     fun services(block: ServiceListDsl.() -> Unit = {}) = ensureServices().apply(block)
     fun services(vararg elements: String, block: ServiceListDsl.() -> Unit = {}) = services(elements.toList(), block)
@@ -135,11 +141,13 @@ class JobDsl(
         addError(errors, startIn != null && whenRun != WhenRunType.DELAYED, "$prefix startIn can be used only with when=delayed jobs")
         addError(errors, parallel != null && (parallel!! < 2 || parallel!! > 50), "$prefix parallel must be in range [2, 50]")
 
-        addErrors(errors, prefix, beforeScript, afterScript, inherit, retry, image, script, services, needs, variables, cache, artifacts, only, except, rules, environment, trigger)
+        addErrors(errors, prefix, beforeScript, afterScript, inherit, retry, image, script, services, needs, variables,
+                cache, artifacts, only, except, rules, environment, trigger, release)
     }
 
     private fun ensureInherit() = inherit ?: InheritDsl().also { inherit = it }
     private fun ensureImage() = image ?: ImageDsl().also { image = it }
+    private fun ensureRelease() = release ?: ReleaseDsl().also { release = it }
     private fun ensureScript() = script ?: ScriptDsl().also { script = it }
     private fun ensureServices() = services ?: ServiceListDsl().also { services = it }
     private fun ensureNeeds() = needs ?: NeedsListDsl().also { needs = it }

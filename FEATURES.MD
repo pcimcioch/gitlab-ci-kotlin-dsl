@@ -236,7 +236,7 @@ val image3 = createImage("alpine") {
 // it can later be added to any job. It may be useful to reuse image blocks
 gitlabCi {
     job("firstJob") {
-        // Note that this will override any previously configured inherit in this job
+        // Note that this will override any previously configured image in this job
         image = image1
     }
     job("secondJob") {
@@ -1056,7 +1056,7 @@ val needs5 = createNeeds {
 // it can later be added to any job. It may be useful to reuse needs blocks
 gitlabCi {
     job("firstJob") {
-        // Note that this will override any previously configured retry in this job
+        // Note that this will override any previously configured needs in this job
         needs = needs1
     }
     job("secondJob") {
@@ -1397,7 +1397,61 @@ gitlabCi {
 
 <https://docs.gitlab.com/ee/ci/yaml/#release>
 
-Note: `release` is currently not supported
+```kotlin
+gitlabCi {
+    job("jobName") {
+        // release can be configured as string with tag name
+        release("version-1.2.3")
+        // or block with more complex configuration
+        release {
+            tagName = "version-1.2.3"
+            name = "Release 1.2.3"
+            ref = "master" 
+            // milestones can be added as vararg arguments
+            milestones("milestone 1", "milestone 2")
+            // or any iterable
+            milestones(listOf("milestone 3", "milestone 4"))
+            // milestones can also be accessed directly. Note that this will override any previously configured milestones in this release
+            milestones = mutableSetOf("milestone 1", "milestone 2")
+        }
+        // or tag name and block
+        release("version-1.2.3") {
+            name = "Release 1.2.3"
+        }
+    }
+}
+
+// release can also be created outside of gitlabCi from tag name
+val release1 = createRelease("version-1.2.3")
+// or block
+val release2 = createRelease { 
+    tagName = "version-1.2.3"
+}
+// or tag name and block
+val release3 = createRelease("version-1.2.3") {
+    name = "Release 1.2.3"
+}
+
+// it can later be added to any job. It may be useful to reuse release blocks
+gitlabCi {
+    job("firstJob") {
+        // Note that this will override any previously configured release in this job
+        release = release1
+    }
+    job("secondJob") {
+        release = release1
+    }
+}
+
+// also, releaseImage() can be used to automaticaly set job image to "registry.gitlab.com/gitlab-org/release-cli:latest"
+gitlabCi {
+    job("someJob") {
+        releaseImage()
+        script("echo Releasing")
+        release("version-1.2.3")
+    }
+}
+```
 
 ## secrets
 

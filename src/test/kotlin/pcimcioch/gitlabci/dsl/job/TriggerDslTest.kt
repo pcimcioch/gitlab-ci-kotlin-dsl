@@ -2,9 +2,8 @@ package pcimcioch.gitlabci.dsl.job
 
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
-import pcimcioch.gitlabci.dsl.gitlabCi
 
-internal class TriggerDslTest : DslTestBase() {
+internal class TriggerDslTest : DslTestBase<TriggerDsl>(TriggerDsl.serializer()) {
 
     @Test
     fun `should create empty`() {
@@ -12,10 +11,10 @@ internal class TriggerDslTest : DslTestBase() {
         val testee = createTrigger {}
 
         // then
-        assertDsl(TriggerDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     {}
-                """.trimIndent()
+                """
         )
     }
 
@@ -32,14 +31,14 @@ internal class TriggerDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(TriggerDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     project: "test/project"
                     branch: "test-branch"
                     strategy: "depend"
                     include:
                     - local: "localFile"
-                """.trimIndent()
+                """
         )
     }
 
@@ -51,10 +50,10 @@ internal class TriggerDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(TriggerDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     project: "testProject"
-                """.trimIndent()
+                """
         )
     }
 
@@ -64,10 +63,10 @@ internal class TriggerDslTest : DslTestBase() {
         val testee = createTrigger("testProject")
 
         // then
-        assertDsl(TriggerDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     project: "testProject"
-                """.trimIndent()
+                """
         )
     }
 
@@ -77,12 +76,12 @@ internal class TriggerDslTest : DslTestBase() {
         val testee = createTrigger("testProject", "test-branch", TriggerStrategy.DEPEND)
 
         // then
-        assertDsl(TriggerDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     project: "testProject"
                     branch: "test-branch"
                     strategy: "depend"
-                """.trimIndent()
+                """
         )
     }
 
@@ -94,12 +93,12 @@ internal class TriggerDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(TriggerDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     project: "testProject"
                     branch: "test-branch-2"
                     strategy: "depend"
-                """.trimIndent()
+                """
         )
     }
 
@@ -111,11 +110,11 @@ internal class TriggerDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(TriggerDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     project: "testProject"
                     branch: "test-branch-2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -130,16 +129,16 @@ internal class TriggerDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(TriggerDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     include:
                     - local: "localFile"
-                """.trimIndent()
+                """
         )
     }
 }
 
-internal class TriggerIncludeDslTest : DslTestBase() {
+internal class TriggerIncludeDslTest : DslTestBase<TriggerIncludeDsl>(TriggerIncludeDsl.serializer()) {
 
     @Test
     fun `should create empty`() {
@@ -147,10 +146,10 @@ internal class TriggerIncludeDslTest : DslTestBase() {
         val testee = createTriggerInclude {}
 
         // then
-        assertDsl(TriggerIncludeDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     []
-                """.trimIndent()
+                """
         )
     }
 
@@ -168,7 +167,7 @@ internal class TriggerIncludeDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(TriggerIncludeDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - local: "localFile 1"
                     - local: "localFile 2"
@@ -181,7 +180,7 @@ internal class TriggerIncludeDslTest : DslTestBase() {
                       job: "job 1"
                     - artifact: "artifact 2"
                       job: "job 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -205,7 +204,7 @@ internal class TriggerIncludeDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(TriggerIncludeDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - local: "localFile 1"
                     - local: "localFile 2"
@@ -218,7 +217,7 @@ internal class TriggerIncludeDslTest : DslTestBase() {
                       job: "job 1"
                     - artifact: "artifact 2"
                       job: "job 2"
-                """.trimIndent()
+                """
         )
     }
 }

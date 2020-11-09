@@ -3,7 +3,7 @@ package pcimcioch.gitlabci.dsl.job
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
-internal class NeedJobDslTest : DslTestBase() {
+internal class NeedJobDslTest : DslTestBase<NeedJobDsl>(NeedJobDsl.serializer()) {
 
     @Test
     fun `should create empty need job`() {
@@ -11,10 +11,10 @@ internal class NeedJobDslTest : DslTestBase() {
         val testee = createNeedJob {}
 
         // then
-        assertDsl(NeedJobDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     {}
-                """.trimIndent(),
+                """,
                 "[need job='null'] job 'null' is incorrect"
         )
     }
@@ -25,10 +25,10 @@ internal class NeedJobDslTest : DslTestBase() {
         val testee = createNeedJob("")
 
         // then
-        assertDsl(NeedJobDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     job: ""
-                """.trimIndent(),
+                """,
                 "[need job=''] job '' is incorrect"
         )
     }
@@ -39,10 +39,10 @@ internal class NeedJobDslTest : DslTestBase() {
         val testee = createNeedJob("test")
 
         // then
-        assertDsl(NeedJobDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     job: "test"
-                """.trimIndent()
+                """
         )
     }
 
@@ -54,10 +54,10 @@ internal class NeedJobDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(NeedJobDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     job: "test"
-                """.trimIndent()
+                """
         )
     }
 
@@ -69,11 +69,11 @@ internal class NeedJobDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(NeedJobDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     job: "test"
                     project: "proj"
-                """.trimIndent()
+                """
         )
     }
 
@@ -84,10 +84,10 @@ internal class NeedJobDslTest : DslTestBase() {
         val testee = createNeedJob(job)
 
         // then
-        assertDsl(NeedJobDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     job: "test"
-                """.trimIndent()
+                """
         )
     }
 
@@ -100,11 +100,11 @@ internal class NeedJobDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(NeedJobDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     job: "test"
                     project: "proj"
-                """.trimIndent()
+                """
         )
     }
 
@@ -118,18 +118,18 @@ internal class NeedJobDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(NeedJobDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     job: "test"
                     artifacts: true
                     project: "proj"
                     ref: "ref"
-                """.trimIndent()
+                """
         )
     }
 }
 
-internal class NeedsListDslTest : DslTestBase() {
+internal class NeedsListDslTest : DslTestBase<NeedsListDsl>(NeedsListDsl.serializer()) {
 
     @Test
     fun `should create from block`() {
@@ -139,10 +139,10 @@ internal class NeedsListDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(NeedsListDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - job: "test"
-                """.trimIndent()
+                """
         )
     }
 
@@ -152,11 +152,11 @@ internal class NeedsListDslTest : DslTestBase() {
         val testee = createNeeds("test1", "test2")
 
         // then
-        assertDsl(NeedsListDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - job: "test1"
                     - job: "test2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -166,11 +166,11 @@ internal class NeedsListDslTest : DslTestBase() {
         val testee = createNeeds(listOf("test1", "test2"))
 
         // then
-        assertDsl(NeedsListDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - job: "test1"
                     - job: "test2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -182,11 +182,11 @@ internal class NeedsListDslTest : DslTestBase() {
         val testee = createNeeds(job1, job2)
 
         // then
-        assertDsl(NeedsListDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - job: "test1"
                     - job: "test2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -198,11 +198,11 @@ internal class NeedsListDslTest : DslTestBase() {
         val testee = createNeeds(listOf(job1, job2))
 
         // then
-        assertDsl(NeedsListDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - job: "test1"
                     - job: "test2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -216,12 +216,12 @@ internal class NeedsListDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(NeedsListDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - job: ""
                     - job: "test"
                     - {}
-                """.trimIndent(),
+                """,
                 "[need job=''] job '' is incorrect",
                 "[need job='null'] job 'null' is incorrect"
         )
@@ -251,7 +251,7 @@ internal class NeedsListDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(NeedsListDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - job: "test1"
                     - job: "test2"
@@ -263,7 +263,7 @@ internal class NeedsListDslTest : DslTestBase() {
                     - job: "test5"
                       project: "proj2"
                     - job: "test6"
-                """.trimIndent()
+                """
         )
     }
 }

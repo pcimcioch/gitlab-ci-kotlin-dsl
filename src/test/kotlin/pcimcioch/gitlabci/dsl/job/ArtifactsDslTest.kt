@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 import pcimcioch.gitlabci.dsl.Duration
 
-internal class ArtifactsDslTest : DslTestBase() {
+internal class ArtifactsDslTest : DslTestBase<ArtifactsDsl>(ArtifactsDsl.serializer()) {
 
     @Test
     fun `should create empty artifacts`() {
@@ -12,10 +12,10 @@ internal class ArtifactsDslTest : DslTestBase() {
         val testee = createArtifacts {}
 
         // then
-        assertDsl(ArtifactsDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     {}
-                """.trimIndent()
+                """
         )
     }
 
@@ -36,7 +36,7 @@ internal class ArtifactsDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ArtifactsDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "test"
                     expose_as: "exposed"
@@ -50,7 +50,7 @@ internal class ArtifactsDslTest : DslTestBase() {
                     reports:
                       junit:
                       - "junit 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -63,12 +63,12 @@ internal class ArtifactsDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ArtifactsDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "test"
                     paths:
                     - "p 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -78,12 +78,12 @@ internal class ArtifactsDslTest : DslTestBase() {
         val testee = createArtifacts("p 1", "p 2")
 
         // then
-        assertDsl(ArtifactsDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     paths:
                     - "p 1"
                     - "p 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -93,12 +93,12 @@ internal class ArtifactsDslTest : DslTestBase() {
         val testee = createArtifacts(listOf("p 1", "p 2"))
 
         // then
-        assertDsl(ArtifactsDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     paths:
                     - "p 1"
                     - "p 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -111,13 +111,13 @@ internal class ArtifactsDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ArtifactsDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     paths:
                     - "p 1"
                     exclude:
                     - "e 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -130,7 +130,7 @@ internal class ArtifactsDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ArtifactsDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     paths:
                     - "p 1"
@@ -138,7 +138,7 @@ internal class ArtifactsDslTest : DslTestBase() {
                     exclude:
                     - "e 1"
                     - "e 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -151,11 +151,11 @@ internal class ArtifactsDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ArtifactsDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     paths: []
                     exclude: []
-                """.trimIndent()
+                """
         )
     }
 
@@ -170,7 +170,7 @@ internal class ArtifactsDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ArtifactsDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     paths:
                     - "p 1"
@@ -182,7 +182,7 @@ internal class ArtifactsDslTest : DslTestBase() {
                     - "e 2"
                     - "e 3"
                     - "e 4"
-                """.trimIndent()
+                """
         )
     }
 
@@ -200,7 +200,7 @@ internal class ArtifactsDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ArtifactsDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     paths:
                     - "p 1"
@@ -211,12 +211,12 @@ internal class ArtifactsDslTest : DslTestBase() {
                     reports:
                       junit:
                       - "junit 1"
-                """.trimIndent()
+                """
         )
     }
 }
 
-internal class ArtifactsReportsDslTest : DslTestBase() {
+internal class ArtifactsReportsDslTest : DslTestBase<ArtifactsReportsDsl>(ArtifactsReportsDsl.serializer()) {
 
     @Test
     fun `should create empty reports`() {
@@ -224,10 +224,10 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
         val testee = createArtifactsReports {}
 
         // then
-        assertDsl(ArtifactsReportsDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     {}
-                """.trimIndent()
+                """
         )
     }
 
@@ -252,7 +252,7 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ArtifactsReportsDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     junit:
                     - "junit 1"
@@ -282,7 +282,7 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
                     - "loadPerformance 1"
                     terraform:
                     - "terraform 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -307,7 +307,7 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ArtifactsReportsDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     junit:
                     - "junit 1"
@@ -351,7 +351,7 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
                     terraform:
                     - "terraform 1"
                     - "terraform 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -376,7 +376,7 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ArtifactsReportsDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     junit: []
                     dotenv: []
@@ -392,7 +392,7 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
                     cobertura: []
                     load_performance: []
                     terraform: []
-                """.trimIndent()
+                """
         )
     }
 
@@ -432,7 +432,7 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ArtifactsReportsDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     junit:
                     - "junit 1"
@@ -490,7 +490,7 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
                     - "terraform 1"
                     - "terraform 2"
                     - "terraform 3"
-                """.trimIndent()
+                """
         )
     }
 
@@ -515,7 +515,7 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ArtifactsReportsDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     junit:
                     - "junit 1"
@@ -559,7 +559,7 @@ internal class ArtifactsReportsDslTest : DslTestBase() {
                     terraform:
                     - "terraform 1"
                     - "terraform 2"
-                """.trimIndent()
+                """
         )
     }
 }

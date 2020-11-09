@@ -4,7 +4,7 @@ import kotlinx.datetime.Instant
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
-internal class ReleaseDslTest : DslTestBase() {
+internal class ReleaseDslTest : DslTestBase<ReleaseDsl>(ReleaseDsl.serializer()) {
 
     @Test
     fun `should create full release`() {
@@ -18,7 +18,7 @@ internal class ReleaseDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ReleaseDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     tag_name: "tag 1"
                     name: "name 1"
@@ -28,7 +28,7 @@ internal class ReleaseDslTest : DslTestBase() {
                     - "mile 1"
                     - "mile 2"
                     released_at: "2020-11-08T20:58:52Z"
-                """.trimIndent()
+                """
         )
     }
 
@@ -38,10 +38,10 @@ internal class ReleaseDslTest : DslTestBase() {
         val testee = createRelease("tag 1")
 
         // then
-        assertDsl(ReleaseDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     tag_name: "tag 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -53,11 +53,11 @@ internal class ReleaseDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ReleaseDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     tag_name: "tag 1"
                     name: "name 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -70,11 +70,11 @@ internal class ReleaseDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ReleaseDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     tag_name: "tag 1"
                     name: "name 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -86,11 +86,11 @@ internal class ReleaseDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ReleaseDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     tag_name: "tag 1"
                     milestones: []
-                """.trimIndent()
+                """
         )
     }
 
@@ -102,12 +102,12 @@ internal class ReleaseDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ReleaseDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     tag_name: "tag 1"
                     milestones:
                     - "mile 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -119,13 +119,13 @@ internal class ReleaseDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ReleaseDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     tag_name: "tag 1"
                     milestones:
                     - "mile 1"
                     - "mile 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -138,7 +138,7 @@ internal class ReleaseDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ReleaseDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     tag_name: "tag 1"
                     milestones:
@@ -147,7 +147,7 @@ internal class ReleaseDslTest : DslTestBase() {
                     - "mile 3"
                     - "mile 4"
                     - "mile 5"
-                """.trimIndent()
+                """
         )
     }
 
@@ -159,13 +159,13 @@ internal class ReleaseDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ReleaseDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     tag_name: "tag 1"
                     milestones:
                     - "mile 1"
                     - "mile 2"
-                """.trimIndent()
+                """
         )
     }
 }

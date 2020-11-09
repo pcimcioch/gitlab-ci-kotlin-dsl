@@ -3,7 +3,7 @@ package pcimcioch.gitlabci.dsl.stage
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
-internal class StagesDslTest : DslTestBase() {
+internal class StagesDslTest : DslTestBase<StagesDsl>(StagesDsl.serializer()) {
 
     @Test
     fun `should create stages with one command`() {
@@ -13,10 +13,10 @@ internal class StagesDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(StagesDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - "stage 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -29,11 +29,11 @@ internal class StagesDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(StagesDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - "stage 1"
                     - "stage 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -43,10 +43,10 @@ internal class StagesDslTest : DslTestBase() {
         val testee = StagesDsl()
 
         // then
-        assertDsl(StagesDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     []
-                """.trimIndent()
+                """
         )
     }
 
@@ -59,11 +59,11 @@ internal class StagesDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(StagesDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - "stage 1"
                     - "stage 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -75,11 +75,11 @@ internal class StagesDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(StagesDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - "stage 1"
                     - "stage 2"
-                """.trimIndent()
+                """
         )
     }
 }

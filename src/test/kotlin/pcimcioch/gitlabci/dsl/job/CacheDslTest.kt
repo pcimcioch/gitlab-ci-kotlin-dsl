@@ -3,7 +3,7 @@ package pcimcioch.gitlabci.dsl.job
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
-internal class CacheDslTest : DslTestBase() {
+internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
 
     @Test
     fun `should create empty cache`() {
@@ -11,10 +11,10 @@ internal class CacheDslTest : DslTestBase() {
         val testee = createCache {}
 
         // then
-        assertDsl(CacheDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     {}
-                """.trimIndent()
+                """
         )
     }
 
@@ -30,7 +30,7 @@ internal class CacheDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     paths:
                     - "path1"
@@ -39,7 +39,7 @@ internal class CacheDslTest : DslTestBase() {
                     policy: "pull-push"
                     when: "on_success"
                     key: "key1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -51,11 +51,11 @@ internal class CacheDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     paths:
                     - "path"
-                """.trimIndent()
+                """
         )
     }
 
@@ -65,12 +65,12 @@ internal class CacheDslTest : DslTestBase() {
         val testee = createCache("path/1", "path/2")
 
         // then
-        assertDsl(CacheDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     paths:
                     - "path/1"
                     - "path/2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -80,12 +80,12 @@ internal class CacheDslTest : DslTestBase() {
         val testee = createCache(listOf("path/1", "path/2"))
 
         // then
-        assertDsl(CacheDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     paths:
                     - "path/1"
                     - "path/2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -98,13 +98,13 @@ internal class CacheDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     paths:
                     - "path1"
                     - "path2"
                     key: "key1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -120,7 +120,7 @@ internal class CacheDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     paths:
                     - "path1"
@@ -130,7 +130,7 @@ internal class CacheDslTest : DslTestBase() {
                       files:
                       - "file1"
                       - "file2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -146,7 +146,7 @@ internal class CacheDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     paths:
                     - "path1"
@@ -156,7 +156,7 @@ internal class CacheDslTest : DslTestBase() {
                       files:
                       - "file1"
                       - "file2"
-                """.trimIndent(),
+                """,
                 "[cache][key] prefix value 'pref/ref' can't contain '/' nor '%2F'"
         )
     }
@@ -169,10 +169,10 @@ internal class CacheDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     paths: []
-                """.trimIndent()
+                """
         )
     }
 
@@ -184,11 +184,11 @@ internal class CacheDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     paths:
                     - "path1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -200,12 +200,12 @@ internal class CacheDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     paths:
                     - "path1"
                     - "path2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -218,14 +218,14 @@ internal class CacheDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     paths:
                     - "path1"
                     - "path2"
                     - "path3"
                     - "path4"
-                """.trimIndent()
+                """
         )
     }
 
@@ -237,16 +237,16 @@ internal class CacheDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     paths:
                     - "path"
-                """.trimIndent()
+                """
         )
     }
 }
 
-internal class CacheKeyDslTest : DslTestBase() {
+internal class CacheKeyDslTest : DslTestBase<CacheKeyDsl>(CacheKeyDsl.serializer()) {
 
     @Test
     fun `should create empty key`() {
@@ -254,10 +254,10 @@ internal class CacheKeyDslTest : DslTestBase() {
         val testee = createCacheKey {}
 
         // then
-        assertDsl(CacheKeyDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     {}
-                """.trimIndent(),
+                """,
                 "[key] files list can't be empty"
         )
     }
@@ -271,13 +271,13 @@ internal class CacheKeyDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheKeyDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     prefix: "test"
                     files:
                     - "file 1"
                     - "file 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -289,10 +289,10 @@ internal class CacheKeyDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheKeyDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     files: []
-                """.trimIndent(),
+                """,
                 "[key] files list can't be empty"
         )
     }
@@ -305,11 +305,11 @@ internal class CacheKeyDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheKeyDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     files:
                     - "file 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -321,12 +321,12 @@ internal class CacheKeyDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheKeyDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     files:
                     - "file 1"
                     - "file 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -339,13 +339,13 @@ internal class CacheKeyDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheKeyDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     files:
                     - "file 1"
                     - "file 2"
                     - "file 3"
-                """.trimIndent()
+                """
         )
     }
 
@@ -357,12 +357,12 @@ internal class CacheKeyDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheKeyDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     files:
                     - "file 1"
                     - "file 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -375,12 +375,12 @@ internal class CacheKeyDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheKeyDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     prefix: "."
                     files:
                     - "file"
-                """.trimIndent(),
+                """,
                 "[key] prefix value '.' can't be '.' nor '%2E'"
         )
     }
@@ -394,12 +394,12 @@ internal class CacheKeyDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheKeyDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     prefix: "%2E"
                     files:
                     - "file"
-                """.trimIndent(),
+                """,
                 "[key] prefix value '%2E' can't be '.' nor '%2E'"
         )
     }
@@ -413,12 +413,12 @@ internal class CacheKeyDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheKeyDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     prefix: "%2e"
                     files:
                     - "file"
-                """.trimIndent(),
+                """,
                 "[key] prefix value '%2e' can't be '.' nor '%2E'"
         )
     }
@@ -432,12 +432,12 @@ internal class CacheKeyDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheKeyDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     prefix: "contains/slash"
                     files:
                     - "file"
-                """.trimIndent(),
+                """,
                 "[key] prefix value 'contains/slash' can't contain '/' nor '%2F'"
         )
     }
@@ -451,12 +451,12 @@ internal class CacheKeyDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheKeyDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     prefix: "contains%2Fslash"
                     files:
                     - "file"
-                """.trimIndent(),
+                """,
                 "[key] prefix value 'contains%2Fslash' can't contain '/' nor '%2F'"
         )
     }
@@ -470,12 +470,12 @@ internal class CacheKeyDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(CacheKeyDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     prefix: "contains%2fslash"
                     files:
                     - "file"
-                """.trimIndent(),
+                """,
                 "[key] prefix value 'contains%2fslash' can't contain '/' nor '%2F'"
         )
     }

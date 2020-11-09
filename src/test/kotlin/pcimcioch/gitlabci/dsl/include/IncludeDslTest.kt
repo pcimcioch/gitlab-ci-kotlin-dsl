@@ -2,9 +2,8 @@ package pcimcioch.gitlabci.dsl.include
 
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
-import pcimcioch.gitlabci.dsl.gitlabCi
 
-internal class IncludeDslTest : DslTestBase() {
+internal class IncludeDslTest : DslTestBase<IncludeDsl>(IncludeDsl.serializer()) {
 
     @Test
     fun `should create empty`() {
@@ -12,10 +11,10 @@ internal class IncludeDslTest : DslTestBase() {
         val testee = IncludeDsl()
 
         // then
-        assertDsl(IncludeDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     []
-                """.trimIndent()
+                """
         )
     }
 
@@ -34,7 +33,7 @@ internal class IncludeDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(IncludeDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - local: "local 1"
                     - project: "project 1"
@@ -47,7 +46,7 @@ internal class IncludeDslTest : DslTestBase() {
                       ref: "ref 2"
                     - template: "template 2"
                     - remote: "remote 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -68,7 +67,7 @@ internal class IncludeDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(IncludeDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - local: "local 1"
                     - project: "project 1"
@@ -78,7 +77,7 @@ internal class IncludeDslTest : DslTestBase() {
                       ref: "ref 2"
                     - template: "template 1"
                     - remote: "remote 1"
-                """.trimIndent()
+                """
         )
     }
 }

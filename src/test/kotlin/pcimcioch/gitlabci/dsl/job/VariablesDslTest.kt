@@ -3,7 +3,7 @@ package pcimcioch.gitlabci.dsl.job
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
-internal class VariablesDslTest : DslTestBase() {
+internal class VariablesDslTest : DslTestBase<VariablesDsl>(VariablesDsl.serializer()) {
 
     @Test
     fun `should create from block`() {
@@ -13,10 +13,10 @@ internal class VariablesDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(VariablesDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     "key1": "value 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -26,11 +26,11 @@ internal class VariablesDslTest : DslTestBase() {
         val testee = createVariables(mapOf("key1" to "value 1", "key2" to "value 2"))
 
         // then
-        assertDsl(VariablesDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     "key1": "value 1"
                     "key2": "value 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -42,12 +42,12 @@ internal class VariablesDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(VariablesDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     "key1": "value 1"
                     "key2": "value 2"
                     "key3": "value 3"
-                """.trimIndent()
+                """
         )
     }
 
@@ -57,11 +57,11 @@ internal class VariablesDslTest : DslTestBase() {
         val testee = createVariables(mapOf(RunnerSettingsVariables.GIT_CLONE_PATH to "1", RunnerSettingsVariables.RESTORE_CACHE_ATTEMPTS to "3"))
 
         // then
-        assertDsl(VariablesDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     "GIT_CLONE_PATH": "1"
                     "RESTORE_CACHE_ATTEMPTS": "3"
-                """.trimIndent()
+                """
         )
     }
 
@@ -73,12 +73,12 @@ internal class VariablesDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(VariablesDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     "GIT_CLONE_PATH": "1"
                     "RESTORE_CACHE_ATTEMPTS": "3"
                     "GET_SOURCES_ATTEMPTS": "4"
-                """.trimIndent()
+                """
         )
     }
 
@@ -88,10 +88,10 @@ internal class VariablesDslTest : DslTestBase() {
         val testee = createVariables {}
 
         // then
-        assertDsl(VariablesDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     {}
-                """.trimIndent(),
+                """,
                 "[variables] variables map cannot be empty"
         )
     }
@@ -104,10 +104,10 @@ internal class VariablesDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(VariablesDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     "key1": "value 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -120,11 +120,11 @@ internal class VariablesDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(VariablesDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     "key1": "value 1"
                     "key2": "value 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -139,13 +139,13 @@ internal class VariablesDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(VariablesDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     "key1": "value 1"
                     "GIT_CLONE_PATH": "value 2"
                     "key3": "value 3"
                     "GIT_CHECKOUT": "true"
-                """.trimIndent()
+                """
         )
     }
 
@@ -162,11 +162,11 @@ internal class VariablesDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(VariablesDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     "key1": "value 1"
                     "key2": "value 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -179,10 +179,10 @@ internal class VariablesDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(VariablesDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     "key1": "value 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -205,7 +205,7 @@ internal class VariablesDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(VariablesDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     "GIT_STRATEGY": "clone"
                     "GIT_SUBMODULE_STRATEGY": "recursive"
@@ -219,7 +219,7 @@ internal class VariablesDslTest : DslTestBase() {
                     "GIT_FETCH_EXTRA_FLAGS": "extra"
                     "EXECUTOR_JOB_SECTION_ATTEMPTS": "5"
                     "CACHE_FALLBACK_KEY": "key"
-                """.trimIndent()
+                """
         )
     }
 
@@ -231,10 +231,10 @@ internal class VariablesDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(VariablesDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     "GIT_CLEAN_FLAGS": "none"
-                """.trimIndent()
+                """
         )
     }
 
@@ -251,13 +251,13 @@ internal class VariablesDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(VariablesDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     "key1": "string"
                     "key2": "15"
                     "key3": "false"
                     "key4": "test"
-                """.trimIndent()
+                """
         )
     }
 }

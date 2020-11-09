@@ -5,8 +5,11 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pcimcioch.gitlabci.dsl.job.WhenRunType
 import pcimcioch.gitlabci.dsl.job.createJob
+import java.io.StringWriter
 
-internal class GitlabCiDslTest : DslTestBase() {
+internal class GitlabCiDslTest {
+
+    private val writer = StringWriter()
 
     @Test
     fun `should validate`() {

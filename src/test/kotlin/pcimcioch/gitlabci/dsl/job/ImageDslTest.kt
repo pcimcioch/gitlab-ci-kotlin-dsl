@@ -3,7 +3,7 @@ package pcimcioch.gitlabci.dsl.job
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
-internal class ImageDslTest : DslTestBase() {
+internal class ImageDslTest : DslTestBase<ImageDsl>(ImageDsl.serializer()) {
 
     @Test
     fun `should create image from name`() {
@@ -11,10 +11,10 @@ internal class ImageDslTest : DslTestBase() {
         val testee = createImage("image 1")
 
         // then
-        assertDsl(ImageDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "image 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -26,13 +26,13 @@ internal class ImageDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ImageDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "image 1"
                     entrypoint:
                     - "cmd 1"
                     - "cmd 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -45,12 +45,12 @@ internal class ImageDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ImageDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "image 1"
                     entrypoint:
                     - "cmd 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -62,11 +62,11 @@ internal class ImageDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ImageDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "image 1"
                     entrypoint: []
-                """.trimIndent()
+                """
         )
     }
 
@@ -78,12 +78,12 @@ internal class ImageDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ImageDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "image 1"
                     entrypoint:
                     - "cmd 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -95,13 +95,13 @@ internal class ImageDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ImageDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "image 1"
                     entrypoint:
                     - "cmd 1"
                     - "cmd 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -114,7 +114,7 @@ internal class ImageDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ImageDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "image 1"
                     entrypoint:
@@ -123,7 +123,7 @@ internal class ImageDslTest : DslTestBase() {
                     - "cmd 3"
                     - "cmd 4"
                     - "cmd 5"
-                """.trimIndent()
+                """
         )
     }
 
@@ -135,11 +135,11 @@ internal class ImageDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ImageDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     entrypoint:
                     - "cmd 1"
-                """.trimIndent(),
+                """,
                 "[image] name 'null' is incorrect"
         )
     }
@@ -152,12 +152,12 @@ internal class ImageDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ImageDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: ""
                     entrypoint:
                     - "cmd 1"
-                """.trimIndent(),
+                """,
                 "[image] name '' is incorrect"
         )
     }
@@ -170,13 +170,13 @@ internal class ImageDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ImageDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "image 1"
                     entrypoint:
                     - "cmd 1"
                     - "cmd 2"
-                """.trimIndent()
+                """
         )
     }
 }

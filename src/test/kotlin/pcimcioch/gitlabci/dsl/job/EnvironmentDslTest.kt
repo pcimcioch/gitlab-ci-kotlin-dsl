@@ -6,7 +6,7 @@ import org.junit.jupiter.params.provider.ValueSource
 import pcimcioch.gitlabci.dsl.DslTestBase
 import pcimcioch.gitlabci.dsl.Duration
 
-internal class EnvironmentDslTest : DslTestBase() {
+internal class EnvironmentDslTest : DslTestBase<EnvironmentDsl>(EnvironmentDsl.serializer()) {
 
     @Test
     fun `should create environment from name`() {
@@ -14,10 +14,10 @@ internal class EnvironmentDslTest : DslTestBase() {
         val testee = createEnvironment("production")
 
         // then
-        assertDsl(EnvironmentDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "production"
-                """.trimIndent()
+                """
         )
     }
 
@@ -29,11 +29,11 @@ internal class EnvironmentDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(EnvironmentDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "production"
                     url: "https://test.com"
-                """.trimIndent()
+                """
         )
     }
 
@@ -46,11 +46,11 @@ internal class EnvironmentDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(EnvironmentDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "production"
                     url: "https://test.com"
-                """.trimIndent()
+                """
         )
     }
 
@@ -60,10 +60,10 @@ internal class EnvironmentDslTest : DslTestBase() {
         val testee = createEnvironment {}
 
         // then
-        assertDsl(EnvironmentDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     {}
-                """.trimIndent(),
+                """,
                 "[environment name='null'] name 'null' is incorrect. Cannot be empty"
         )
     }
@@ -74,10 +74,10 @@ internal class EnvironmentDslTest : DslTestBase() {
         val testee = createEnvironment("") {}
 
         // then
-        assertDsl(EnvironmentDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: ""
-                """.trimIndent(),
+                """,
                 "[environment name=''] name '' is incorrect. Cannot be empty"
         )
     }
@@ -89,10 +89,10 @@ internal class EnvironmentDslTest : DslTestBase() {
         val testee = createEnvironment(name) {}
 
         // then
-        assertDsl(EnvironmentDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "$name"
-                """.trimIndent(),
+                """,
                 "[environment name='$name'] name '$name' is incorrect. Contains forbidden characters"
         )
     }
@@ -103,10 +103,10 @@ internal class EnvironmentDslTest : DslTestBase() {
         val testee = createEnvironment("aB3 _{}-$/") {}
 
         // then
-        assertDsl(EnvironmentDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "aB3 _{}-${'$'}/"
-                """.trimIndent()
+                """
         )
     }
 
@@ -116,10 +116,10 @@ internal class EnvironmentDslTest : DslTestBase() {
         val testee = createEnvironment {}
 
         // then
-        assertDsl(EnvironmentDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     {}
-                """.trimIndent(),
+                """,
                 "[environment name='null'] name 'null' is incorrect. Cannot be empty"
         )
     }
@@ -137,7 +137,7 @@ internal class EnvironmentDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(EnvironmentDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "production"
                     url: "https://test.com"
@@ -146,7 +146,7 @@ internal class EnvironmentDslTest : DslTestBase() {
                     auto_stop_in: "20 min"
                     kubernetes:
                       namespace: "kubernetesNamespace"
-                """.trimIndent()
+                """
         )
     }
 
@@ -159,11 +159,11 @@ internal class EnvironmentDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(EnvironmentDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "production"
                     on_stop: "testJob"
-                """.trimIndent()
+                """
         )
     }
 
@@ -175,12 +175,12 @@ internal class EnvironmentDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(EnvironmentDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "production"
                     kubernetes:
                       namespace: "kubernetesNamespace"
-                """.trimIndent()
+                """
         )
     }
 
@@ -194,12 +194,12 @@ internal class EnvironmentDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(EnvironmentDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "production"
                     kubernetes:
                       namespace: "kubernetesNamespace"
-                """.trimIndent()
+                """
         )
     }
 
@@ -212,17 +212,17 @@ internal class EnvironmentDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(EnvironmentDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "production"
                     kubernetes:
                       namespace: "kubernetesNamespace"
-                """.trimIndent()
+                """
         )
     }
 }
 
-internal class KubernetesEnvironmentDslTest : DslTestBase() {
+internal class KubernetesEnvironmentDslTest : DslTestBase<KubernetesEnvironmentDsl>(KubernetesEnvironmentDsl.serializer()) {
 
     @Test
     fun `should create from namespace`() {
@@ -230,10 +230,10 @@ internal class KubernetesEnvironmentDslTest : DslTestBase() {
         val testee = createKubernetesEnvironment("kubernetesNamespace")
 
         // then
-        assertDsl(KubernetesEnvironmentDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     namespace: "kubernetesNamespace"
-                """.trimIndent()
+                """
         )
     }
 
@@ -245,10 +245,10 @@ internal class KubernetesEnvironmentDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(KubernetesEnvironmentDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     namespace: "namespace2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -260,10 +260,10 @@ internal class KubernetesEnvironmentDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(KubernetesEnvironmentDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     namespace: "kubernetesNamespace"
-                """.trimIndent()
+                """
         )
     }
 
@@ -273,10 +273,10 @@ internal class KubernetesEnvironmentDslTest : DslTestBase() {
         val testee = createKubernetesEnvironment {}
 
         // then
-        assertDsl(KubernetesEnvironmentDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     {}
-                """.trimIndent()
+                """
         )
     }
 }

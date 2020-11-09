@@ -3,9 +3,8 @@ package pcimcioch.gitlabci.dsl.job
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 import pcimcioch.gitlabci.dsl.Duration
-import pcimcioch.gitlabci.dsl.gitlabCi
 
-internal class RuleDslTest : DslTestBase() {
+internal class RuleDslTest : DslTestBase<RuleDsl>(RuleDsl.serializer()) {
 
     @Test
     fun `should create empty rule`() {
@@ -13,10 +12,10 @@ internal class RuleDslTest : DslTestBase() {
         val testee = createRule {}
 
         // then
-        assertDsl(RuleDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     {}
-                """.trimIndent()
+                """
         )
     }
 
@@ -33,7 +32,7 @@ internal class RuleDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(RuleDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     if: "condition"
                     changes:
@@ -45,7 +44,7 @@ internal class RuleDslTest : DslTestBase() {
                     allow_failure: true
                     when: "delayed"
                     start_in: "10 min"
-                """.trimIndent()
+                """
         )
     }
 
@@ -59,12 +58,12 @@ internal class RuleDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(RuleDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     if: "condition"
                     when: "always"
                     start_in: "10 min"
-                """.trimIndent(),
+                """,
                 "[rule] startIn can be used only with when=delayed jobs"
         )
     }
@@ -79,12 +78,12 @@ internal class RuleDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(RuleDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     if: "condition"
                     changes: []
                     exists: []
-                """.trimIndent()
+                """
         )
     }
 
@@ -98,14 +97,14 @@ internal class RuleDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(RuleDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     if: "condition"
                     changes:
                     - "file 1"
                     exists:
                     - "file 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -119,7 +118,7 @@ internal class RuleDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(RuleDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     if: "condition"
                     changes:
@@ -128,7 +127,7 @@ internal class RuleDslTest : DslTestBase() {
                     exists:
                     - "file 3"
                     - "file 4"
-                """.trimIndent()
+                """
         )
     }
 
@@ -144,7 +143,7 @@ internal class RuleDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(RuleDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     if: "condition"
                     changes:
@@ -157,7 +156,7 @@ internal class RuleDslTest : DslTestBase() {
                     - "file 6"
                     - "file 7"
                     - "file 8"
-                """.trimIndent()
+                """
         )
     }
 
@@ -171,7 +170,7 @@ internal class RuleDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(RuleDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     if: "condition"
                     changes:
@@ -180,12 +179,12 @@ internal class RuleDslTest : DslTestBase() {
                     exists:
                     - "file 3"
                     - "file 4"
-                """.trimIndent()
+                """
         )
     }
 }
 
-internal class RuleListDslTest : DslTestBase() {
+internal class RuleListDslTest : DslTestBase<RuleListDsl>(RuleListDsl.serializer()) {
 
     @Test
     fun `should create empty`() {
@@ -193,10 +192,10 @@ internal class RuleListDslTest : DslTestBase() {
         val testee = createRules {}
 
         // then
-        assertDsl(RuleListDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     []
-                """.trimIndent()
+                """
         )
     }
 
@@ -215,12 +214,12 @@ internal class RuleListDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(RuleListDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - if: "condition"
                       when: "manual"
                     - when: "never"
-                """.trimIndent()
+                """
         )
     }
 
@@ -235,11 +234,11 @@ internal class RuleListDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(RuleListDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - when: "manual"
                       start_in: "10 min"
-                """.trimIndent(),
+                """,
                 "[rule] startIn can be used only with when=delayed jobs"
         )
     }

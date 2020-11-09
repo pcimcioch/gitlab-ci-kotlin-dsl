@@ -5,7 +5,7 @@ import pcimcioch.gitlabci.dsl.DslTestBase
 import pcimcioch.gitlabci.dsl.Duration
 import pcimcioch.gitlabci.dsl.job.*
 
-internal class DefaultDslTest : DslTestBase() {
+internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer()) {
 
     @Test
     fun `should validate nested objects`() {
@@ -31,7 +31,7 @@ internal class DefaultDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(DefaultDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     image:
                       name: ""
@@ -61,7 +61,7 @@ internal class DefaultDslTest : DslTestBase() {
                     after_script:
                     - "after 1"
                     - "after 2"
-                """.trimIndent(),
+                """,
                 "[default][image] name '' is incorrect",
                 "[default][service name=''] name '' is incorrect",
                 "[default][cache][key] prefix value 'pre/fix' can't contain '/' nor '%2F'",
@@ -75,10 +75,10 @@ internal class DefaultDslTest : DslTestBase() {
         val testee = DefaultDsl()
 
         // then
-        assertDsl(DefaultDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     {}
-                """.trimIndent()
+                """
         )
     }
 
@@ -99,7 +99,7 @@ internal class DefaultDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(DefaultDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     image:
                       name: "testImage"
@@ -121,7 +121,7 @@ internal class DefaultDslTest : DslTestBase() {
                     - "before"
                     after_script:
                     - "after"
-                """.trimIndent()
+                """
         )
     }
 
@@ -133,10 +133,10 @@ internal class DefaultDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(DefaultDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     tags: []
-                """.trimIndent()
+                """
         )
     }
 
@@ -148,11 +148,11 @@ internal class DefaultDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(DefaultDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     tags:
                     - "tag 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -164,12 +164,12 @@ internal class DefaultDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(DefaultDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     tags:
                     - "tag 1"
                     - "tag 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -182,14 +182,14 @@ internal class DefaultDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(DefaultDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     tags:
                     - "tag 1"
                     - "tag 2"
                     - "tag 3"
                     - "tag 4"
-                """.trimIndent()
+                """
         )
     }
 
@@ -205,13 +205,13 @@ internal class DefaultDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(DefaultDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     before_script:
                     - "command 1"
                     - "command 2"
                     - "command 3"
-                """.trimIndent()
+                """
         )
     }
 
@@ -227,13 +227,13 @@ internal class DefaultDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(DefaultDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     after_script:
                     - "command 1"
                     - "command 2"
                     - "command 3"
-                """.trimIndent()
+                """
         )
     }
 
@@ -245,11 +245,11 @@ internal class DefaultDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(DefaultDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     image:
                       name: "image:1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -263,11 +263,11 @@ internal class DefaultDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(DefaultDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     image:
                       name: "image:1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -281,14 +281,14 @@ internal class DefaultDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(DefaultDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     image:
                       name: "image:1"
                       entrypoint:
                       - "entry"
                       - "point"
-                """.trimIndent()
+                """
         )
     }
 
@@ -304,13 +304,13 @@ internal class DefaultDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(DefaultDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     services:
                     - name: "ser1"
                     - name: "ser2"
                     - name: "ser3"
-                """.trimIndent()
+                """
         )
     }
 
@@ -326,14 +326,14 @@ internal class DefaultDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(DefaultDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     cache:
                       paths:
                       - "p1"
                       - "p2"
                       - "p3"
-                """.trimIndent()
+                """
         )
     }
 
@@ -345,11 +345,11 @@ internal class DefaultDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(DefaultDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     retry:
                       max: 2
-                """.trimIndent()
+                """
         )
     }
 
@@ -363,11 +363,11 @@ internal class DefaultDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(DefaultDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     retry:
                       max: 2
-                """.trimIndent()
+                """
         )
     }
 
@@ -381,13 +381,13 @@ internal class DefaultDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(DefaultDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     retry:
                       max: 2
                       when:
                       - "api_failure"
-                """.trimIndent()
+                """
         )
     }
 
@@ -403,14 +403,14 @@ internal class DefaultDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(DefaultDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     artifacts:
                       paths:
                       - "a1"
                       - "a2"
                       - "a3"
-                """.trimIndent()
+                """
         )
     }
 
@@ -437,7 +437,7 @@ internal class DefaultDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(DefaultDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     image:
                       name: "testImage"
@@ -457,7 +457,7 @@ internal class DefaultDslTest : DslTestBase() {
                     - "before"
                     after_script:
                     - "after"
-                """.trimIndent()
+                """
         )
     }
 }

@@ -3,7 +3,7 @@ package pcimcioch.gitlabci.dsl.job
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
-internal class ServiceDslTest : DslTestBase() {
+internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer()) {
 
     @Test
     fun `should create service from name`() {
@@ -11,10 +11,10 @@ internal class ServiceDslTest : DslTestBase() {
         val testee = createService("ser 1")
 
         // then
-        assertDsl(ServiceDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "ser 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -26,11 +26,11 @@ internal class ServiceDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ServiceDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "ser 1"
                     alias: "test"
-                """.trimIndent()
+                """
         )
     }
 
@@ -42,10 +42,10 @@ internal class ServiceDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ServiceDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "test"
-                """.trimIndent()
+                """
         )
     }
 
@@ -57,10 +57,10 @@ internal class ServiceDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ServiceDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     alias: "test"
-                """.trimIndent(),
+                """,
                 "[service name='null'] name 'null' is incorrect"
         )
     }
@@ -71,10 +71,10 @@ internal class ServiceDslTest : DslTestBase() {
         val testee = createService("")
 
         // then
-        assertDsl(ServiceDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: ""
-                """.trimIndent(),
+                """,
                 "[service name=''] name '' is incorrect"
         )
     }
@@ -88,7 +88,7 @@ internal class ServiceDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ServiceDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "name"
                     command:
@@ -97,7 +97,7 @@ internal class ServiceDslTest : DslTestBase() {
                     entrypoint:
                     - "e 1"
                     - "e 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -112,7 +112,7 @@ internal class ServiceDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ServiceDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "name"
                     command:
@@ -125,7 +125,7 @@ internal class ServiceDslTest : DslTestBase() {
                     - "e 2"
                     - "e 10"
                     - "e 20"
-                """.trimIndent()
+                """
         )
     }
 
@@ -138,12 +138,12 @@ internal class ServiceDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ServiceDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "name"
                     command: []
                     entrypoint: []
-                """.trimIndent()
+                """
         )
     }
 
@@ -156,14 +156,14 @@ internal class ServiceDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ServiceDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "name"
                     command:
                     - "c 1"
                     entrypoint:
                     - "e 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -176,7 +176,7 @@ internal class ServiceDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ServiceDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     name: "name"
                     command:
@@ -185,12 +185,12 @@ internal class ServiceDslTest : DslTestBase() {
                     entrypoint:
                     - "e 1"
                     - "e 2"
-                """.trimIndent()
+                """
         )
     }
 }
 
-internal class ServiceListDslTest : DslTestBase() {
+internal class ServiceListDslTest : DslTestBase<ServiceListDsl>(ServiceListDsl.serializer()) {
 
     @Test
     fun `should create services from block`() {
@@ -200,10 +200,10 @@ internal class ServiceListDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ServiceListDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - name: "service 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -213,11 +213,11 @@ internal class ServiceListDslTest : DslTestBase() {
         val testee = createServices("service 1", "service 2")
 
         // then
-        assertDsl(ServiceListDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - name: "service 1"
                     - name: "service 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -227,11 +227,11 @@ internal class ServiceListDslTest : DslTestBase() {
         val testee = createServices(listOf("service 1", "service 2"))
 
         // then
-        assertDsl(ServiceListDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - name: "service 1"
                     - name: "service 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -241,10 +241,10 @@ internal class ServiceListDslTest : DslTestBase() {
         val testee = createServices()
 
         // then
-        assertDsl(ServiceListDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     []
-                """.trimIndent()
+                """
         )
     }
 
@@ -260,12 +260,12 @@ internal class ServiceListDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ServiceListDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - name: ""
                     - name: "service 2"
                     - alias: "test"
-                """.trimIndent(),
+                """,
                 "[service name=''] name '' is incorrect",
                 "[service name='null'] name 'null' is incorrect"
         )
@@ -293,7 +293,7 @@ internal class ServiceListDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ServiceListDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - name: "test 1"
                       alias: "alias 1"
@@ -305,7 +305,7 @@ internal class ServiceListDslTest : DslTestBase() {
                       entrypoint:
                       - "e 1"
                     - name: "test 4"
-                """.trimIndent()
+                """
         )
     }
 }

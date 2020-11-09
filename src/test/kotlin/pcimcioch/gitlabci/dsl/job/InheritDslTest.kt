@@ -3,7 +3,7 @@ package pcimcioch.gitlabci.dsl.job
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
-internal class InheritDslTest : DslTestBase() {
+internal class InheritDslTest : DslTestBase<InheritDsl>(InheritDsl.serializer()) {
 
     @Test
     fun `should create empty inherit`() {
@@ -11,10 +11,10 @@ internal class InheritDslTest : DslTestBase() {
         val testee = createInherit {}
 
         // then
-        assertDsl(InheritDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     {}
-                """.trimIndent()
+                """
         )
     }
 
@@ -27,11 +27,11 @@ internal class InheritDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(InheritDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     default: true
                     variables: false
-                """.trimIndent()
+                """
         )
     }
 
@@ -44,7 +44,7 @@ internal class InheritDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(InheritDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     default:
                     - "after_script"
@@ -52,7 +52,7 @@ internal class InheritDslTest : DslTestBase() {
                     variables:
                     - "var1"
                     - "var2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -65,11 +65,11 @@ internal class InheritDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(InheritDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     default: []
                     variables: []
-                """.trimIndent()
+                """
         )
     }
 
@@ -82,13 +82,13 @@ internal class InheritDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(InheritDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     default:
                     - "before_script"
                     variables:
                     - "var1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -103,7 +103,7 @@ internal class InheritDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(InheritDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     default:
                     - "cache"
@@ -113,7 +113,7 @@ internal class InheritDslTest : DslTestBase() {
                     - "var1"
                     - "var2"
                     - "var3"
-                """.trimIndent()
+                """
         )
     }
 
@@ -126,13 +126,13 @@ internal class InheritDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(InheritDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     default: true
                     variables:
                     - "var1"
                     - "var2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -147,13 +147,13 @@ internal class InheritDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(InheritDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     default:
                     - "services"
                     - "timeout"
                     variables: false
-                """.trimIndent()
+                """
         )
     }
 }

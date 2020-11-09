@@ -3,7 +3,7 @@ package pcimcioch.gitlabci.dsl.job
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
-internal class ScriptDslTest : DslTestBase() {
+internal class ScriptDslTest : DslTestBase<ScriptDsl>(ScriptDsl.serializer()) {
 
     @Test
     fun `should create script from block`() {
@@ -13,10 +13,10 @@ internal class ScriptDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ScriptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - "command 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -26,11 +26,11 @@ internal class ScriptDslTest : DslTestBase() {
         val testee = createScript("command 1", "command 2")
 
         // then
-        assertDsl(ScriptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - "command 1"
                     - "command 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -40,11 +40,11 @@ internal class ScriptDslTest : DslTestBase() {
         val testee = createScript(listOf("command 1", "command 2"))
 
         // then
-        assertDsl(ScriptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - "command 1"
                     - "command 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -57,11 +57,11 @@ internal class ScriptDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ScriptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - "command 1"
                     - "command 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -73,10 +73,10 @@ internal class ScriptDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ScriptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - "command 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -89,11 +89,11 @@ internal class ScriptDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ScriptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - "command 1"
                     - "command 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -105,11 +105,11 @@ internal class ScriptDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(ScriptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - "command 1"
                     - "command 2"
-                """.trimIndent()
+                """
         )
     }
 }

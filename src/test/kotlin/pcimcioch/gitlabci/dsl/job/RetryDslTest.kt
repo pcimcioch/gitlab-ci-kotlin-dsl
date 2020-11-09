@@ -3,7 +3,7 @@ package pcimcioch.gitlabci.dsl.job
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
-internal class RetryDslTest : DslTestBase() {
+internal class RetryDslTest : DslTestBase<RetryDsl>(RetryDsl.serializer()) {
 
     @Test
     fun `should create from max`() {
@@ -11,10 +11,10 @@ internal class RetryDslTest : DslTestBase() {
         val testee = createRetry(1)
 
         // then
-        assertDsl(RetryDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     max: 1
-                """.trimIndent()
+                """
         )
     }
 
@@ -27,12 +27,12 @@ internal class RetryDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(RetryDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     max: 2
                     when:
                     - "always"
-                """.trimIndent()
+                """
         )
     }
 
@@ -44,12 +44,12 @@ internal class RetryDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(RetryDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     max: 2
                     when:
                     - "always"
-                """.trimIndent()
+                """
         )
     }
 
@@ -59,10 +59,10 @@ internal class RetryDslTest : DslTestBase() {
         val testee = createRetry(0)
 
         // then
-        assertDsl(RetryDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     max: 0
-                """.trimIndent()
+                """
         )
     }
 
@@ -72,10 +72,10 @@ internal class RetryDslTest : DslTestBase() {
         val testee = createRetry(1)
 
         // then
-        assertDsl(RetryDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     max: 1
-                """.trimIndent()
+                """
         )
     }
 
@@ -85,10 +85,10 @@ internal class RetryDslTest : DslTestBase() {
         val testee = createRetry(2)
 
         // then
-        assertDsl(RetryDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     max: 2
-                """.trimIndent()
+                """
         )
     }
 
@@ -98,10 +98,10 @@ internal class RetryDslTest : DslTestBase() {
         val testee = createRetry(3)
 
         // then
-        assertDsl(RetryDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     max: 3
-                """.trimIndent(),
+                """,
                 "[retry] max attempts must be in range [0, 2]"
         )
     }
@@ -112,10 +112,10 @@ internal class RetryDslTest : DslTestBase() {
         val testee = createRetry(-1)
 
         // then
-        assertDsl(RetryDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     max: -1
-                """.trimIndent(),
+                """,
                 "[retry] max attempts must be in range [0, 2]"
         )
     }
@@ -128,11 +128,11 @@ internal class RetryDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(RetryDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     when:
                     - "always"
-                """.trimIndent()
+                """
         )
     }
 
@@ -145,11 +145,11 @@ internal class RetryDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(RetryDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     max: 2
                     when: []
-                """.trimIndent()
+                """
         )
     }
 
@@ -162,13 +162,13 @@ internal class RetryDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(RetryDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     max: 2
                     when:
                     - "unknown_failure"
                     - "script_failure"
-                """.trimIndent()
+                """
         )
     }
 
@@ -182,7 +182,7 @@ internal class RetryDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(RetryDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     max: 2
                     when:
@@ -191,7 +191,7 @@ internal class RetryDslTest : DslTestBase() {
                     - "runner_system_failure"
                     - "missing_dependency_failure"
                     - "runner_unsupported"
-                """.trimIndent()
+                """
         )
     }
 
@@ -204,14 +204,14 @@ internal class RetryDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(RetryDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     max: 2
                     when:
                     - "stale_schedule"
                     - "job_execution_timeout"
                     - "archived_failure"
-                """.trimIndent()
+                """
         )
     }
 }

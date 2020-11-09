@@ -6,7 +6,7 @@ import pcimcioch.gitlabci.dsl.Duration
 import pcimcioch.gitlabci.dsl.job.WhenRunType
 import pcimcioch.gitlabci.dsl.job.createRules
 
-internal class WorkflowDslTest : DslTestBase() {
+internal class WorkflowDslTest : DslTestBase<WorkflowDsl>(WorkflowDsl.serializer()) {
 
     @Test
     fun `should validate nested objects`() {
@@ -21,12 +21,12 @@ internal class WorkflowDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(WorkflowDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     rules:
                     - when: "manual"
                       start_in: "10 min"
-                """.trimIndent(),
+                """,
                 "[workflow][rule] startIn can be used only with when=delayed jobs"
         )
     }
@@ -37,10 +37,10 @@ internal class WorkflowDslTest : DslTestBase() {
         val testee = WorkflowDsl()
 
         // then
-        assertDsl(WorkflowDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     {}
-                """.trimIndent()
+                """
         )
     }
 
@@ -60,13 +60,13 @@ internal class WorkflowDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(WorkflowDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     rules:
                     - if: "condition"
                       when: "manual"
                     - when: "never"
-                """.trimIndent()
+                """
         )
     }
 
@@ -87,13 +87,13 @@ internal class WorkflowDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(WorkflowDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     rules:
                     - if: "condition"
                       when: "manual"
                     - when: "never"
-                """.trimIndent()
+                """
         )
     }
 }

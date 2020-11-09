@@ -3,7 +3,7 @@ package pcimcioch.gitlabci.dsl.job
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
-internal class OnlyExceptDslTest : DslTestBase() {
+internal class OnlyExceptDslTest : DslTestBase<OnlyExceptDsl>(OnlyExceptDsl.serializer()) {
 
     @Test
     fun `should create from block`() {
@@ -13,10 +13,10 @@ internal class OnlyExceptDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(OnlyExceptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     kubernetes: "active"
-                """.trimIndent()
+                """
         )
     }
 
@@ -26,12 +26,12 @@ internal class OnlyExceptDslTest : DslTestBase() {
         val testee = createOnlyExcept("master", "issue")
 
         // then
-        assertDsl(OnlyExceptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     refs:
                     - "master"
                     - "issue"
-                """.trimIndent()
+                """
         )
     }
 
@@ -41,12 +41,12 @@ internal class OnlyExceptDslTest : DslTestBase() {
         val testee = createOnlyExcept(listOf("master", "issue"))
 
         // then
-        assertDsl(OnlyExceptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     refs:
                     - "master"
                     - "issue"
-                """.trimIndent()
+                """
         )
     }
 
@@ -56,10 +56,10 @@ internal class OnlyExceptDslTest : DslTestBase() {
         val testee = createOnlyExcept {}
 
         // then
-        assertDsl(OnlyExceptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     {}
-                """.trimIndent()
+                """
         )
     }
 
@@ -74,7 +74,7 @@ internal class OnlyExceptDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(OnlyExceptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     refs:
                     - "master"
@@ -86,7 +86,7 @@ internal class OnlyExceptDslTest : DslTestBase() {
                     - "${"$"}VAR1"
                     - "${"$"}VAR2 == 'test'"
                     kubernetes: "active"
-                """.trimIndent()
+                """
         )
     }
 
@@ -100,7 +100,7 @@ internal class OnlyExceptDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(OnlyExceptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     refs:
                     - "master"
@@ -111,7 +111,7 @@ internal class OnlyExceptDslTest : DslTestBase() {
                     variables:
                     - "${"$"}VAR1"
                     - "${"$"}VAR2 == 'test'"
-                """.trimIndent()
+                """
         )
     }
 
@@ -125,12 +125,12 @@ internal class OnlyExceptDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(OnlyExceptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     refs: []
                     changes: []
                     variables: []
-                """.trimIndent()
+                """
         )
     }
 
@@ -144,7 +144,7 @@ internal class OnlyExceptDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(OnlyExceptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     refs:
                     - "master"
@@ -152,7 +152,7 @@ internal class OnlyExceptDslTest : DslTestBase() {
                     - "file 1"
                     variables:
                     - "${"$"}VAR1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -166,7 +166,7 @@ internal class OnlyExceptDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(OnlyExceptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     refs:
                     - "master"
@@ -177,7 +177,7 @@ internal class OnlyExceptDslTest : DslTestBase() {
                     variables:
                     - "${"$"}VAR1"
                     - "${"$"}VAR2 == 'test'"
-                """.trimIndent()
+                """
         )
     }
 
@@ -194,7 +194,7 @@ internal class OnlyExceptDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(OnlyExceptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     refs:
                     - "master"
@@ -211,7 +211,7 @@ internal class OnlyExceptDslTest : DslTestBase() {
                     - "${"$"}VAR2 == 'test'"
                     - "${"$"}VAR3"
                     - "${"$"}VAR4"
-                """.trimIndent()
+                """
         )
     }
 
@@ -235,7 +235,7 @@ internal class OnlyExceptDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(OnlyExceptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     refs:
                     - "branches"
@@ -251,7 +251,7 @@ internal class OnlyExceptDslTest : DslTestBase() {
                     - "external_pull_requests"
                     - "chat"
                     - "master"
-                """.trimIndent()
+                """
         )
     }
 }

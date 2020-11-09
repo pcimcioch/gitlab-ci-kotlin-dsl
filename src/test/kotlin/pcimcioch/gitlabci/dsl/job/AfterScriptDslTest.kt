@@ -3,7 +3,7 @@ package pcimcioch.gitlabci.dsl.job
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
-internal class AfterScriptDslTest : DslTestBase() {
+internal class AfterScriptDslTest : DslTestBase<AfterScriptDsl>(AfterScriptDsl.serializer()) {
 
     @Test
     fun `should create script from block`() {
@@ -13,10 +13,10 @@ internal class AfterScriptDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(AfterScriptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - "command 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -26,11 +26,11 @@ internal class AfterScriptDslTest : DslTestBase() {
         val testee = createAfterScript("command 1", "command 2")
 
         // then
-        assertDsl(AfterScriptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - "command 1"
                     - "command 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -40,11 +40,11 @@ internal class AfterScriptDslTest : DslTestBase() {
         val testee = createAfterScript(listOf("command 1", "command 2"))
 
         // then
-        assertDsl(AfterScriptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - "command 1"
                     - "command 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -57,11 +57,11 @@ internal class AfterScriptDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(AfterScriptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - "command 1"
                     - "command 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -73,10 +73,10 @@ internal class AfterScriptDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(AfterScriptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - "command 1"
-                """.trimIndent()
+                """
         )
     }
 
@@ -86,10 +86,10 @@ internal class AfterScriptDslTest : DslTestBase() {
         val testee = createAfterScript {}
 
         // then
-        assertDsl(AfterScriptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     []
-                """.trimIndent()
+                """
         )
     }
 
@@ -102,11 +102,11 @@ internal class AfterScriptDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(AfterScriptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - "command 1"
                     - "command 2"
-                """.trimIndent()
+                """
         )
     }
 
@@ -118,11 +118,11 @@ internal class AfterScriptDslTest : DslTestBase() {
         }
 
         // then
-        assertDsl(AfterScriptDsl.serializer(), testee,
+        assertDsl(testee,
                 """
                     - "command 1"
                     - "command 2"
-                """.trimIndent()
+                """
         )
     }
 }

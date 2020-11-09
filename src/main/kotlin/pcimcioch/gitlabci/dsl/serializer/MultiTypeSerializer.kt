@@ -6,6 +6,8 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlin.reflect.KClass
 
+// TODO maybe we could use TwoTypeSerializer? It would provide better type safety
+// TODO use union type descriptors?
 open class MultiTypeSerializer<S: Any>(
         override val descriptor: SerialDescriptor,
         private val serializers: Map<KClass<out S>, KSerializer<out S>>

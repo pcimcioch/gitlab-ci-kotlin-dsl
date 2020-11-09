@@ -26,6 +26,7 @@ class CacheDsl : DslBase() {
     @Transient
     private var keyDsl: CacheKeyDsl? = null
 
+    // TODO maybe this could be val?
     @Serializable(with = KeySerializer::class)
     var key: Any? = null
         get() = keyString ?: keyDsl
@@ -43,12 +44,13 @@ class CacheDsl : DslBase() {
         keyString = null
         ensureKeyDsl().apply(block)
     }
+    // TODO add fun key(key: CacheKeyDsl)
 
     override fun validate(errors: MutableList<String>) {
         addErrors(errors, "[cache]", keyDsl)
     }
 
-    private fun ensureKeyDsl(): CacheKeyDsl = keyDsl ?: CacheKeyDsl().also { keyDsl = it }
+    private fun ensureKeyDsl() = keyDsl ?: CacheKeyDsl().also { keyDsl = it }
     private fun ensurePaths() = paths ?: mutableSetOf<String>().also { paths = it }
 
     object KeySerializer : MultiTypeSerializer<Any>(

@@ -8,6 +8,7 @@ internal abstract class DslTestBase {
 
     internal val writer = StringWriter()
 
+    // TODO always trim indent
     internal fun <T : DslBase> assertDsl(strategy: SerializationStrategy<T>, testee: T, expectedYaml: String, vararg validationErrors: String) {
         val yaml = serialize(strategy, testee)
         assertThat(yaml).isEqualTo(expectedYaml)

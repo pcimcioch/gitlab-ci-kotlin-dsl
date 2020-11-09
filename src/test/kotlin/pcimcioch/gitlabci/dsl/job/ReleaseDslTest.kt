@@ -1,7 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
 import kotlinx.datetime.Instant
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 

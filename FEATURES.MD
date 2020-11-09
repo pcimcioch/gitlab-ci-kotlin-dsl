@@ -1362,6 +1362,8 @@ gitlabCi {
         variables(mapOf(RunnerSettingsVariables.GIT_DEPTH to 2)) {
             "variable6" to "value6"
         }
+        // variables can also be accessed directly. Note that this will override any previously configured variables in this release
+        variables = mutableMapOf("variable1", "variable2")
     }
 }
 
@@ -1457,4 +1459,124 @@ gitlabCi {
 
 <https://docs.gitlab.com/ee/ci/yaml/#secrets
 
-Note: `secrets` is currently not supported
+```kotlin
+gitlabCi {
+    job("jobName") {
+        // secrets can be added as map of string -> string
+        secrets(mapOf("variable1" to "vault1"))
+        // or block
+        secrets {
+            // single secret can be added using add
+            add("variable2", "vault2")
+            // block version is also available
+            add("variable3") {
+              engine {
+                name = "name"
+                path = "path"
+              }
+              path = "path"
+              fileld = "field"
+            }
+            // infix notation to can be used
+            "variable4" to "vault4"
+            // block version is also available
+            "variable5" to {
+              engine {
+                name = "name2"
+                path = "path2"
+              }
+              path = "path2"
+              fileld = "field2"
+            }
+        }
+        // you can also mix map and block
+        secrets(mapOf("variable6" to "vault6")) {
+            "variable7" to "vault7"
+        }
+    }
+}
+
+// secrets can also be created outside of gitlabCi from string -> string map
+val secrets1 = createSecrets(mapOf("variable1" to "vault1"))
+// or block
+val secrets2 = createSecrets {
+    "variable1" to "vault1"
+}
+// or map and block
+val secrets4 = createSecrets(mapOf("variable1" to "vault1")) {
+    "variable2" to "vault2"
+}
+
+// it can later be added to any job. It may be useful to reuse secrets blocks
+gitlabCi {
+    job("firstJob") {
+        // Note that this will override any previously configured secrets in this job
+        secrets = secrets1
+    }
+    job("secondJob") {
+        secrets = secrets1
+    }
+}
+
+// single secret can also be created outside of gitlabCi from string
+val secret1 = createSecret("vault1")
+// or block
+val secret2 = createSecret {
+  engine {
+    name = "name"
+    path = "path"
+  }
+  path = "path"
+  fileld = "field"
+}
+val secret3 = createSecret("vault3")
+
+// it can later be added to any secrets. It may be useful to reuse secret blocks
+gitlabCi {
+    job("jobName") {
+        // existing secrets can be added as map of string -> SecretDsl
+        secrets(mapOf("variable1" to secret1)) {
+            // single secret can be added using add
+            add("variable2", secret2)
+            // infix notation to can be used
+            "variable3" to secret3
+            // secrets can also be accessed directly. Note that this will override any previously configured secrets in this release
+            secrets = mutableMapOf("variable1", secret1)
+        }
+    }
+}
+
+// also secrets can also be created outside of gitlabCi from string -> SecretDsl map
+val secrets5 = createSecrets(mapOf("variable1" to secret1))
+// or map and block
+val secrets6 = createSecrets(mapOf("variable1" to secret1)) {
+  "variable2" to secret2
+}
+
+// vault can also be created outside of gitlabCi
+val vault1 = createVault {
+  engine {
+    name = "name"
+    path = "path"
+  }
+  path = "path"
+  fileld = "field"
+}
+
+// it can later be added to any secret. It may be useful to reuse vault blocks
+val secret4 = createSecret(vault1)
+
+// vault engine can also be created outside of gitlabCi
+val vaultEngine1 = createVaultEngine {
+  name = "name"
+  path = "path"
+}
+
+// it can later be added to any vault. It may be useful to reuse engine blocks
+val vault2 = createVault {
+  // Note that this will override any previously configured engine in this vault
+  engine = vaultEngine1
+  path = "path"
+  fileld = "field"
+}
+```

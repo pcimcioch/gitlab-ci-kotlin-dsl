@@ -54,6 +54,7 @@ class JobDsl(
     var coverage: String? = null
     var environment: EnvironmentDsl? = null
     var variables: VariablesDsl? = null
+    var secrets: SecretsDsl? = null
 
     fun script(block: ScriptDsl.() -> Unit = {}) = ensureScript().apply(block)
     fun script(vararg elements: String, block: ScriptDsl.() -> Unit = {}) = script(elements.toList(), block)
@@ -103,10 +104,16 @@ class JobDsl(
     fun dependencies(vararg elements: JobDsl) = dependencies(elements.toList())
     fun dependencies(elements: Iterable<JobDsl>) = ensureDependencies().apply { elements.forEach { add(it.name) } }
 
-    fun variables(elements: Map<String, Any> = mapOf(), block: VariablesDsl.() -> Unit = {}) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+    fun variables(block: VariablesDsl.() -> Unit = {}) = ensureVariables().apply(block)
+    fun variables(elements: Map<String, Any>, block: VariablesDsl.() -> Unit = {}) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
 
     @JvmName("variablesEnum")
-    fun <T : Enum<T>> variables(elements: Map<T, Any> = mapOf(), block: VariablesDsl.() -> Unit = {}) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+    fun <T : Enum<T>> variables(elements: Map<T, Any>, block: VariablesDsl.() -> Unit = {}) = ensureVariables().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+
+    fun secrets(block: SecretsDsl.() -> Unit = {}) = ensureSecrets().apply(block)
+    fun secrets(elements: Map<String, String>, block: SecretsDsl.() -> Unit = {}) = ensureSecrets().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+    @JvmName("secretsFromDsl")
+    fun secrets(elements: Map<String, SecretDsl>, block: SecretsDsl.() -> Unit = {}) = ensureSecrets().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
 
     fun cache(block: CacheDsl.() -> Unit = {}) = ensureCache().apply(block)
     fun cache(vararg elements: String, block: CacheDsl.() -> Unit = {}) = cache(elements.toList(), block)
@@ -142,7 +149,7 @@ class JobDsl(
         addError(errors, parallel != null && (parallel!! < 2 || parallel!! > 50), "$prefix parallel must be in range [2, 50]")
 
         addErrors(errors, prefix, beforeScript, afterScript, inherit, retry, image, script, services, needs, variables,
-                cache, artifacts, only, except, rules, environment, trigger, release)
+                cache, artifacts, only, except, rules, environment, trigger, release, secrets)
     }
 
     private fun ensureInherit() = inherit ?: InheritDsl().also { inherit = it }
@@ -153,6 +160,7 @@ class JobDsl(
     private fun ensureNeeds() = needs ?: NeedsListDsl().also { needs = it }
     private fun ensureRetry() = retry ?: RetryDsl().also { retry = it }
     private fun ensureVariables() = variables ?: VariablesDsl().also { variables = it }
+    private fun ensureSecrets() = secrets ?: SecretsDsl().also { secrets = it }
     private fun ensureCache() = cache ?: CacheDsl().also { cache = it }
     private fun ensureArtifacts() = artifacts ?: ArtifactsDsl().also { artifacts = it }
     private fun ensureOnly() = only ?: OnlyExceptDsl().also { only = it }

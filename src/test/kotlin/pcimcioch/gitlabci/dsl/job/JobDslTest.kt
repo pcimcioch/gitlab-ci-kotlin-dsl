@@ -274,6 +274,9 @@ internal class JobDslTest : DslTestBase() {
             variables {
                 add("KEY1", "VALUE1")
             }
+            secrets {
+                add("KEY2", "VALUE2")
+            }
         }
 
         // then
@@ -332,6 +335,9 @@ internal class JobDslTest : DslTestBase() {
                       name: "env"
                     variables:
                       "KEY1": "VALUE1"
+                    secrets:
+                      "KEY2":
+                        vault: "VALUE2"
                 """.trimIndent()
         )
     }
@@ -875,6 +881,49 @@ internal class JobDslTest : DslTestBase() {
     }
 
     @Test
+    fun `should allow different secrets options`() {
+        // given
+        val testee = createJob("test") {
+            script("test command")
+
+            secrets {
+                "k1" to "v1"
+            }
+            secrets(mapOf("k2" to "v2"))
+            secrets(mapOf("k3" to "v3")) {
+                "k4" to "v4"
+            }
+            secrets(mapOf("k5" to createSecret("v5")))
+            secrets(mapOf("k6" to createSecret("v6"))) {
+                "k7" to "v7"
+            }
+        }
+
+        // then
+        assertDsl(JobDsl.serializer(), testee,
+                """
+                    script:
+                    - "test command"
+                    secrets:
+                      "k1":
+                        vault: "v1"
+                      "k2":
+                        vault: "v2"
+                      "k3":
+                        vault: "v3"
+                      "k4":
+                        vault: "v4"
+                      "k5":
+                        vault: "v5"
+                      "k6":
+                        vault: "v6"
+                      "k7":
+                        vault: "v7"
+                """.trimIndent()
+        )
+    }
+
+    @Test
     fun `should allow different cache options`() {
         // given
         val testee = createJob("test") {
@@ -1189,6 +1238,9 @@ internal class JobDslTest : DslTestBase() {
         val variablesDsl = createVariables {
             add("KEY1", "VALUE1")
         }
+        val secretsDsl = createSecrets {
+            add("KEY2", "VALUE2")
+        }
         val environmentDsl = createEnvironment("production")
 
         val testee = createJob("test") {
@@ -1213,6 +1265,7 @@ internal class JobDslTest : DslTestBase() {
             release = releaseDsl
             trigger = triggerDsl
             variables = variablesDsl
+            secrets = secretsDsl
             environment = environmentDsl
         }
 
@@ -1264,6 +1317,9 @@ internal class JobDslTest : DslTestBase() {
                       name: "production"
                     variables:
                       "KEY1": "VALUE1"
+                    secrets:
+                      "KEY2":
+                        vault: "VALUE2"
                 """.trimIndent()
         )
     }

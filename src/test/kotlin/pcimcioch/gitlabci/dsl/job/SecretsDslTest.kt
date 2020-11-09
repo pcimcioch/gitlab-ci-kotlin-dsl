@@ -291,7 +291,7 @@ internal class SecretDslTest: DslTestBase<SecretDsl>(SecretDsl.serializer()) {
     @Test
     fun `should crete from dsl`() {
         // given
-        val vault = createVault {
+        val vault = createSecretVault {
             engine {
                 name = "engine name"
                 path = "engine path"
@@ -315,12 +315,12 @@ internal class SecretDslTest: DslTestBase<SecretDsl>(SecretDsl.serializer()) {
     }
 }
 
-internal class VaultDslTest: DslTestBase<VaultDsl>(VaultDsl.serializer()) {
+internal class SecretVaultDslTest: DslTestBase<SecretVaultDsl>(SecretVaultDsl.serializer()) {
 
     @Test
     fun `should create empty`() {
         // given
-        val testee = createVault()
+        val testee = createSecretVault()
 
         // then
         assertDsl(testee,
@@ -333,7 +333,7 @@ internal class VaultDslTest: DslTestBase<VaultDsl>(VaultDsl.serializer()) {
     @Test
     fun `should create full`() {
         // given
-        val testee = createVault {
+        val testee = createSecretVault {
             engine {
                 name = "engine name"
                 path = "engine path"
@@ -357,11 +357,11 @@ internal class VaultDslTest: DslTestBase<VaultDsl>(VaultDsl.serializer()) {
     @Test
     fun `should allow direct access`() {
         // given
-        val engineDsl = createVaultEngine {
+        val engineDsl = createSecretVaultEngine {
             name = "engine name"
             path = "engine path"
         }
-        val testee = createVault {
+        val testee = createSecretVault {
             engine = engineDsl
             path = "path"
             field = "field"
@@ -380,12 +380,12 @@ internal class VaultDslTest: DslTestBase<VaultDsl>(VaultDsl.serializer()) {
     }
 }
 
-internal class VaultEngineDslTest: DslTestBase<VaultEngineDsl>(VaultEngineDsl.serializer()) {
+internal class SecretVaultEngineDslTest: DslTestBase<SecretVaultEngineDsl>(SecretVaultEngineDsl.serializer()) {
 
     @Test
     fun `should create empty`() {
         // given
-        val testee = createVaultEngine()
+        val testee = createSecretVaultEngine()
 
         // then
         assertDsl(testee,
@@ -398,7 +398,7 @@ internal class VaultEngineDslTest: DslTestBase<VaultEngineDsl>(VaultEngineDsl.se
     @Test
     fun `should create full`() {
         // given
-        val testee = createVaultEngine {
+        val testee = createSecretVaultEngine {
             name = "name"
             path = "path"
         }

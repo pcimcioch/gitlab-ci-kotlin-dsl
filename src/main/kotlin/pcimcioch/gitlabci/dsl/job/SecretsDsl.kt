@@ -16,11 +16,11 @@ class SecretsDsl : DslBase() {
 
     fun add(name: String, value: SecretDsl) = secrets.put(name, value)
     fun add(name: String, vault: String) = secrets.put(name, SecretDsl().apply { this.vault(vault) })
-    fun add(name: String, block: VaultDsl.() -> Unit) = secrets.put(name, SecretDsl().apply { vault(block) })
+    fun add(name: String, block: SecretVaultDsl.() -> Unit) = secrets.put(name, SecretDsl().apply { vault(block) })
 
     infix fun String.to(value: SecretDsl) = add(this, value)
     infix fun String.to(vault: String) = add(this, vault)
-    infix fun String.to(block: VaultDsl.() -> Unit) = add(this, block)
+    infix fun String.to(block: SecretVaultDsl.() -> Unit) = add(this, block)
 
     object SecretsDslSerializer : ValueSerializer<SecretsDsl, Map<String, SecretDsl>>(MapSerializer(String.serializer(), SecretDsl.serializer()), SecretsDsl::secrets)
     companion object {
@@ -41,7 +41,7 @@ class SecretDsl : DslBase() {
     private var vaultString: String? = null
 
     @Transient
-    private var vaultDsl: VaultDsl? = null
+    private var vaultDsl: SecretVaultDsl? = null
 
     @Serializable(with = VaultSerializer::class)
     var vault: Any? = null
@@ -53,23 +53,23 @@ class SecretDsl : DslBase() {
         vaultString = vault
     }
 
-    fun vault(block: VaultDsl.() -> Unit) {
+    fun vault(block: SecretVaultDsl.() -> Unit) {
         vaultString = null
         ensureVaultDsl().apply(block)
     }
 
-    fun vault(vault: VaultDsl) {
+    fun vault(vault: SecretVaultDsl) {
         vaultString = null
         vaultDsl = vault
     }
 
-    private fun ensureVaultDsl() = vaultDsl ?: VaultDsl().also { vaultDsl = it }
+    private fun ensureVaultDsl() = vaultDsl ?: SecretVaultDsl().also { vaultDsl = it }
 
     object VaultSerializer : MultiTypeSerializer<Any>(
             PrimitiveSerialDescriptor("Vault", PrimitiveKind.STRING),
             mapOf(
                     String::class to String.serializer(),
-                    VaultDsl::class to VaultDsl.serializer()))
+                    SecretVaultDsl::class to SecretVaultDsl.serializer()))
 
     companion object {
         init {
@@ -79,38 +79,38 @@ class SecretDsl : DslBase() {
 }
 
 fun createSecret(vault: String) = SecretDsl().apply { vault(vault) }
-fun createSecret(block: VaultDsl.() -> Unit = {}) = SecretDsl().apply { vault(block) }
-fun createSecret(vault: VaultDsl) = SecretDsl().apply { vault(vault) }
+fun createSecret(block: SecretVaultDsl.() -> Unit = {}) = SecretDsl().apply { vault(block) }
+fun createSecret(vault: SecretVaultDsl) = SecretDsl().apply { vault(vault) }
 
 @Serializable
-class VaultDsl : DslBase() {
-    var engine: VaultEngineDsl? = null
+class SecretVaultDsl : DslBase() {
+    var engine: SecretVaultEngineDsl? = null
     var path: String? = null
     var field: String? = null
 
-    fun engine(block: VaultEngineDsl.() -> Unit = {}) = ensureEngine().apply(block)
+    fun engine(block: SecretVaultEngineDsl.() -> Unit = {}) = ensureEngine().apply(block)
 
-    private fun ensureEngine() = engine ?: VaultEngineDsl().also { engine = it }
+    private fun ensureEngine() = engine ?: SecretVaultEngineDsl().also { engine = it }
 
     companion object {
         init {
-            addSerializer(VaultDsl::class, serializer())
+            addSerializer(SecretVaultDsl::class, serializer())
         }
     }
 }
 
-fun createVault(block: VaultDsl.() -> Unit = {}) = VaultDsl().apply(block)
+fun createSecretVault(block: SecretVaultDsl.() -> Unit = {}) = SecretVaultDsl().apply(block)
 
 @Serializable
-class VaultEngineDsl: DslBase() {
+class SecretVaultEngineDsl: DslBase() {
     var name: String? = null
     var path: String? = null
 
     companion object {
         init {
-            addSerializer(VaultEngineDsl::class, serializer())
+            addSerializer(SecretVaultEngineDsl::class, serializer())
         }
     }
 }
 
-fun createVaultEngine(block: VaultEngineDsl.() -> Unit = {}) = VaultEngineDsl().apply(block)
+fun createSecretVaultEngine(block: SecretVaultEngineDsl.() -> Unit = {}) = SecretVaultEngineDsl().apply(block)

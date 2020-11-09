@@ -1554,7 +1554,7 @@ val secrets6 = createSecrets(mapOf("variable1" to secret1)) {
 }
 
 // vault can also be created outside of gitlabCi
-val vault1 = createVault {
+val vault1 = createSecretVault {
   engine {
     name = "name"
     path = "path"
@@ -1567,13 +1567,13 @@ val vault1 = createVault {
 val secret4 = createSecret(vault1)
 
 // vault engine can also be created outside of gitlabCi
-val vaultEngine1 = createVaultEngine {
+val vaultEngine1 = createSecretVaultEngine {
   name = "name"
   path = "path"
 }
 
 // it can later be added to any vault. It may be useful to reuse engine blocks
-val vault2 = createVault {
+val vault2 = createSecretVault {
   // Note that this will override any previously configured engine in this vault
   engine = vaultEngine1
   path = "path"

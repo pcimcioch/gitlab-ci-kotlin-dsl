@@ -135,6 +135,33 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
     }
 
     @Test
+    fun `should create existing object key`() {
+        // given
+        val key = createCacheKey {
+            files("file1", "file2")
+            prefix = "pref"
+        }
+        val testee = createCache {
+            paths("path1", "path2")
+            key(key)
+        }
+
+        // then
+        assertDsl(testee,
+                """
+                    paths:
+                    - "path1"
+                    - "path2"
+                    key:
+                      prefix: "pref"
+                      files:
+                      - "file1"
+                      - "file2"
+                """
+        )
+    }
+
+    @Test
     fun `should validate key`() {
         // given
         val testee = createCache {

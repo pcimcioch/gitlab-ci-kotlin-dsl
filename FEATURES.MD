@@ -819,6 +819,26 @@ gitlabCi {
         cache = cache1
     }
 }
+
+// cache key can also be created outside of gitlabCi from block
+val key1 = createCacheKey {
+    files("file1", "file2")
+    prefix = "pref"
+}
+
+// it can later be added to any job. It may be useful to reuse cache key blocks
+gitlabCi {
+    job("firstJob") {
+        cache {
+          key(key1)
+        }
+    }
+    job("secondJob") {
+        cache {
+          key(key1)
+        }
+    }
+}
 ```
 
 ## artifacts

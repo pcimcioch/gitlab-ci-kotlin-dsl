@@ -8,8 +8,8 @@ import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.StringRepresentation
-import pcimcioch.gitlabci.dsl.serializer.MultiTypeSerializer
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
+import pcimcioch.gitlabci.dsl.serializer.TwoTypeSerializer
 
 @Serializable
 class InheritDsl : DslBase() {
@@ -60,17 +60,15 @@ class InheritDsl : DslBase() {
     private fun ensureDefaultSet() = defaultSet ?: mutableSetOf<InheritDefaultType>().also { defaultSet = it }
     private fun ensureVariablesSet() = variablesSet ?: mutableSetOf<String>().also { variablesSet = it }
 
-    object VariablesSerializer : MultiTypeSerializer<Any>(
+    object VariablesSerializer : TwoTypeSerializer<Any>(
             PrimitiveSerialDescriptor("Variables", PrimitiveKind.BOOLEAN),
-            mapOf(
-                    Boolean::class to Boolean.serializer(),
-                    Set::class to SetSerializer(String.serializer())))
+            Boolean::class, Boolean.serializer(),
+            Set::class, SetSerializer(String.serializer()))
 
-    object DefaultSerializer : MultiTypeSerializer<Any>(
+    object DefaultSerializer : TwoTypeSerializer<Any>(
             PrimitiveSerialDescriptor("Default", PrimitiveKind.BOOLEAN),
-            mapOf(
-                    Boolean::class to Boolean.serializer(),
-                    Set::class to SetSerializer(InheritDefaultType.InheritDefaultTypeSerializer)))
+            Boolean::class, Boolean.serializer(),
+            Set::class, SetSerializer(InheritDefaultType.InheritDefaultTypeSerializer))
 
     companion object {
         init {

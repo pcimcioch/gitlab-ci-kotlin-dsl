@@ -8,8 +8,8 @@ import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.StringRepresentation
-import pcimcioch.gitlabci.dsl.serializer.MultiTypeSerializer
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
+import pcimcioch.gitlabci.dsl.serializer.TwoTypeSerializer
 
 @Serializable
 class CacheDsl : DslBase() {
@@ -56,11 +56,10 @@ class CacheDsl : DslBase() {
     private fun ensureKeyDsl() = keyDsl ?: CacheKeyDsl().also { keyDsl = it }
     private fun ensurePaths() = paths ?: mutableSetOf<String>().also { paths = it }
 
-    object KeySerializer : MultiTypeSerializer<Any>(
+    object KeySerializer : TwoTypeSerializer<Any>(
             PrimitiveSerialDescriptor("Key", PrimitiveKind.STRING),
-            mapOf(
-                    String::class to String.serializer(),
-                    CacheKeyDsl::class to CacheKeyDsl.serializer()))
+            String::class, String.serializer(),
+            CacheKeyDsl::class, CacheKeyDsl.serializer())
 
     companion object {
         init {

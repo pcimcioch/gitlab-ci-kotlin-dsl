@@ -7,7 +7,7 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import pcimcioch.gitlabci.dsl.DslBase
-import pcimcioch.gitlabci.dsl.serializer.MultiTypeSerializer
+import pcimcioch.gitlabci.dsl.serializer.TwoTypeSerializer
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
 @Serializable(with = SecretsDsl.SecretsDslSerializer::class)
@@ -65,11 +65,10 @@ class SecretDsl : DslBase() {
 
     private fun ensureVaultDsl() = vaultDsl ?: SecretVaultDsl().also { vaultDsl = it }
 
-    object VaultSerializer : MultiTypeSerializer<Any>(
+    object VaultSerializer : TwoTypeSerializer<Any>(
             PrimitiveSerialDescriptor("Vault", PrimitiveKind.STRING),
-            mapOf(
-                    String::class to String.serializer(),
-                    SecretVaultDsl::class to SecretVaultDsl.serializer()))
+            String::class, String.serializer(),
+            SecretVaultDsl::class, SecretVaultDsl.serializer())
 
     companion object {
         init {

@@ -54,12 +54,12 @@ Library is available in Central Maven Repository
 <dependency>
   <groupId>com.github.pcimcioch</groupId>
   <artifactId>gitlab-ci-kotlin-dsl</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 
 ```
-implementation("com.github.pcimcioch:gitlab-ci-kotlin-dsl:1.0.0")
+implementation("com.github.pcimcioch:gitlab-ci-kotlin-dsl:1.1.0")
 ```
 
 # Documentation

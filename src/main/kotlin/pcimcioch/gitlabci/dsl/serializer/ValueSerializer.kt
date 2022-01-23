@@ -16,6 +16,6 @@ open class ValueSerializer<T, K>(
     }
 
     override fun deserialize(decoder: Decoder): T {
-        throw IllegalStateException(descriptor.serialName)
+        throw IllegalStateException("Deserialization is not supported for this DSL object")
     }
 }

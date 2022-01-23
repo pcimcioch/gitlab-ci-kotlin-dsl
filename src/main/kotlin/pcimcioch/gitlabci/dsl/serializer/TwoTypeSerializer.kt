@@ -20,7 +20,7 @@ open class TwoTypeSerializer<S: Any>(
     }
 
     override fun deserialize(decoder: Decoder): S {
-        throw IllegalStateException(descriptor.serialName)
+        throw IllegalStateException("Deserialization is not supported for this DSL object")
     }
 
     @Suppress("UNCHECKED_CAST")

@@ -7,14 +7,14 @@ plugins {
     kotlin("plugin.serialization") version "1.5.31"
     `maven-publish`
     signing
-    id("org.jetbrains.dokka") version "1.6.10"
+    id("org.jetbrains.dokka") version "1.5.31"
 }
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:1.0-M1-1.4.0-rc")
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.1")
     implementation("com.charleskorn.kaml:kaml:0.37.0")
+
+    api("org.jetbrains.kotlinx:kotlinx-datetime:0.3.1")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     testImplementation("org.assertj:assertj-core:3.22.0")

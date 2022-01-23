@@ -49,7 +49,7 @@ abstract class DslBase {
         override val descriptor = PrimitiveSerialDescriptor("DslBase", PrimitiveKind.STRING)
 
         override fun deserialize(decoder: Decoder): DslBase {
-            throw IllegalStateException(descriptor.serialName)
+            throw IllegalStateException("Deserialization is not supported for this DSL object")
         }
 
         override fun serialize(encoder: Encoder, value: DslBase) {

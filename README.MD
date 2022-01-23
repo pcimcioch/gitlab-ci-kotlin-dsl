@@ -62,15 +62,6 @@ Library is available in Central Maven Repository
 implementation("com.github.pcimcioch:gitlab-ci-kotlin-dsl:1.3.0")
 ```
 
-It uses [kotlin-datetime](https://github.com/Kotlin/kotlinx-datetime) api which is in early stage of development and is currently 
-only available in [kotlinx](https://bintray.com/kotlin/kotlinx/kotlinx.datetime) bintray repository.
-
-```
-repositories {
-    maven(url = "https://kotlin.bintray.com/kotlinx/") // soon will be just jcenter()
-}
-```
-
 # Documentation
 
 All supported features are documented in [Features Page](/FEATURES.MD)

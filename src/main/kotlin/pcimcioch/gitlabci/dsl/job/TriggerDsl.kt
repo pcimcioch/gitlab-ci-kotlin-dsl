@@ -56,6 +56,7 @@ class TriggerIncludeDsl : DslBase() {
 
 fun createTriggerInclude(block: TriggerIncludeDsl.() -> Unit = {}) = TriggerIncludeDsl().apply(block)
 
+@Suppress("SERIALIZER_TYPE_INCOMPATIBLE")
 @Serializable(with = DslBase.DslBaseSerializer::class)
 sealed class TriggerIncludeDetailsDsl : DslBase()
 

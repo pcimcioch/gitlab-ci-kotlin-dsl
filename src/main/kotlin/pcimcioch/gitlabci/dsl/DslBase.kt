@@ -1,6 +1,11 @@
 package pcimcioch.gitlabci.dsl
 
-import kotlinx.serialization.*
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlin.reflect.KClass
 
 @GitlabCiDslMarker
@@ -41,7 +46,7 @@ abstract class DslBase {
     }
 
     object DslBaseSerializer : KSerializer<DslBase> {
-        override val descriptor = PrimitiveDescriptor("DslBase", PrimitiveKind.STRING)
+        override val descriptor = PrimitiveSerialDescriptor("DslBase", PrimitiveKind.STRING)
 
         override fun deserialize(decoder: Decoder): DslBase {
             throw IllegalStateException(descriptor.serialName)

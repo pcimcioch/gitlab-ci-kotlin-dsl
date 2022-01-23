@@ -54,12 +54,12 @@ Library is available in Central Maven Repository
 <dependency>
   <groupId>com.github.pcimcioch</groupId>
   <artifactId>gitlab-ci-kotlin-dsl</artifactId>
-  <version>1.2.0</version>
+  <version>1.3.0</version>
 </dependency>
 ```
 
 ```
-implementation("com.github.pcimcioch:gitlab-ci-kotlin-dsl:1.2.0")
+implementation("com.github.pcimcioch:gitlab-ci-kotlin-dsl:1.3.0")
 ```
 
 It uses [kotlin-datetime](https://github.com/Kotlin/kotlinx-datetime) api which is in early stage of development and is currently 

@@ -2,7 +2,6 @@ package pcimcioch.gitlabci.dsl.include
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.builtins.list
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
@@ -11,7 +10,9 @@ class IncludeDsl : DslBase() {
     private val includes = mutableListOf<IncludeDetailsDsl>()
 
     fun local(local: String) = addAndReturn(includes, IncludeLocalDsl(local))
-    fun file(project: String, file: String, ref: String? = null) = addAndReturn(includes, IncludeFileDsl(project, file, ref))
+    fun file(project: String, file: String, ref: String? = null) =
+        addAndReturn(includes, IncludeFileDsl(project, file, ref))
+
     fun template(template: String) = addAndReturn(includes, IncludeTemplateDsl(template))
     fun remote(remote: String) = addAndReturn(includes, IncludeRemoteDsl(remote))
     operator fun IncludeDetailsDsl.unaryPlus() = this@IncludeDsl.includes.add(this)
@@ -20,7 +21,11 @@ class IncludeDsl : DslBase() {
         addErrors(errors, "[include]", includes)
     }
 
-    object IncludeDslSerializer : ValueSerializer<IncludeDsl, List<IncludeDetailsDsl>>(ListSerializer(IncludeDetailsDsl.serializer()), IncludeDsl::includes)
+    object IncludeDslSerializer : ValueSerializer<IncludeDsl, List<IncludeDetailsDsl>>(
+        ListSerializer(IncludeDetailsDsl.serializer()),
+        IncludeDsl::includes
+    )
+
     companion object {
         init {
             addSerializer(IncludeDsl::class, serializer())
@@ -28,12 +33,13 @@ class IncludeDsl : DslBase() {
     }
 }
 
+@Suppress("SERIALIZER_TYPE_INCOMPATIBLE")
 @Serializable(with = DslBase.DslBaseSerializer::class)
 sealed class IncludeDetailsDsl : DslBase()
 
 @Serializable
 class IncludeLocalDsl(
-        var local: String
+    var local: String
 ) : IncludeDetailsDsl() {
     companion object {
         init {
@@ -46,9 +52,9 @@ fun createIncludeLocal(local: String) = IncludeLocalDsl(local)
 
 @Serializable
 class IncludeFileDsl(
-        var project: String,
-        var file: String,
-        var ref: String? = null
+    var project: String,
+    var file: String,
+    var ref: String? = null
 ) : IncludeDetailsDsl() {
     companion object {
         init {
@@ -61,7 +67,7 @@ fun createIncludeFile(project: String, file: String, ref: String? = null) = Incl
 
 @Serializable
 class IncludeTemplateDsl(
-        var template: String
+    var template: String
 ) : IncludeDetailsDsl() {
     companion object {
         init {
@@ -74,7 +80,7 @@ fun createIncludeTemplate(template: String) = IncludeTemplateDsl(template)
 
 @Serializable
 class IncludeRemoteDsl(
-        var remote: String
+    var remote: String
 ) : IncludeDetailsDsl() {
     companion object {
         init {

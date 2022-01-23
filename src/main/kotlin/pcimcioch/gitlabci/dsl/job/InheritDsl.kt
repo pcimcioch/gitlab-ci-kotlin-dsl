@@ -4,8 +4,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.builtins.SetSerializer
 import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.PrimitiveKind
-import kotlinx.serialization.PrimitiveDescriptor
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.StringRepresentation
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
@@ -61,12 +61,12 @@ class InheritDsl : DslBase() {
     private fun ensureVariablesSet() = variablesSet ?: mutableSetOf<String>().also { variablesSet = it }
 
     object VariablesSerializer : TwoTypeSerializer<Any>(
-            PrimitiveDescriptor("Variables", PrimitiveKind.BOOLEAN),
+            PrimitiveSerialDescriptor("Variables", PrimitiveKind.BOOLEAN),
             Boolean::class, Boolean.serializer(),
             Set::class, SetSerializer(String.serializer()))
 
     object DefaultSerializer : TwoTypeSerializer<Any>(
-            PrimitiveDescriptor("Default", PrimitiveKind.BOOLEAN),
+            PrimitiveSerialDescriptor("Default", PrimitiveKind.BOOLEAN),
             Boolean::class, Boolean.serializer(),
             Set::class, SetSerializer(InheritDefaultType.InheritDefaultTypeSerializer))
 

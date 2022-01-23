@@ -3,7 +3,6 @@ package pcimcioch.gitlabci.dsl.job
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.builtins.list
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.Duration
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer

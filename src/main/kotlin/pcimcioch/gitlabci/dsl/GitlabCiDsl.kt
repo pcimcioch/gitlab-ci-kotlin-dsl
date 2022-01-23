@@ -101,6 +101,6 @@ internal fun <T : DslBase> serializeToYaml(strategy: SerializationStrategy<T>, v
     val config = YamlConfiguration(encodeDefaults = false)
     val yaml = Yaml(configuration = config)
 
-    val yamlString = yaml.stringify(strategy, value)
+    val yamlString = yaml.encodeToString(strategy, value)
     writer.write(yamlString)
 }

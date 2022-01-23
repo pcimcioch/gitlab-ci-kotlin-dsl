@@ -1,24 +1,23 @@
 repositories {
-    jcenter()
-    maven(url = "https://kotlin.bintray.com/kotlinx/") // remove when kotlinx-datetime moved to jcenter
+    mavenCentral()
 }
 
 plugins {
-    kotlin("jvm") version "1.3.72"
-    kotlin("plugin.serialization") version "1.3.72"
+    kotlin("jvm") version "1.5.31"
+    kotlin("plugin.serialization") version "1.5.31"
     `maven-publish`
     signing
-    id("org.jetbrains.dokka") version "0.10.1"
+    id("org.jetbrains.dokka") version "1.6.10"
 }
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.1.0")
-    implementation("com.charleskorn.kaml:kaml:0.18.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:1.0-M1-1.4.0-rc")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.1")
+    implementation("com.charleskorn.kaml:kaml:0.37.0")
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
-    testImplementation("org.assertj:assertj-core:3.18.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
+    testImplementation("org.assertj:assertj-core:3.22.0")
 }
 
 tasks {
@@ -43,7 +42,7 @@ val dokkaJar by tasks.creating(Jar::class) {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     description = "Assembles Kotlin docs with Dokka"
     archiveClassifier.set("javadoc")
-    from(tasks.dokka)
+    from(tasks.dokkaJavadoc)
 }
 
 java {

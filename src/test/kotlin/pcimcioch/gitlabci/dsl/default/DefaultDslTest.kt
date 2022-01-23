@@ -3,7 +3,14 @@ package pcimcioch.gitlabci.dsl.default
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 import pcimcioch.gitlabci.dsl.Duration
-import pcimcioch.gitlabci.dsl.job.*
+import pcimcioch.gitlabci.dsl.job.WhenRetryType
+import pcimcioch.gitlabci.dsl.job.createAfterScript
+import pcimcioch.gitlabci.dsl.job.createArtifacts
+import pcimcioch.gitlabci.dsl.job.createBeforeScript
+import pcimcioch.gitlabci.dsl.job.createCache
+import pcimcioch.gitlabci.dsl.job.createImage
+import pcimcioch.gitlabci.dsl.job.createRetry
+import pcimcioch.gitlabci.dsl.job.createServices
 
 internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer()) {
 

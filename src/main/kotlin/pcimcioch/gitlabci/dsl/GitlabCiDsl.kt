@@ -97,6 +97,12 @@ fun gitlabCi(validate: Boolean = true, writer: Writer? = null, block: GitlabCiDs
     }
 }
 
+fun gitlabCi(validate: Boolean = true, path: String, block: GitlabCiDsl.() -> Unit) {
+    FileWriter(path).use {
+        gitlabCi(validate, it, block)
+    }
+}
+
 internal fun <T : DslBase> serializeToYaml(strategy: SerializationStrategy<T>, value: T, writer: Writer) {
     val config = YamlConfiguration(encodeDefaults = false)
     val yaml = Yaml(configuration = config)

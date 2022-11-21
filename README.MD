@@ -75,4 +75,4 @@ All supported features are documented in [Features Page](/FEATURES.MD)
 ## Other examples
 
 Some real applications using this plugin include:
-1. <genre-police>[https://gitlab.com/rbbl/genre-police/-/tree/dev/gitlab-ci]
+1. [genre-police](https://gitlab.com/rbbl/genre-police/-/tree/dev/gitlab-ci)

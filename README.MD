@@ -71,3 +71,8 @@ All supported features are documented in [Features Page](/FEATURES.MD)
 1. One way to use this DSL is to create custom Kotlin project, that will be responsible for creating `.gitlab-ci.yml` file. [Example](examples/gradle-kotlin)
 1. Also, if you are using gradle, it already supports kotlin, so you can create simple gradle task to generate `.gitlab-ci.yml` file. [Example](examples/pure-gradle)
 1. GitlabCi can also generate pipeline automatically using child pipelines feature. [Example](examples/child-pipeline)
+
+## Other examples
+
+Some real applications using this plugin include:
+1. <genre-police>[https://gitlab.com/rbbl/genre-police/-/tree/dev/gitlab-ci]

@@ -15,6 +15,20 @@ class WorkflowDsl : DslBase() {
     }
 
     private fun ensureRules() = rules ?: RuleListDsl().also { rules = it }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as WorkflowDsl
+
+        if (rules != other.rules) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return rules?.hashCode() ?: 0
+    }
 
     companion object {
         init {

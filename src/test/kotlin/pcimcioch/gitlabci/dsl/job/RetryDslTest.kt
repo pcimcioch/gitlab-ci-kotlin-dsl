@@ -1,5 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
@@ -11,8 +12,9 @@ internal class RetryDslTest : DslTestBase<RetryDsl>(RetryDsl.serializer()) {
         val testee = createRetry(1)
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     max: 1
                 """
         )
@@ -27,8 +29,9 @@ internal class RetryDslTest : DslTestBase<RetryDsl>(RetryDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     max: 2
                     when:
                     - "always"
@@ -44,8 +47,9 @@ internal class RetryDslTest : DslTestBase<RetryDsl>(RetryDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     max: 2
                     when:
                     - "always"
@@ -59,8 +63,9 @@ internal class RetryDslTest : DslTestBase<RetryDsl>(RetryDsl.serializer()) {
         val testee = createRetry(0)
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     max: 0
                 """
         )
@@ -72,8 +77,9 @@ internal class RetryDslTest : DslTestBase<RetryDsl>(RetryDsl.serializer()) {
         val testee = createRetry(1)
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     max: 1
                 """
         )
@@ -85,8 +91,9 @@ internal class RetryDslTest : DslTestBase<RetryDsl>(RetryDsl.serializer()) {
         val testee = createRetry(2)
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     max: 2
                 """
         )
@@ -98,11 +105,12 @@ internal class RetryDslTest : DslTestBase<RetryDsl>(RetryDsl.serializer()) {
         val testee = createRetry(3)
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     max: 3
                 """,
-                "[retry] max attempts must be in range [0, 2]"
+            "[retry] max attempts must be in range [0, 2]"
         )
     }
 
@@ -112,11 +120,12 @@ internal class RetryDslTest : DslTestBase<RetryDsl>(RetryDsl.serializer()) {
         val testee = createRetry(-1)
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     max: -1
                 """,
-                "[retry] max attempts must be in range [0, 2]"
+            "[retry] max attempts must be in range [0, 2]"
         )
     }
 
@@ -128,8 +137,9 @@ internal class RetryDslTest : DslTestBase<RetryDsl>(RetryDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     when:
                     - "always"
                 """
@@ -145,8 +155,9 @@ internal class RetryDslTest : DslTestBase<RetryDsl>(RetryDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     max: 2
                     when: []
                 """
@@ -162,8 +173,9 @@ internal class RetryDslTest : DslTestBase<RetryDsl>(RetryDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     max: 2
                     when:
                     - "unknown_failure"
@@ -178,12 +190,19 @@ internal class RetryDslTest : DslTestBase<RetryDsl>(RetryDsl.serializer()) {
         val testee = createRetry {
             max = 2
             whenRetry(WhenRetryType.API_FAILURE, WhenRetryType.STUCK_OR_TIMEOUT_FAILURE)
-            whenRetry(listOf(WhenRetryType.RUNNER_SYSTEM_FAILURE, WhenRetryType.MISSING_DEPENDENCY_FAILURE, WhenRetryType.RUNNER_UNSUPPORTED))
+            whenRetry(
+                listOf(
+                    WhenRetryType.RUNNER_SYSTEM_FAILURE,
+                    WhenRetryType.MISSING_DEPENDENCY_FAILURE,
+                    WhenRetryType.RUNNER_UNSUPPORTED
+                )
+            )
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     max: 2
                     when:
                     - "api_failure"
@@ -200,12 +219,17 @@ internal class RetryDslTest : DslTestBase<RetryDsl>(RetryDsl.serializer()) {
         // given
         val testee = createRetry {
             max = 2
-            whenRetry = mutableSetOf(WhenRetryType.STALE_SCHEDULE, WhenRetryType.JOB_EXECUTION_TIMEOUT, WhenRetryType.ARCHIVED_FAILURE)
+            whenRetry = mutableSetOf(
+                WhenRetryType.STALE_SCHEDULE,
+                WhenRetryType.JOB_EXECUTION_TIMEOUT,
+                WhenRetryType.ARCHIVED_FAILURE
+            )
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     max: 2
                     when:
                     - "stale_schedule"
@@ -213,5 +237,22 @@ internal class RetryDslTest : DslTestBase<RetryDsl>(RetryDsl.serializer()) {
                     - "archived_failure"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createRetry {
+            max = 2
+            whenRetry = mutableSetOf(WhenRetryType.JOB_EXECUTION_TIMEOUT)
+        }
+
+        val expected = createRetry {
+            max = 2
+            whenRetry = mutableSetOf(WhenRetryType.JOB_EXECUTION_TIMEOUT)
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }

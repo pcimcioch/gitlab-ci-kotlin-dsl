@@ -18,8 +18,12 @@ class VariablesDsl : DslBase() {
     infix fun String.to(value: Any) = add(this, value)
     infix fun <T : Enum<T>> T.to(value: Any) = add(this, value)
 
-    fun gitStrategy(strategy: GitStrategyType) = add(RunnerSettingsVariables.GIT_STRATEGY, strategy.stringRepresentation)
-    fun gitSubmoduleStrategy(strategy: GitSubmoduleStrategyType) = add(RunnerSettingsVariables.GIT_SUBMODULE_STRATEGY, strategy.stringRepresentation)
+    fun gitStrategy(strategy: GitStrategyType) =
+        add(RunnerSettingsVariables.GIT_STRATEGY, strategy.stringRepresentation)
+
+    fun gitSubmoduleStrategy(strategy: GitSubmoduleStrategyType) =
+        add(RunnerSettingsVariables.GIT_SUBMODULE_STRATEGY, strategy.stringRepresentation)
+
     fun gitCheckout(checkout: Boolean) = add(RunnerSettingsVariables.GIT_CHECKOUT, checkout)
     fun gitClean(flags: String) = add(RunnerSettingsVariables.GIT_CLEAN_FLAGS, flags)
     fun gitFetchExtraFlags(flags: String) = add(RunnerSettingsVariables.GIT_FETCH_EXTRA_FLAGS, flags)
@@ -36,7 +40,27 @@ class VariablesDsl : DslBase() {
         addError(errors, variables.isEmpty(), "[variables] variables map cannot be empty")
     }
 
-    object VariablesDslSerializer : ValueSerializer<VariablesDsl, Map<String, String>>(MapSerializer(String.serializer(), String.serializer()), VariablesDsl::variables)
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as VariablesDsl
+
+        if (variables != other.variables) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return variables.hashCode()
+    }
+
+
+    object VariablesDslSerializer : ValueSerializer<VariablesDsl, Map<String, String>>(
+        MapSerializer(String.serializer(), String.serializer()),
+        VariablesDsl::variables
+    )
+
     companion object {
         init {
             addSerializer(VariablesDsl::class, serializer())
@@ -44,11 +68,13 @@ class VariablesDsl : DslBase() {
     }
 }
 
-fun createVariables( block: VariablesDsl.() -> Unit = {}) = VariablesDsl().apply(block)
-fun createVariables(elements: Map<String, Any>, block: VariablesDsl.() -> Unit = {}) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+fun createVariables(block: VariablesDsl.() -> Unit = {}) = VariablesDsl().apply(block)
+fun createVariables(elements: Map<String, Any>, block: VariablesDsl.() -> Unit = {}) =
+    VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
 
 @JvmName("variablesEnum")
-fun <T : Enum<T>> createVariables(elements: Map<T, Any>, block: VariablesDsl.() -> Unit = {}) = VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+fun <T : Enum<T>> createVariables(elements: Map<T, Any>, block: VariablesDsl.() -> Unit = {}) =
+    VariablesDsl().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
 
 enum class RunnerSettingsVariables {
     GIT_STRATEGY,
@@ -67,7 +93,7 @@ enum class RunnerSettingsVariables {
 
 @Serializable(with = GitStrategyType.GitStrategyTypeSerializer::class)
 enum class GitStrategyType(
-        override val stringRepresentation: String
+    override val stringRepresentation: String
 ) : StringRepresentation {
     CLONE("clone"),
     FETCH("fetch"),
@@ -78,11 +104,12 @@ enum class GitStrategyType(
 
 @Serializable(with = GitSubmoduleStrategyType.GitSubmoduleStrategyTypeSerializer::class)
 enum class GitSubmoduleStrategyType(
-        override val stringRepresentation: String
+    override val stringRepresentation: String
 ) : StringRepresentation {
     NONE("none"),
     NORMAL("normal"),
     RECURSIVE("recursive");
 
-    object GitSubmoduleStrategyTypeSerializer : StringRepresentationSerializer<GitSubmoduleStrategyType>("GitSubmoduleStrategyType")
+    object GitSubmoduleStrategyTypeSerializer :
+        StringRepresentationSerializer<GitSubmoduleStrategyType>("GitSubmoduleStrategyType")
 }

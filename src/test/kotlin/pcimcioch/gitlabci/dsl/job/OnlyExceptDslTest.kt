@@ -1,5 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
@@ -13,8 +14,9 @@ internal class OnlyExceptDslTest : DslTestBase<OnlyExceptDsl>(OnlyExceptDsl.seri
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     kubernetes: "active"
                 """
         )
@@ -26,8 +28,9 @@ internal class OnlyExceptDslTest : DslTestBase<OnlyExceptDsl>(OnlyExceptDsl.seri
         val testee = createOnlyExcept("master", "issue")
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     refs:
                     - "master"
                     - "issue"
@@ -41,8 +44,9 @@ internal class OnlyExceptDslTest : DslTestBase<OnlyExceptDsl>(OnlyExceptDsl.seri
         val testee = createOnlyExcept(listOf("master", "issue"))
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     refs:
                     - "master"
                     - "issue"
@@ -56,8 +60,9 @@ internal class OnlyExceptDslTest : DslTestBase<OnlyExceptDsl>(OnlyExceptDsl.seri
         val testee = createOnlyExcept {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     {}
                 """
         )
@@ -74,8 +79,9 @@ internal class OnlyExceptDslTest : DslTestBase<OnlyExceptDsl>(OnlyExceptDsl.seri
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     refs:
                     - "master"
                     - "branches"
@@ -100,8 +106,9 @@ internal class OnlyExceptDslTest : DslTestBase<OnlyExceptDsl>(OnlyExceptDsl.seri
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     refs:
                     - "master"
                     - "branches"
@@ -125,8 +132,9 @@ internal class OnlyExceptDslTest : DslTestBase<OnlyExceptDsl>(OnlyExceptDsl.seri
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     refs: []
                     changes: []
                     variables: []
@@ -144,8 +152,9 @@ internal class OnlyExceptDslTest : DslTestBase<OnlyExceptDsl>(OnlyExceptDsl.seri
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     refs:
                     - "master"
                     changes:
@@ -166,8 +175,9 @@ internal class OnlyExceptDslTest : DslTestBase<OnlyExceptDsl>(OnlyExceptDsl.seri
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     refs:
                     - "master"
                     - "branches"
@@ -194,8 +204,9 @@ internal class OnlyExceptDslTest : DslTestBase<OnlyExceptDsl>(OnlyExceptDsl.seri
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     refs:
                     - "master"
                     - "branches"
@@ -235,8 +246,9 @@ internal class OnlyExceptDslTest : DslTestBase<OnlyExceptDsl>(OnlyExceptDsl.seri
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     refs:
                     - "branches"
                     - "tags"
@@ -253,5 +265,26 @@ internal class OnlyExceptDslTest : DslTestBase<OnlyExceptDsl>(OnlyExceptDsl.seri
                     - "master"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createOnlyExcept {
+            refs("master", "branches")
+            changes("file 1", "file 2")
+            variables("\$VAR1", "\$VAR2 == 'test'")
+            kubernetes = KubernetesState.ACTIVE
+        }
+
+        val expected = createOnlyExcept {
+            refs("master", "branches")
+            changes("file 1", "file 2")
+            variables("\$VAR1", "\$VAR2 == 'test'")
+            kubernetes = KubernetesState.ACTIVE
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }

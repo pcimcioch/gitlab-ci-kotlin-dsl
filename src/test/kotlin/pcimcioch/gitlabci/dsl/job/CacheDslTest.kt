@@ -1,5 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
@@ -11,8 +12,9 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
         val testee = createCache {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     {}
                 """
         )
@@ -30,8 +32,9 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths:
                     - "path1"
                     - "path2"
@@ -51,8 +54,9 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths:
                     - "path"
                 """
@@ -65,8 +69,9 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
         val testee = createCache("path/1", "path/2")
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths:
                     - "path/1"
                     - "path/2"
@@ -80,8 +85,9 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
         val testee = createCache(listOf("path/1", "path/2"))
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths:
                     - "path/1"
                     - "path/2"
@@ -98,8 +104,9 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths:
                     - "path1"
                     - "path2"
@@ -120,8 +127,9 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths:
                     - "path1"
                     - "path2"
@@ -147,8 +155,9 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths:
                     - "path1"
                     - "path2"
@@ -173,8 +182,9 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths:
                     - "path1"
                     - "path2"
@@ -184,7 +194,7 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
                       - "file1"
                       - "file2"
                 """,
-                "[cache][key] prefix value 'pref/ref' can't contain '/' nor '%2F'"
+            "[cache][key] prefix value 'pref/ref' can't contain '/' nor '%2F'"
         )
     }
 
@@ -196,8 +206,9 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths: []
                 """
         )
@@ -211,8 +222,9 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths:
                     - "path1"
                 """
@@ -227,8 +239,9 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths:
                     - "path1"
                     - "path2"
@@ -245,8 +258,9 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths:
                     - "path1"
                     - "path2"
@@ -264,12 +278,123 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths:
                     - "path"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createCache {
+            paths = mutableSetOf("path1", "path2")
+            untracked = true
+            policy = CachePolicy.PULL_PUSH
+            whenCache = WhenCacheType.ALWAYS
+            key {
+                prefix = "gottem"
+                files = mutableSetOf("file1", "file2")
+            }
+        }
+
+        val expected = createCache {
+            paths = mutableSetOf("path1", "path2")
+            untracked = true
+            policy = CachePolicy.PULL_PUSH
+            whenCache = WhenCacheType.ALWAYS
+            key {
+                prefix = "gottem"
+                files = mutableSetOf("file1", "file2")
+            }
+        }
+
+        // then
+        assertEquals(expected, testee)
+    }
+
+    @Test
+    fun `should be equal 2`() {
+        // given
+        val testee = createCache {
+            paths = mutableSetOf("path1", "path2")
+            untracked = true
+            policy = CachePolicy.PULL_PUSH
+            whenCache = WhenCacheType.ALWAYS
+            key("k")
+        }
+
+        val expected = createCache {
+            paths = mutableSetOf("path1", "path2")
+            untracked = true
+            policy = CachePolicy.PULL_PUSH
+            whenCache = WhenCacheType.ALWAYS
+            key("k")
+        }
+
+        // then
+        assertEquals(expected, testee)
+    }
+
+    @Test
+    fun `should not be equal 1`() {
+        // given
+        val testee = createCache {
+            paths = mutableSetOf("path2", "path1")
+            untracked = true
+            policy = CachePolicy.PULL_PUSH
+            whenCache = WhenCacheType.ALWAYS
+            key {
+                prefix = "gottem"
+                files = mutableSetOf("file1", "file2")
+            }
+        }
+
+        val expected = createCache {
+            paths = mutableSetOf("path1", "path2")
+            untracked = true
+            policy = CachePolicy.PULL_PUSH
+            whenCache = WhenCacheType.ALWAYS
+            key {
+                prefix = "gottem"
+                files = mutableSetOf("file1", "file2")
+            }
+        }
+
+        // then
+        assertEquals(expected, testee)
+    }
+
+    @Test
+    fun `should not be equal 2`() {
+        // given
+        val testee = createCache {
+            paths = mutableSetOf("path1", "path2")
+            untracked = true
+            policy = CachePolicy.PULL_PUSH
+            whenCache = WhenCacheType.ALWAYS
+            key {
+                prefix = "gottem"
+                files = mutableSetOf("file2", "file1")
+            }
+        }
+
+        val expected = createCache {
+            paths = mutableSetOf("path1", "path2")
+            untracked = true
+            policy = CachePolicy.PULL_PUSH
+            whenCache = WhenCacheType.ALWAYS
+            key {
+                prefix = "gottem"
+                files = mutableSetOf("file1", "file2")
+            }
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }
 
@@ -281,11 +406,12 @@ internal class CacheKeyDslTest : DslTestBase<CacheKeyDsl>(CacheKeyDsl.serializer
         val testee = createCacheKey {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     {}
                 """,
-                "[key] files list can't be empty"
+            "[key] files list can't be empty"
         )
     }
 
@@ -298,8 +424,9 @@ internal class CacheKeyDslTest : DslTestBase<CacheKeyDsl>(CacheKeyDsl.serializer
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     prefix: "test"
                     files:
                     - "file 1"
@@ -316,11 +443,12 @@ internal class CacheKeyDslTest : DslTestBase<CacheKeyDsl>(CacheKeyDsl.serializer
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     files: []
                 """,
-                "[key] files list can't be empty"
+            "[key] files list can't be empty"
         )
     }
 
@@ -332,8 +460,9 @@ internal class CacheKeyDslTest : DslTestBase<CacheKeyDsl>(CacheKeyDsl.serializer
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     files:
                     - "file 1"
                 """
@@ -348,8 +477,9 @@ internal class CacheKeyDslTest : DslTestBase<CacheKeyDsl>(CacheKeyDsl.serializer
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     files:
                     - "file 1"
                     - "file 2"
@@ -366,8 +496,9 @@ internal class CacheKeyDslTest : DslTestBase<CacheKeyDsl>(CacheKeyDsl.serializer
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     files:
                     - "file 1"
                     - "file 2"
@@ -384,8 +515,9 @@ internal class CacheKeyDslTest : DslTestBase<CacheKeyDsl>(CacheKeyDsl.serializer
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     files:
                     - "file 1"
                     - "file 2"
@@ -402,13 +534,14 @@ internal class CacheKeyDslTest : DslTestBase<CacheKeyDsl>(CacheKeyDsl.serializer
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     prefix: "."
                     files:
                     - "file"
                 """,
-                "[key] prefix value '.' can't be '.' nor '%2E'"
+            "[key] prefix value '.' can't be '.' nor '%2E'"
         )
     }
 
@@ -421,13 +554,14 @@ internal class CacheKeyDslTest : DslTestBase<CacheKeyDsl>(CacheKeyDsl.serializer
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     prefix: "%2E"
                     files:
                     - "file"
                 """,
-                "[key] prefix value '%2E' can't be '.' nor '%2E'"
+            "[key] prefix value '%2E' can't be '.' nor '%2E'"
         )
     }
 
@@ -440,13 +574,14 @@ internal class CacheKeyDslTest : DslTestBase<CacheKeyDsl>(CacheKeyDsl.serializer
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     prefix: "%2e"
                     files:
                     - "file"
                 """,
-                "[key] prefix value '%2e' can't be '.' nor '%2E'"
+            "[key] prefix value '%2e' can't be '.' nor '%2E'"
         )
     }
 
@@ -459,13 +594,14 @@ internal class CacheKeyDslTest : DslTestBase<CacheKeyDsl>(CacheKeyDsl.serializer
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     prefix: "contains/slash"
                     files:
                     - "file"
                 """,
-                "[key] prefix value 'contains/slash' can't contain '/' nor '%2F'"
+            "[key] prefix value 'contains/slash' can't contain '/' nor '%2F'"
         )
     }
 
@@ -478,13 +614,14 @@ internal class CacheKeyDslTest : DslTestBase<CacheKeyDsl>(CacheKeyDsl.serializer
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     prefix: "contains%2Fslash"
                     files:
                     - "file"
                 """,
-                "[key] prefix value 'contains%2Fslash' can't contain '/' nor '%2F'"
+            "[key] prefix value 'contains%2Fslash' can't contain '/' nor '%2F'"
         )
     }
 
@@ -497,13 +634,48 @@ internal class CacheKeyDslTest : DslTestBase<CacheKeyDsl>(CacheKeyDsl.serializer
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     prefix: "contains%2fslash"
                     files:
                     - "file"
                 """,
-                "[key] prefix value 'contains%2fslash' can't contain '/' nor '%2F'"
+            "[key] prefix value 'contains%2fslash' can't contain '/' nor '%2F'"
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createCacheKey {
+            prefix = "contains%2fslash"
+            files("file", "file2")
+        }
+
+        val expected = createCacheKey {
+            prefix = "contains%2fslash"
+            files("file", "file2")
+        }
+
+        // then
+        assertEquals(expected, testee)
+    }
+
+    @Test
+    fun `should not be equal`() {
+        // given
+        val testee = createCacheKey {
+            prefix = "contains%2fslash"
+            files("file", "file2")
+        }
+
+        val expected = createCacheKey {
+            prefix = "contains%2fslash"
+            files("file2", "file")
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }

@@ -12,8 +12,24 @@ class StagesDsl : DslBase() {
 
     fun stage(stage: String) = stages.add(stage)
     operator fun String.unaryPlus() = this@StagesDsl.stages.add(this)
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
 
-    object StagesDslSerializer : ValueSerializer<StagesDsl, List<String>>(ListSerializer(String.serializer()), StagesDsl::stages)
+        other as StagesDsl
+
+        if (stages != other.stages) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return stages.hashCode()
+    }
+
+    object StagesDslSerializer :
+        ValueSerializer<StagesDsl, List<String>>(ListSerializer(String.serializer()), StagesDsl::stages)
+
     companion object {
         init {
             addSerializer(StagesDsl::class, serializer())

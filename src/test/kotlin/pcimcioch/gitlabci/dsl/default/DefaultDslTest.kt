@@ -1,16 +1,10 @@
 package pcimcioch.gitlabci.dsl.default
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 import pcimcioch.gitlabci.dsl.Duration
-import pcimcioch.gitlabci.dsl.job.WhenRetryType
-import pcimcioch.gitlabci.dsl.job.createAfterScript
-import pcimcioch.gitlabci.dsl.job.createArtifacts
-import pcimcioch.gitlabci.dsl.job.createBeforeScript
-import pcimcioch.gitlabci.dsl.job.createCache
-import pcimcioch.gitlabci.dsl.job.createImage
-import pcimcioch.gitlabci.dsl.job.createRetry
-import pcimcioch.gitlabci.dsl.job.createServices
+import pcimcioch.gitlabci.dsl.job.*
 
 internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer()) {
 
@@ -38,8 +32,9 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     image:
                       name: ""
                     services:
@@ -69,10 +64,10 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
                     - "after 1"
                     - "after 2"
                 """,
-                "[default][image] name '' is incorrect",
-                "[default][service name=''] name '' is incorrect",
-                "[default][cache][key] prefix value 'pre/fix' can't contain '/' nor '%2F'",
-                "[default][retry] max attempts must be in range [0, 2]"
+            "[default][image] name '' is incorrect",
+            "[default][service name=''] name '' is incorrect",
+            "[default][cache][key] prefix value 'pre/fix' can't contain '/' nor '%2F'",
+            "[default][retry] max attempts must be in range [0, 2]"
         )
     }
 
@@ -82,8 +77,9 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         val testee = DefaultDsl()
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     {}
                 """
         )
@@ -106,8 +102,9 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     image:
                       name: "testImage"
                     services:
@@ -140,8 +137,9 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     tags: []
                 """
         )
@@ -155,8 +153,9 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     tags:
                     - "tag 1"
                 """
@@ -171,8 +170,9 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     tags:
                     - "tag 1"
                     - "tag 2"
@@ -189,8 +189,9 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     tags:
                     - "tag 1"
                     - "tag 2"
@@ -212,8 +213,9 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     before_script:
                     - "command 1"
                     - "command 2"
@@ -234,8 +236,9 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     after_script:
                     - "command 1"
                     - "command 2"
@@ -252,8 +255,9 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     image:
                       name: "image:1"
                 """
@@ -270,8 +274,9 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     image:
                       name: "image:1"
                 """
@@ -288,8 +293,9 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     image:
                       name: "image:1"
                       entrypoint:
@@ -311,8 +317,9 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     services:
                     - name: "ser1"
                     - name: "ser2"
@@ -333,8 +340,9 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     cache:
                       paths:
                       - "p1"
@@ -352,8 +360,9 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     retry:
                       max: 2
                 """
@@ -370,8 +379,9 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     retry:
                       max: 2
                 """
@@ -388,8 +398,9 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     retry:
                       max: 2
                       when:
@@ -410,8 +421,9 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     artifacts:
                       paths:
                       - "a1"
@@ -444,8 +456,9 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     image:
                       name: "testImage"
                     services:
@@ -466,5 +479,38 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
                     - "after"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = DefaultDsl().apply {
+            image("testImage")
+            services("testService")
+            cache("testCache")
+            tags("tag")
+            artifacts("art")
+            retry(2)
+            timeout = Duration(days = 5)
+            interruptible = true
+            beforeScript("before")
+            afterScript("after")
+        }
+
+        val expected = DefaultDsl().apply {
+            image("testImage")
+            services("testService")
+            cache("testCache")
+            tags("tag")
+            artifacts("art")
+            retry(2)
+            timeout = Duration(days = 5)
+            interruptible = true
+            beforeScript("before")
+            afterScript("after")
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }

@@ -1,5 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
@@ -11,8 +12,9 @@ internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer())
         val testee = createService("ser 1")
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "ser 1"
                 """
         )
@@ -26,8 +28,9 @@ internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "ser 1"
                     alias: "test"
                 """
@@ -42,8 +45,9 @@ internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "test"
                 """
         )
@@ -57,11 +61,12 @@ internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     alias: "test"
                 """,
-                "[service name='null'] name 'null' is incorrect"
+            "[service name='null'] name 'null' is incorrect"
         )
     }
 
@@ -71,11 +76,12 @@ internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer())
         val testee = createService("")
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: ""
                 """,
-                "[service name=''] name '' is incorrect"
+            "[service name=''] name '' is incorrect"
         )
     }
 
@@ -88,8 +94,9 @@ internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "name"
                     command:
                     - "c 1"
@@ -112,8 +119,9 @@ internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "name"
                     command:
                     - "c 1"
@@ -138,8 +146,9 @@ internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "name"
                     command: []
                     entrypoint: []
@@ -156,8 +165,9 @@ internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "name"
                     command:
                     - "c 1"
@@ -176,8 +186,9 @@ internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "name"
                     command:
                     - "c 1"
@@ -187,6 +198,25 @@ internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer())
                     - "e 2"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createService("name") {
+            alias = "al"
+            cmd("c 1", "c 2")
+            entrypoint("e 1", "e 2")
+        }
+
+        val expected = createService("name") {
+            alias = "al"
+            cmd("c 1", "c 2")
+            entrypoint("e 1", "e 2")
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }
 
@@ -200,8 +230,9 @@ internal class ServiceListDslTest : DslTestBase<ServiceListDsl>(ServiceListDsl.s
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - name: "service 1"
                 """
         )
@@ -213,8 +244,9 @@ internal class ServiceListDslTest : DslTestBase<ServiceListDsl>(ServiceListDsl.s
         val testee = createServices("service 1", "service 2")
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - name: "service 1"
                     - name: "service 2"
                 """
@@ -227,8 +259,9 @@ internal class ServiceListDslTest : DslTestBase<ServiceListDsl>(ServiceListDsl.s
         val testee = createServices(listOf("service 1", "service 2"))
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - name: "service 1"
                     - name: "service 2"
                 """
@@ -241,8 +274,9 @@ internal class ServiceListDslTest : DslTestBase<ServiceListDsl>(ServiceListDsl.s
         val testee = createServices()
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     []
                 """
         )
@@ -260,14 +294,15 @@ internal class ServiceListDslTest : DslTestBase<ServiceListDsl>(ServiceListDsl.s
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - name: ""
                     - name: "service 2"
                     - alias: "test"
                 """,
-                "[service name=''] name '' is incorrect",
-                "[service name='null'] name 'null' is incorrect"
+            "[service name=''] name '' is incorrect",
+            "[service name='null'] name 'null' is incorrect"
         )
     }
 
@@ -293,8 +328,9 @@ internal class ServiceListDslTest : DslTestBase<ServiceListDsl>(ServiceListDsl.s
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - name: "test 1"
                       alias: "alias 1"
                       command:
@@ -307,5 +343,40 @@ internal class ServiceListDslTest : DslTestBase<ServiceListDsl>(ServiceListDsl.s
                     - name: "test 4"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createServices {
+            service {
+                name = "test 1"
+                alias = "alias 1"
+                cmd("c 1", "c 2")
+            }
+
+            service("test 2")
+
+            service("test 3") {
+                entrypoint("e 1")
+            }
+        }
+
+        val expected = createServices {
+            service {
+                name = "test 1"
+                alias = "alias 1"
+                cmd("c 1", "c 2")
+            }
+
+            service("test 2")
+
+            service("test 3") {
+                entrypoint("e 1")
+            }
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }

@@ -1,5 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
@@ -11,11 +12,12 @@ internal class NeedJobDslTest : DslTestBase<NeedJobDsl>(NeedJobDsl.serializer())
         val testee = createNeedJob {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     {}
                 """,
-                "[need job='null'] job 'null' is incorrect"
+            "[need job='null'] job 'null' is incorrect"
         )
     }
 
@@ -25,11 +27,12 @@ internal class NeedJobDslTest : DslTestBase<NeedJobDsl>(NeedJobDsl.serializer())
         val testee = createNeedJob("")
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     job: ""
                 """,
-                "[need job=''] job '' is incorrect"
+            "[need job=''] job '' is incorrect"
         )
     }
 
@@ -39,8 +42,9 @@ internal class NeedJobDslTest : DslTestBase<NeedJobDsl>(NeedJobDsl.serializer())
         val testee = createNeedJob("test")
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     job: "test"
                 """
         )
@@ -54,8 +58,9 @@ internal class NeedJobDslTest : DslTestBase<NeedJobDsl>(NeedJobDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     job: "test"
                 """
         )
@@ -69,8 +74,9 @@ internal class NeedJobDslTest : DslTestBase<NeedJobDsl>(NeedJobDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     job: "test"
                     project: "proj"
                 """
@@ -84,8 +90,9 @@ internal class NeedJobDslTest : DslTestBase<NeedJobDsl>(NeedJobDsl.serializer())
         val testee = createNeedJob(job)
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     job: "test"
                 """
         )
@@ -100,8 +107,9 @@ internal class NeedJobDslTest : DslTestBase<NeedJobDsl>(NeedJobDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     job: "test"
                     project: "proj"
                 """
@@ -118,14 +126,34 @@ internal class NeedJobDslTest : DslTestBase<NeedJobDsl>(NeedJobDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     job: "test"
                     artifacts: true
                     project: "proj"
                     ref: "ref"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createNeedJob("test") {
+            project = "proj"
+            artifacts = true
+            ref = "ref"
+        }
+
+        val expected = createNeedJob("test") {
+            project = "proj"
+            artifacts = true
+            ref = "ref"
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }
 
@@ -139,8 +167,9 @@ internal class NeedsListDslTest : DslTestBase<NeedsListDsl>(NeedsListDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - job: "test"
                 """
         )
@@ -152,8 +181,9 @@ internal class NeedsListDslTest : DslTestBase<NeedsListDsl>(NeedsListDsl.seriali
         val testee = createNeeds("test1", "test2")
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - job: "test1"
                     - job: "test2"
                 """
@@ -166,8 +196,9 @@ internal class NeedsListDslTest : DslTestBase<NeedsListDsl>(NeedsListDsl.seriali
         val testee = createNeeds(listOf("test1", "test2"))
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - job: "test1"
                     - job: "test2"
                 """
@@ -182,8 +213,9 @@ internal class NeedsListDslTest : DslTestBase<NeedsListDsl>(NeedsListDsl.seriali
         val testee = createNeeds(job1, job2)
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - job: "test1"
                     - job: "test2"
                 """
@@ -198,8 +230,9 @@ internal class NeedsListDslTest : DslTestBase<NeedsListDsl>(NeedsListDsl.seriali
         val testee = createNeeds(listOf(job1, job2))
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - job: "test1"
                     - job: "test2"
                 """
@@ -216,14 +249,15 @@ internal class NeedsListDslTest : DslTestBase<NeedsListDsl>(NeedsListDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - job: ""
                     - job: "test"
                     - {}
                 """,
-                "[need job=''] job '' is incorrect",
-                "[need job='null'] job 'null' is incorrect"
+            "[need job=''] job '' is incorrect",
+            "[need job='null'] job 'null' is incorrect"
         )
     }
 
@@ -251,8 +285,9 @@ internal class NeedsListDslTest : DslTestBase<NeedsListDsl>(NeedsListDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - job: "test1"
                     - job: "test2"
                     - job: "test3"
@@ -265,5 +300,20 @@ internal class NeedsListDslTest : DslTestBase<NeedsListDsl>(NeedsListDsl.seriali
                     - job: "test6"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        val testee = createNeeds {
+            needJob("lol")
+            needJob("gottem")
+        }
+
+        val other = createNeeds {
+            needJob("lol")
+            needJob("gottem")
+        }
+
+        assertEquals(other, testee)
     }
 }

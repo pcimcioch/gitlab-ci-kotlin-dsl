@@ -1,5 +1,7 @@
 package pcimcioch.gitlabci.dsl.job
 
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
@@ -13,8 +15,9 @@ internal class BeforeScriptDslTest : DslTestBase<BeforeScriptDsl>(BeforeScriptDs
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - "command 1"
                 """
         )
@@ -26,8 +29,9 @@ internal class BeforeScriptDslTest : DslTestBase<BeforeScriptDsl>(BeforeScriptDs
         val testee = createBeforeScript("command 1", "command 2")
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - "command 1"
                     - "command 2"
                 """
@@ -40,8 +44,9 @@ internal class BeforeScriptDslTest : DslTestBase<BeforeScriptDsl>(BeforeScriptDs
         val testee = createBeforeScript(listOf("command 1", "command 2"))
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - "command 1"
                     - "command 2"
                 """
@@ -57,8 +62,9 @@ internal class BeforeScriptDslTest : DslTestBase<BeforeScriptDsl>(BeforeScriptDs
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - "command 1"
                     - "command 2"
                 """
@@ -73,8 +79,9 @@ internal class BeforeScriptDslTest : DslTestBase<BeforeScriptDsl>(BeforeScriptDs
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - "command 1"
                 """
         )
@@ -86,8 +93,9 @@ internal class BeforeScriptDslTest : DslTestBase<BeforeScriptDsl>(BeforeScriptDs
         val testee = createBeforeScript {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     []
                 """
         )
@@ -102,8 +110,9 @@ internal class BeforeScriptDslTest : DslTestBase<BeforeScriptDsl>(BeforeScriptDs
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - "command 1"
                     - "command 2"
                 """
@@ -118,11 +127,32 @@ internal class BeforeScriptDslTest : DslTestBase<BeforeScriptDsl>(BeforeScriptDs
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - "command 1"
                     - "command 2"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createBeforeScript("command 1", "command 2")
+        val expected = createBeforeScript("command 1", "command 2")
+
+        // then
+        assertEquals(expected, testee)
+    }
+
+    @Test
+    fun `should not be equal`() {
+        // given
+        val testee = createBeforeScript("command 1", "command 2")
+        val expected = createBeforeScript("command 2", "command 1")
+
+        // then
+        assertNotEquals(expected, testee)
     }
 }

@@ -9,13 +9,14 @@ import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
 @Serializable
 class ReleaseDsl(
-        @SerialName("tag_name")
-        var tagName: String? = null
+    @SerialName("tag_name")
+    var tagName: String? = null
 ) : DslBase() {
     var name: String? = null
     var description: String? = null
     var ref: String? = null
     var milestones: MutableSet<String>? = null
+
     @SerialName("released_at")
     @Serializable(with = InstantSerializer::class)
     var releasedAt: Instant? = null
@@ -24,6 +25,31 @@ class ReleaseDsl(
     fun milestones(elements: Iterable<String>) = ensureMilestones().addAll(elements)
 
     private fun ensureMilestones() = milestones ?: mutableSetOf<String>().also { milestones = it }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ReleaseDsl
+
+        if (tagName != other.tagName) return false
+        if (name != other.name) return false
+        if (description != other.description) return false
+        if (ref != other.ref) return false
+        if (milestones != other.milestones) return false
+        if (releasedAt != other.releasedAt) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = tagName?.hashCode() ?: 0
+        result = 31 * result + (name?.hashCode() ?: 0)
+        result = 31 * result + (description?.hashCode() ?: 0)
+        result = 31 * result + (ref?.hashCode() ?: 0)
+        result = 31 * result + (milestones?.hashCode() ?: 0)
+        result = 31 * result + (releasedAt?.hashCode() ?: 0)
+        return result
+    }
 
     object InstantSerializer : ValueSerializer<Instant, String>(String.serializer(), Instant::toString)
     companion object {

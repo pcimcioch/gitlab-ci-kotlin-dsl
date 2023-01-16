@@ -1,5 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
@@ -11,8 +12,9 @@ internal class ImageDslTest : DslTestBase<ImageDsl>(ImageDsl.serializer()) {
         val testee = createImage("image 1")
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "image 1"
                 """
         )
@@ -26,8 +28,9 @@ internal class ImageDslTest : DslTestBase<ImageDsl>(ImageDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "image 1"
                     entrypoint:
                     - "cmd 1"
@@ -45,8 +48,9 @@ internal class ImageDslTest : DslTestBase<ImageDsl>(ImageDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "image 1"
                     entrypoint:
                     - "cmd 1"
@@ -62,8 +66,9 @@ internal class ImageDslTest : DslTestBase<ImageDsl>(ImageDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "image 1"
                     entrypoint: []
                 """
@@ -78,8 +83,9 @@ internal class ImageDslTest : DslTestBase<ImageDsl>(ImageDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "image 1"
                     entrypoint:
                     - "cmd 1"
@@ -95,8 +101,9 @@ internal class ImageDslTest : DslTestBase<ImageDsl>(ImageDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "image 1"
                     entrypoint:
                     - "cmd 1"
@@ -114,8 +121,9 @@ internal class ImageDslTest : DslTestBase<ImageDsl>(ImageDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "image 1"
                     entrypoint:
                     - "cmd 1"
@@ -135,12 +143,13 @@ internal class ImageDslTest : DslTestBase<ImageDsl>(ImageDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     entrypoint:
                     - "cmd 1"
                 """,
-                "[image] name 'null' is incorrect"
+            "[image] name 'null' is incorrect"
         )
     }
 
@@ -152,13 +161,14 @@ internal class ImageDslTest : DslTestBase<ImageDsl>(ImageDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: ""
                     entrypoint:
                     - "cmd 1"
                 """,
-                "[image] name '' is incorrect"
+            "[image] name '' is incorrect"
         )
     }
 
@@ -170,13 +180,31 @@ internal class ImageDslTest : DslTestBase<ImageDsl>(ImageDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "image 1"
                     entrypoint:
                     - "cmd 1"
                     - "cmd 2"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createImage("image 1") {
+            entrypoint("cmd 1", "cmd 2")
+            entrypoint("cmd 3", "cmd 4", "cmd 5")
+        }
+
+        val expected = createImage("image 1") {
+            entrypoint("cmd 1", "cmd 2")
+            entrypoint("cmd 3", "cmd 4", "cmd 5")
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }

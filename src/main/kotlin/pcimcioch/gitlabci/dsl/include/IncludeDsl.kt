@@ -20,6 +20,21 @@ class IncludeDsl : DslBase() {
         addErrors(errors, "[include]", includes)
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as IncludeDsl
+
+        if (includes != other.includes) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return includes.hashCode()
+    }
+
     object IncludeDslSerializer : ValueSerializer<IncludeDsl, List<IncludeDetailsDsl>>(
         ListSerializer(IncludeDetailsDsl.serializer()),
         IncludeDsl::includes
@@ -45,6 +60,21 @@ class IncludeLocalDsl(
             addSerializer(IncludeLocalDsl::class, serializer())
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as IncludeLocalDsl
+
+        if (local != other.local) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return local.hashCode()
+    }
 }
 
 fun createIncludeLocal(local: String) = IncludeLocalDsl(local)
@@ -60,6 +90,26 @@ class IncludeFileDsl(
             addSerializer(IncludeFileDsl::class, serializer())
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as IncludeFileDsl
+
+        if (project != other.project) return false
+        if (file != other.file) return false
+        if (ref != other.ref) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = project.hashCode()
+        result = 31 * result + file.hashCode()
+        result = 31 * result + (ref?.hashCode() ?: 0)
+        return result
+    }
 }
 
 fun createIncludeFile(project: String, file: String, ref: String? = null) = IncludeFileDsl(project, file, ref)
@@ -73,6 +123,21 @@ class IncludeTemplateDsl(
             addSerializer(IncludeTemplateDsl::class, serializer())
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as IncludeTemplateDsl
+
+        if (template != other.template) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return template.hashCode()
+    }
 }
 
 fun createIncludeTemplate(template: String) = IncludeTemplateDsl(template)
@@ -85,6 +150,21 @@ class IncludeRemoteDsl(
         init {
             addSerializer(IncludeRemoteDsl::class, serializer())
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as IncludeRemoteDsl
+
+        if (remote != other.remote) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return remote.hashCode()
     }
 }
 

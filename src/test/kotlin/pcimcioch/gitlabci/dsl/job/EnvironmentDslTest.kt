@@ -1,5 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
@@ -14,8 +15,9 @@ internal class EnvironmentDslTest : DslTestBase<EnvironmentDsl>(EnvironmentDsl.s
         val testee = createEnvironment("production")
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "production"
                 """
         )
@@ -29,8 +31,9 @@ internal class EnvironmentDslTest : DslTestBase<EnvironmentDsl>(EnvironmentDsl.s
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "production"
                     url: "https://test.com"
                 """
@@ -46,8 +49,9 @@ internal class EnvironmentDslTest : DslTestBase<EnvironmentDsl>(EnvironmentDsl.s
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "production"
                     url: "https://test.com"
                 """
@@ -60,11 +64,12 @@ internal class EnvironmentDslTest : DslTestBase<EnvironmentDsl>(EnvironmentDsl.s
         val testee = createEnvironment {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     {}
                 """,
-                "[environment name='null'] name 'null' is incorrect. Cannot be empty"
+            "[environment name='null'] name 'null' is incorrect. Cannot be empty"
         )
     }
 
@@ -74,11 +79,12 @@ internal class EnvironmentDslTest : DslTestBase<EnvironmentDsl>(EnvironmentDsl.s
         val testee = createEnvironment("") {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: ""
                 """,
-                "[environment name=''] name '' is incorrect. Cannot be empty"
+            "[environment name=''] name '' is incorrect. Cannot be empty"
         )
     }
 
@@ -89,11 +95,12 @@ internal class EnvironmentDslTest : DslTestBase<EnvironmentDsl>(EnvironmentDsl.s
         val testee = createEnvironment(name) {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "$name"
                 """,
-                "[environment name='$name'] name '$name' is incorrect. Contains forbidden characters"
+            "[environment name='$name'] name '$name' is incorrect. Contains forbidden characters"
         )
     }
 
@@ -103,8 +110,9 @@ internal class EnvironmentDslTest : DslTestBase<EnvironmentDsl>(EnvironmentDsl.s
         val testee = createEnvironment("aB3 _{}-$/") {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "aB3 _{}-${'$'}/"
                 """
         )
@@ -116,11 +124,12 @@ internal class EnvironmentDslTest : DslTestBase<EnvironmentDsl>(EnvironmentDsl.s
         val testee = createEnvironment {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     {}
                 """,
-                "[environment name='null'] name 'null' is incorrect. Cannot be empty"
+            "[environment name='null'] name 'null' is incorrect. Cannot be empty"
         )
     }
 
@@ -137,8 +146,9 @@ internal class EnvironmentDslTest : DslTestBase<EnvironmentDsl>(EnvironmentDsl.s
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "production"
                     url: "https://test.com"
                     on_stop: "test"
@@ -159,8 +169,9 @@ internal class EnvironmentDslTest : DslTestBase<EnvironmentDsl>(EnvironmentDsl.s
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "production"
                     on_stop: "testJob"
                 """
@@ -175,8 +186,9 @@ internal class EnvironmentDslTest : DslTestBase<EnvironmentDsl>(EnvironmentDsl.s
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "production"
                     kubernetes:
                       namespace: "kubernetesNamespace"
@@ -194,8 +206,9 @@ internal class EnvironmentDslTest : DslTestBase<EnvironmentDsl>(EnvironmentDsl.s
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "production"
                     kubernetes:
                       namespace: "kubernetesNamespace"
@@ -212,17 +225,59 @@ internal class EnvironmentDslTest : DslTestBase<EnvironmentDsl>(EnvironmentDsl.s
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "production"
                     kubernetes:
                       namespace: "kubernetesNamespace"
                 """
         )
     }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createEnvironment("production") {
+            kubernetes {
+                namespace = "kubernetesNamespace"
+            }
+        }
+
+        val expected = createEnvironment("production") {
+            kubernetes {
+                namespace = "kubernetesNamespace"
+            }
+        }
+
+        // then
+        assertEquals(expected, testee)
+    }
+
+    @Test
+    fun `should be equal 2`() {
+        // given
+        val testee = createEnvironment("production") {
+            autoStopIn = Duration(months = 2)
+            url = "https://rbbl.cc"
+            action = EnvironmentAction.PREPARE
+            onStop = "gottem"
+        }
+
+        val expected = createEnvironment("production") {
+            autoStopIn = Duration(months = 2)
+            url = "https://rbbl.cc"
+            action = EnvironmentAction.PREPARE
+            onStop = "gottem"
+        }
+
+        // then
+        assertEquals(expected, testee)
+    }
 }
 
-internal class KubernetesEnvironmentDslTest : DslTestBase<KubernetesEnvironmentDsl>(KubernetesEnvironmentDsl.serializer()) {
+internal class KubernetesEnvironmentDslTest :
+    DslTestBase<KubernetesEnvironmentDsl>(KubernetesEnvironmentDsl.serializer()) {
 
     @Test
     fun `should create from namespace`() {
@@ -230,8 +285,9 @@ internal class KubernetesEnvironmentDslTest : DslTestBase<KubernetesEnvironmentD
         val testee = createKubernetesEnvironment("kubernetesNamespace")
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     namespace: "kubernetesNamespace"
                 """
         )
@@ -245,8 +301,9 @@ internal class KubernetesEnvironmentDslTest : DslTestBase<KubernetesEnvironmentD
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     namespace: "namespace2"
                 """
         )
@@ -260,8 +317,9 @@ internal class KubernetesEnvironmentDslTest : DslTestBase<KubernetesEnvironmentD
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     namespace: "kubernetesNamespace"
                 """
         )
@@ -273,10 +331,25 @@ internal class KubernetesEnvironmentDslTest : DslTestBase<KubernetesEnvironmentD
         val testee = createKubernetesEnvironment {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     {}
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createKubernetesEnvironment {
+            namespace = "kubernetesNamespace"
+        }
+        val other = createKubernetesEnvironment {
+            namespace = "kubernetesNamespace"
+        }
+
+        // then
+        assertEquals(other, testee)
     }
 }

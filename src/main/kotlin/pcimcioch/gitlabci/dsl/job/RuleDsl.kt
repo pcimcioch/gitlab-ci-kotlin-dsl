@@ -16,6 +16,7 @@ class RuleDsl : DslBase() {
 
     @SerialName("allow_failure")
     var allowFailure: Boolean? = null
+
     @SerialName("when")
     var whenRun: WhenRunType? = null
 
@@ -29,11 +30,41 @@ class RuleDsl : DslBase() {
     fun exists(elements: Iterable<String>) = ensureExists().addAll(elements)
 
     override fun validate(errors: MutableList<String>) {
-        addError(errors, startIn != null && whenRun != WhenRunType.DELAYED, "[rule] startIn can be used only with when=delayed jobs")
+        addError(
+            errors,
+            startIn != null && whenRun != WhenRunType.DELAYED,
+            "[rule] startIn can be used only with when=delayed jobs"
+        )
     }
 
     private fun ensureChanges() = changes ?: mutableSetOf<String>().also { changes = it }
     private fun ensureExists() = exists ?: mutableSetOf<String>().also { exists = it }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as RuleDsl
+
+        if (ifCondition != other.ifCondition) return false
+        if (changes != other.changes) return false
+        if (exists != other.exists) return false
+        if (allowFailure != other.allowFailure) return false
+        if (whenRun != other.whenRun) return false
+        if (startIn != other.startIn) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = ifCondition?.hashCode() ?: 0
+        result = 31 * result + (changes?.hashCode() ?: 0)
+        result = 31 * result + (exists?.hashCode() ?: 0)
+        result = 31 * result + (allowFailure?.hashCode() ?: 0)
+        result = 31 * result + (whenRun?.hashCode() ?: 0)
+        result = 31 * result + (startIn?.hashCode() ?: 0)
+        return result
+    }
+
 
     companion object {
         init {
@@ -55,7 +86,25 @@ class RuleListDsl : DslBase() {
         addErrors(errors, "", rules)
     }
 
-    object RuleListDslSerializer : ValueSerializer<RuleListDsl, List<RuleDsl>>(ListSerializer(RuleDsl.serializer()), RuleListDsl::rules)
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as RuleListDsl
+
+        if (rules != other.rules) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return rules.hashCode()
+    }
+
+
+    object RuleListDslSerializer :
+        ValueSerializer<RuleListDsl, List<RuleDsl>>(ListSerializer(RuleDsl.serializer()), RuleListDsl::rules)
+
     companion object {
         init {
             addSerializer(RuleListDsl::class, serializer())

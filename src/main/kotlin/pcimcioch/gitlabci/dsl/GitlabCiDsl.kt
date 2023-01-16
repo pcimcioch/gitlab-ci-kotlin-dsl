@@ -24,7 +24,14 @@ class GitlabCiDsl : DslBase() {
     private var workflow: WorkflowDsl? = null
     private var include: IncludeDsl? = null
 
+    /**
+     * creates a Job, adds it to the GitlabCi and returns it.
+     */
     fun job(name: String, block: JobDsl.() -> Unit) = addAndReturn(jobs, JobDsl(name)).apply(block)
+
+    /**
+     * adds the Job to the GitlabCi
+     */
     operator fun JobDsl.unaryPlus() = this@GitlabCiDsl.jobs.add(this)
 
     fun stages(block: StagesDsl.() -> Unit) = ensureStages().apply(block)
@@ -66,7 +73,35 @@ class GitlabCiDsl : DslBase() {
         return map
     }
 
-    object GitlabCiDslSerializer : ValueSerializer<GitlabCiDsl, Map<String, DslBase>>(MapSerializer(String.serializer(), DslBase.serializer()), GitlabCiDsl::asMap)
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as GitlabCiDsl
+
+        if (jobs != other.jobs) return false
+        if (stages != other.stages) return false
+        if (default != other.default) return false
+        if (workflow != other.workflow) return false
+        if (include != other.include) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = jobs.hashCode()
+        result = 31 * result + (stages?.hashCode() ?: 0)
+        result = 31 * result + (default?.hashCode() ?: 0)
+        result = 31 * result + (workflow?.hashCode() ?: 0)
+        result = 31 * result + (include?.hashCode() ?: 0)
+        return result
+    }
+
+    object GitlabCiDslSerializer : ValueSerializer<GitlabCiDsl, Map<String, DslBase>>(
+        MapSerializer(String.serializer(), DslBase.serializer()),
+        GitlabCiDsl::asMap
+    )
+
     companion object {
         init {
             addSerializer(GitlabCiDsl::class, serializer())
@@ -81,10 +116,13 @@ fun gitlabCi(validate: Boolean = true, writer: Writer? = null, block: GitlabCiDs
         val errors = mutableListOf<String>()
         dsl.validate(errors)
         if (errors.isNotEmpty()) {
-            throw IllegalArgumentException(errors.joinToString(
+            throw IllegalArgumentException(
+                errors.joinToString(
                     "\n",
                     "Configuration validation failed\n",
-                    "\nValidation can be disabled by calling 'gitlabCi(validate = false) {}'"))
+                    "\nValidation can be disabled by calling 'gitlabCi(validate = false) {}'"
+                )
+            )
         }
     }
 

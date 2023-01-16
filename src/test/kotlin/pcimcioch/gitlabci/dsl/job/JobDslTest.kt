@@ -1,5 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 import pcimcioch.gitlabci.dsl.Duration
@@ -14,8 +15,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     script:
                     - "test command"
                 """
@@ -30,12 +32,13 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     script:
                     - "test command"
                 """,
-                "[job name=''] name '' is incorrect"
+            "[job name=''] name '' is incorrect"
         )
     }
 
@@ -47,12 +50,13 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     script:
                     - "test command"
                 """,
-                "[job name='image'] name 'image' is incorrect"
+            "[job name='image'] name 'image' is incorrect"
         )
     }
 
@@ -65,13 +69,14 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     start_in: "10 min"
                     script:
                     - "test command"
                 """,
-                "[job name='test'] startIn can be used only with when=delayed jobs"
+            "[job name='test'] startIn can be used only with when=delayed jobs"
         )
     }
 
@@ -85,14 +90,15 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     when: "always"
                     start_in: "10 min"
                     script:
                     - "test command"
                 """,
-                "[job name='test'] startIn can be used only with when=delayed jobs"
+            "[job name='test'] startIn can be used only with when=delayed jobs"
         )
     }
 
@@ -105,13 +111,14 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     parallel: 1
                     script:
                     - "test command"
                 """,
-                "[job name='test'] parallel must be in range [2, 50]"
+            "[job name='test'] parallel must be in range [2, 50]"
         )
     }
 
@@ -124,13 +131,14 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     parallel: 51
                     script:
                     - "test command"
                 """,
-                "[job name='test'] parallel must be in range [2, 50]"
+            "[job name='test'] parallel must be in range [2, 50]"
         )
     }
 
@@ -167,8 +175,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     image:
                       name: ""
                     inherit:
@@ -207,14 +216,14 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
                       name: "env#"
                     variables: {}
                 """,
-                "[job name='test'][retry] max attempts must be in range [0, 2]",
-                "[job name='test'][image] name '' is incorrect",
-                "[job name='test'][service name=''] name '' is incorrect",
-                "[job name='test'][need job=''] job '' is incorrect",
-                "[job name='test'][variables] variables map cannot be empty",
-                "[job name='test'][cache][key] prefix value 'pre/fix' can't contain '/' nor '%2F'",
-                "[job name='test'][rule] startIn can be used only with when=delayed jobs",
-                "[job name='test'][environment name='env#'] name 'env#' is incorrect. Contains forbidden characters"
+            "[job name='test'][retry] max attempts must be in range [0, 2]",
+            "[job name='test'][image] name '' is incorrect",
+            "[job name='test'][service name=''] name '' is incorrect",
+            "[job name='test'][need job=''] job '' is incorrect",
+            "[job name='test'][variables] variables map cannot be empty",
+            "[job name='test'][cache][key] prefix value 'pre/fix' can't contain '/' nor '%2F'",
+            "[job name='test'][rule] startIn can be used only with when=delayed jobs",
+            "[job name='test'][environment name='env#'] name 'env#' is incorrect. Contains forbidden characters"
         )
     }
 
@@ -224,11 +233,12 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         val testee = createJob("") {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     {}
                 """,
-                "[job name=''] name '' is incorrect"
+            "[job name=''] name '' is incorrect"
         )
     }
 
@@ -280,8 +290,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     extends:
                     - "testExtends"
                     image:
@@ -354,8 +365,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     extends: []
                     tags: []
                     dependencies: []
@@ -377,8 +389,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     extends:
                     - "extend 1"
                     tags:
@@ -403,8 +416,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     extends:
                     - "extend 1"
                     - "extend 2"
@@ -435,8 +449,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     extends:
                     - "extend 1"
                     - "extend 2"
@@ -476,8 +491,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     extends:
                     - "job1"
                     - "job2"
@@ -506,8 +522,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     script:
                     - "command 1"
                     - "command 2"
@@ -530,8 +547,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     before_script:
                     - "command 1"
                     - "command 2"
@@ -556,8 +574,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     script:
                     - "test command"
                     after_script:
@@ -578,8 +597,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     image:
                       name: "image:1"
                     script:
@@ -600,8 +620,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     image:
                       name: "image:1"
                     script:
@@ -622,8 +643,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     image:
                       name: "image:1"
                       entrypoint:
@@ -645,8 +667,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     image:
                       name: "registry.gitlab.com/gitlab-org/release-cli:latest"
                     script:
@@ -665,8 +688,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     script:
                     - "test command"
                     release:
@@ -687,8 +711,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     script:
                     - "test command"
                     release:
@@ -709,8 +734,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     script:
                     - "test command"
                     release:
@@ -734,8 +760,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     services:
                     - name: "ser1"
                     - name: "ser2"
@@ -764,8 +791,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     needs:
                     - job: "job1"
                     - job: "job2"
@@ -788,8 +816,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     retry:
                       max: 2
                     script:
@@ -810,8 +839,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     retry:
                       max: 2
                     script:
@@ -832,8 +862,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     retry:
                       max: 2
                       when:
@@ -864,8 +895,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     script:
                     - "test command"
                     variables:
@@ -900,8 +932,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     script:
                     - "test command"
                     secrets:
@@ -937,8 +970,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     cache:
                       paths:
                       - "p1"
@@ -964,8 +998,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     artifacts:
                       paths:
                       - "a1"
@@ -991,8 +1026,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     only:
                       refs:
                       - "o1"
@@ -1020,8 +1056,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     except:
                       refs:
                       - "e1"
@@ -1045,8 +1082,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     script:
                     - "test command"
                     trigger:
@@ -1065,8 +1103,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     script:
                     - "test command"
                     trigger:
@@ -1089,8 +1128,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     script:
                     - "test command"
                     trigger:
@@ -1111,8 +1151,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     script:
                     - "test command"
                     trigger:
@@ -1135,8 +1176,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     script:
                     - "test command"
                     trigger:
@@ -1156,8 +1198,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     script:
                     - "test command"
                     environment:
@@ -1178,8 +1221,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     script:
                     - "test command"
                     environment:
@@ -1200,8 +1244,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     script:
                     - "test command"
                     environment:
@@ -1270,8 +1315,9 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     extends:
                     - "testExtends"
                     image:
@@ -1322,5 +1368,100 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
                         vault: "VALUE2"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createJob("test") {
+            script("test command")
+
+            extends("testExtends")
+            image("testImage")
+            stage = "testStage"
+            tags("testTag")
+            inherit {
+                default(true)
+            }
+            allowFailure = true
+            whenRun = WhenRunType.DELAYED
+            startIn = Duration(minutes = 10)
+            timeout = Duration(hours = 2)
+            retry(2)
+            interruptible = true
+            parallel = 2
+            resourceGroup = "test resource"
+            services("testService")
+            needs("testNeeds")
+            dependencies("testDep")
+            cache("testCache")
+            artifacts("testArt")
+            only("onlyBranch")
+            except("exceptBranch")
+            rules {
+                rule {
+                    ifCondition = "condition"
+                }
+            }
+            beforeScript("before")
+            afterScript("after")
+            release("tag 1")
+            trigger("testProject")
+            coverage = "/Code coverage: \\d+\\.\\d+/"
+            environment("env")
+            variables {
+                add("KEY1", "VALUE1")
+            }
+            secrets {
+                add("KEY2", "VALUE2")
+            }
+        }
+
+        val expected = createJob("test") {
+            script("test command")
+
+            extends("testExtends")
+            image("testImage")
+            stage = "testStage"
+            tags("testTag")
+            inherit {
+                default(true)
+            }
+            allowFailure = true
+            whenRun = WhenRunType.DELAYED
+            startIn = Duration(minutes = 10)
+            timeout = Duration(hours = 2)
+            retry(2)
+            interruptible = true
+            parallel = 2
+            resourceGroup = "test resource"
+            services("testService")
+            needs("testNeeds")
+            dependencies("testDep")
+            cache("testCache")
+            artifacts("testArt")
+            only("onlyBranch")
+            except("exceptBranch")
+            rules {
+                rule {
+                    ifCondition = "condition"
+                }
+            }
+            beforeScript("before")
+            afterScript("after")
+            release("tag 1")
+            trigger("testProject")
+            coverage = "/Code coverage: \\d+\\.\\d+/"
+            environment("env")
+            variables {
+                add("KEY1", "VALUE1")
+            }
+            secrets {
+                add("KEY2", "VALUE2")
+            }
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }

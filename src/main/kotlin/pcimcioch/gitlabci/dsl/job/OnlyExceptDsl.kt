@@ -38,6 +38,27 @@ class OnlyExceptDsl : DslBase() {
     private fun ensureRefs() = refs ?: mutableSetOf<String>().also { refs = it }
     private fun ensureVariables() = variables ?: mutableSetOf<String>().also { variables = it }
     private fun ensureChanges() = changes ?: mutableSetOf<String>().also { changes = it }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as OnlyExceptDsl
+
+        if (refs != other.refs) return false
+        if (changes != other.changes) return false
+        if (variables != other.variables) return false
+        if (kubernetes != other.kubernetes) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = refs?.hashCode() ?: 0
+        result = 31 * result + (changes?.hashCode() ?: 0)
+        result = 31 * result + (variables?.hashCode() ?: 0)
+        result = 31 * result + (kubernetes?.hashCode() ?: 0)
+        return result
+    }
 
     companion object {
         init {
@@ -47,12 +68,15 @@ class OnlyExceptDsl : DslBase() {
 }
 
 fun createOnlyExcept(block: OnlyExceptDsl.() -> Unit = {}) = OnlyExceptDsl().apply(block)
-fun createOnlyExcept(vararg elements: String, block: OnlyExceptDsl.() -> Unit = {}) = createOnlyExcept(elements.toList(), block)
-fun createOnlyExcept(elements: Iterable<String>, block: OnlyExceptDsl.() -> Unit = {}) = OnlyExceptDsl().apply { elements.forEach { refs(it) } }.apply(block)
+fun createOnlyExcept(vararg elements: String, block: OnlyExceptDsl.() -> Unit = {}) =
+    createOnlyExcept(elements.toList(), block)
+
+fun createOnlyExcept(elements: Iterable<String>, block: OnlyExceptDsl.() -> Unit = {}) =
+    OnlyExceptDsl().apply { elements.forEach { refs(it) } }.apply(block)
 
 @Serializable(with = KubernetesState.KubernetesStateSerializer::class)
 enum class KubernetesState(
-        override val stringRepresentation: String
+    override val stringRepresentation: String
 ) : StringRepresentation {
     ACTIVE("active");
 

@@ -1,5 +1,6 @@
 package pcimcioch.gitlabci.dsl.workflow
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 import pcimcioch.gitlabci.dsl.Duration
@@ -21,13 +22,14 @@ internal class WorkflowDslTest : DslTestBase<WorkflowDsl>(WorkflowDsl.serializer
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     rules:
                     - when: "manual"
                       start_in: "10 min"
                 """,
-                "[workflow][rule] startIn can be used only with when=delayed jobs"
+            "[workflow][rule] startIn can be used only with when=delayed jobs"
         )
     }
 
@@ -37,8 +39,9 @@ internal class WorkflowDslTest : DslTestBase<WorkflowDsl>(WorkflowDsl.serializer
         val testee = WorkflowDsl()
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     {}
                 """
         )
@@ -60,8 +63,9 @@ internal class WorkflowDslTest : DslTestBase<WorkflowDsl>(WorkflowDsl.serializer
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     rules:
                     - if: "condition"
                       when: "manual"
@@ -87,13 +91,37 @@ internal class WorkflowDslTest : DslTestBase<WorkflowDsl>(WorkflowDsl.serializer
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     rules:
                     - if: "condition"
                       when: "manual"
                     - when: "never"
                 """
         )
+    }
+
+    @Test
+    fun `should be euqal`() {
+        val testee = WorkflowDsl().apply {
+            rules {
+                rule {
+                    whenRun = WhenRunType.MANUAL
+                    startIn = Duration(minutes = 10)
+                }
+            }
+        }
+
+        val expected = WorkflowDsl().apply {
+            rules {
+                rule {
+                    whenRun = WhenRunType.MANUAL
+                    startIn = Duration(minutes = 10)
+                }
+            }
+        }
+
+        assertEquals(expected, testee)
     }
 }

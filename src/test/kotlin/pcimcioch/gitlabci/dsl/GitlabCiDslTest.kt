@@ -1,6 +1,7 @@
 package pcimcioch.gitlabci.dsl
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pcimcioch.gitlabci.dsl.job.WhenRunType
@@ -41,13 +42,15 @@ internal class GitlabCiDslTest {
         }
 
         // then
-        assertThat(thrown).hasMessage("""
+        assertThat(thrown).hasMessage(
+            """
             Configuration validation failed
             [workflow][rule] startIn can be used only with when=delayed jobs
             [default][image] name '' is incorrect
             [job name='image'] name 'image' is incorrect
             [job name='cache'] name 'cache' is incorrect
-            Validation can be disabled by calling 'gitlabCi(validate = false) {}'""".trimIndent())
+            Validation can be disabled by calling 'gitlabCi(validate = false) {}'""".trimIndent()
+        )
         assertThat(writer.toString()).isEmpty()
     }
 
@@ -79,7 +82,8 @@ internal class GitlabCiDslTest {
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo("""
+        assertThat(writer.toString()).isEqualTo(
+            """
             "workflow":
               rules:
               - when: "manual"
@@ -97,7 +101,8 @@ internal class GitlabCiDslTest {
             "cache":
               script:
               - "cache"
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
@@ -108,12 +113,14 @@ internal class GitlabCiDslTest {
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo("""
+        assertThat(writer.toString()).isEqualTo(
+            """
             "stages":
             - "build"
             - "test"
             - "release"
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
@@ -124,12 +131,14 @@ internal class GitlabCiDslTest {
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo("""
+        assertThat(writer.toString()).isEqualTo(
+            """
             "stages":
             - "build"
             - "test"
             - "release"
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
@@ -144,12 +153,14 @@ internal class GitlabCiDslTest {
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo("""
+        assertThat(writer.toString()).isEqualTo(
+            """
             "stages":
             - "build"
             - "test"
             - "release"
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
@@ -160,11 +171,13 @@ internal class GitlabCiDslTest {
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo("""
+        assertThat(writer.toString()).isEqualTo(
+            """
             "include":
             - local: "include 1"
             - local: "include 2"
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
@@ -175,29 +188,33 @@ internal class GitlabCiDslTest {
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo("""
+        assertThat(writer.toString()).isEqualTo(
+            """
             "include":
             - local: "include 1"
             - local: "include 2"
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
     fun `should create include from block`() {
         // when
         gitlabCi(writer = writer) {
-            include{
+            include {
                 local("local 1")
                 remote("remote 1")
             }
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo("""
+        assertThat(writer.toString()).isEqualTo(
+            """
             "include":
             - local: "local 1"
             - remote: "remote 1"
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
@@ -208,9 +225,11 @@ internal class GitlabCiDslTest {
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo("""
+        assertThat(writer.toString()).isEqualTo(
+            """
             "test": {}
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
@@ -223,11 +242,13 @@ internal class GitlabCiDslTest {
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo("""
+        assertThat(writer.toString()).isEqualTo(
+            """
             "test":
               script:
               - "command"
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
@@ -241,11 +262,13 @@ internal class GitlabCiDslTest {
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo("""
+        assertThat(writer.toString()).isEqualTo(
+            """
             "test":
               script:
               - "command"
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
@@ -254,9 +277,11 @@ internal class GitlabCiDslTest {
         gitlabCi(validate = false, writer = writer) {}
 
         // then
-        assertThat(writer.toString()).isEqualTo("""
+        assertThat(writer.toString()).isEqualTo(
+            """
             {}
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
@@ -303,7 +328,8 @@ internal class GitlabCiDslTest {
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo("""
+        assertThat(writer.toString()).isEqualTo(
+            """
             "workflow":
               rules:
               - if: "condition"
@@ -337,7 +363,8 @@ internal class GitlabCiDslTest {
               - "release app 1"
               script:
               - "release command 2"
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
@@ -350,7 +377,8 @@ internal class GitlabCiDslTest {
         }
 
         // then
-        assertThat(writer.toString()).isEqualTo("""
+        assertThat(writer.toString()).isEqualTo(
+            """
             "pages":
               artifacts:
                 paths:
@@ -360,6 +388,94 @@ internal class GitlabCiDslTest {
                 - "master"
               script:
               - "command"
-        """.trimIndent())
+        """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = GitlabCiDsl().apply {
+            workflow {
+                rules {
+                    rule {
+                        ifCondition = "condition"
+                    }
+                }
+            }
+
+            include("include 1", "include 2")
+
+            stages("build", "test", "release")
+
+            default {
+                beforeScript("before command")
+                afterScript("after command")
+            }
+
+            job("build app") {
+                script("build command")
+                stage = "build"
+            }
+
+            job("test app") {
+                script("test command")
+                stage = "test"
+            }
+
+            val release1 = job("release app 1") {
+                script("release command 1")
+                stage = "release"
+            }
+
+            job("release app 2") {
+                script("release command 2")
+                stage = "release"
+                dependencies(release1)
+            }
+        }
+
+        val expected = GitlabCiDsl().apply {
+            workflow {
+                rules {
+                    rule {
+                        ifCondition = "condition"
+                    }
+                }
+            }
+
+            include("include 1", "include 2")
+
+            stages("build", "test", "release")
+
+            default {
+                beforeScript("before command")
+                afterScript("after command")
+            }
+
+            job("build app") {
+                script("build command")
+                stage = "build"
+            }
+
+            job("test app") {
+                script("test command")
+                stage = "test"
+            }
+
+            val release1 = job("release app 1") {
+                script("release command 1")
+                stage = "release"
+            }
+
+            job("release app 2") {
+                script("release command 2")
+                stage = "release"
+                dependencies(release1)
+            }
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }

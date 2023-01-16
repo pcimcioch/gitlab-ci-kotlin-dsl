@@ -1,5 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
@@ -11,8 +12,9 @@ internal class TriggerDslTest : DslTestBase<TriggerDsl>(TriggerDsl.serializer())
         val testee = createTrigger {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     {}
                 """
         )
@@ -31,8 +33,9 @@ internal class TriggerDslTest : DslTestBase<TriggerDsl>(TriggerDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     project: "test/project"
                     branch: "test-branch"
                     strategy: "depend"
@@ -50,8 +53,9 @@ internal class TriggerDslTest : DslTestBase<TriggerDsl>(TriggerDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     project: "testProject"
                 """
         )
@@ -63,8 +67,9 @@ internal class TriggerDslTest : DslTestBase<TriggerDsl>(TriggerDsl.serializer())
         val testee = createTrigger("testProject")
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     project: "testProject"
                 """
         )
@@ -76,8 +81,9 @@ internal class TriggerDslTest : DslTestBase<TriggerDsl>(TriggerDsl.serializer())
         val testee = createTrigger("testProject", "test-branch", TriggerStrategy.DEPEND)
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     project: "testProject"
                     branch: "test-branch"
                     strategy: "depend"
@@ -93,8 +99,9 @@ internal class TriggerDslTest : DslTestBase<TriggerDsl>(TriggerDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     project: "testProject"
                     branch: "test-branch-2"
                     strategy: "depend"
@@ -110,8 +117,9 @@ internal class TriggerDslTest : DslTestBase<TriggerDsl>(TriggerDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     project: "testProject"
                     branch: "test-branch-2"
                 """
@@ -129,12 +137,38 @@ internal class TriggerDslTest : DslTestBase<TriggerDsl>(TriggerDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     include:
                     - local: "localFile"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createTrigger {
+            project = "test/project"
+            branch = "test-branch"
+            strategy = TriggerStrategy.DEPEND
+            include {
+                local("localFile")
+            }
+        }
+
+        val expected = createTrigger {
+            project = "test/project"
+            branch = "test-branch"
+            strategy = TriggerStrategy.DEPEND
+            include {
+                local("localFile")
+            }
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }
 
@@ -146,8 +180,9 @@ internal class TriggerIncludeDslTest : DslTestBase<TriggerIncludeDsl>(TriggerInc
         val testee = createTriggerInclude {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     []
                 """
         )
@@ -167,8 +202,9 @@ internal class TriggerIncludeDslTest : DslTestBase<TriggerIncludeDsl>(TriggerInc
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - local: "localFile 1"
                     - local: "localFile 2"
                     - project: "project 1"
@@ -204,8 +240,9 @@ internal class TriggerIncludeDslTest : DslTestBase<TriggerIncludeDsl>(TriggerInc
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - local: "localFile 1"
                     - local: "localFile 2"
                     - project: "project 1"
@@ -219,5 +256,29 @@ internal class TriggerIncludeDslTest : DslTestBase<TriggerIncludeDsl>(TriggerInc
                       job: "job 2"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        val job1 = createJob("job 1") {}
+        val testee = createTriggerInclude {
+            local("localFile 1")
+            local("localFile 2")
+            file("project 1", "file 1", "ref 1")
+            file("project 2", "file 2")
+            artifact("artifact 1", job1)
+            artifact("artifact 2", "job 2")
+        }
+
+        val other = createTriggerInclude {
+            local("localFile 1")
+            local("localFile 2")
+            file("project 1", "file 1", "ref 1")
+            file("project 2", "file 2")
+            artifact("artifact 1", createJob("job 1") {})
+            artifact("artifact 2", "job 2")
+        }
+
+        assertEquals(other, testee)
     }
 }

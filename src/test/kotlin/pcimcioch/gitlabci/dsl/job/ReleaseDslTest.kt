@@ -1,6 +1,7 @@
 package pcimcioch.gitlabci.dsl.job
 
 import kotlinx.datetime.Instant
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
@@ -18,8 +19,9 @@ internal class ReleaseDslTest : DslTestBase<ReleaseDsl>(ReleaseDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     tag_name: "tag 1"
                     name: "name 1"
                     description: "desc 1"
@@ -38,8 +40,9 @@ internal class ReleaseDslTest : DslTestBase<ReleaseDsl>(ReleaseDsl.serializer())
         val testee = createRelease("tag 1")
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     tag_name: "tag 1"
                 """
         )
@@ -53,8 +56,9 @@ internal class ReleaseDslTest : DslTestBase<ReleaseDsl>(ReleaseDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     tag_name: "tag 1"
                     name: "name 1"
                 """
@@ -70,8 +74,9 @@ internal class ReleaseDslTest : DslTestBase<ReleaseDsl>(ReleaseDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     tag_name: "tag 1"
                     name: "name 1"
                 """
@@ -86,8 +91,9 @@ internal class ReleaseDslTest : DslTestBase<ReleaseDsl>(ReleaseDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     tag_name: "tag 1"
                     milestones: []
                 """
@@ -102,8 +108,9 @@ internal class ReleaseDslTest : DslTestBase<ReleaseDsl>(ReleaseDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     tag_name: "tag 1"
                     milestones:
                     - "mile 1"
@@ -119,8 +126,9 @@ internal class ReleaseDslTest : DslTestBase<ReleaseDsl>(ReleaseDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     tag_name: "tag 1"
                     milestones:
                     - "mile 1"
@@ -138,8 +146,9 @@ internal class ReleaseDslTest : DslTestBase<ReleaseDsl>(ReleaseDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     tag_name: "tag 1"
                     milestones:
                     - "mile 1"
@@ -159,13 +168,37 @@ internal class ReleaseDslTest : DslTestBase<ReleaseDsl>(ReleaseDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     tag_name: "tag 1"
                     milestones:
                     - "mile 1"
                     - "mile 2"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createRelease("tag 1") {
+            name = "name 1"
+            description = "desc 1"
+            ref = "ref 1"
+            milestones("mile 1", "mile 2")
+            releasedAt = Instant.fromEpochSeconds(1604869132)
+        }
+
+        val expected = createRelease("tag 1") {
+            name = "name 1"
+            description = "desc 1"
+            ref = "ref 1"
+            milestones("mile 1", "mile 2")
+            releasedAt = Instant.fromEpochSeconds(1604869132)
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }

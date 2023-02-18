@@ -1,5 +1,7 @@
 package pcimcioch.gitlabci.dsl.job
 
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 import pcimcioch.gitlabci.dsl.Duration
@@ -12,8 +14,9 @@ internal class ArtifactsDslTest : DslTestBase<ArtifactsDsl>(ArtifactsDsl.seriali
         val testee = createArtifacts {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     {}
                 """
         )
@@ -36,8 +39,9 @@ internal class ArtifactsDslTest : DslTestBase<ArtifactsDsl>(ArtifactsDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "test"
                     expose_as: "exposed"
                     untracked: true
@@ -63,8 +67,9 @@ internal class ArtifactsDslTest : DslTestBase<ArtifactsDsl>(ArtifactsDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "test"
                     paths:
                     - "p 1"
@@ -78,8 +83,9 @@ internal class ArtifactsDslTest : DslTestBase<ArtifactsDsl>(ArtifactsDsl.seriali
         val testee = createArtifacts("p 1", "p 2")
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths:
                     - "p 1"
                     - "p 2"
@@ -93,8 +99,9 @@ internal class ArtifactsDslTest : DslTestBase<ArtifactsDsl>(ArtifactsDsl.seriali
         val testee = createArtifacts(listOf("p 1", "p 2"))
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths:
                     - "p 1"
                     - "p 2"
@@ -111,8 +118,9 @@ internal class ArtifactsDslTest : DslTestBase<ArtifactsDsl>(ArtifactsDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths:
                     - "p 1"
                     exclude:
@@ -130,8 +138,9 @@ internal class ArtifactsDslTest : DslTestBase<ArtifactsDsl>(ArtifactsDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths:
                     - "p 1"
                     - "p 2"
@@ -151,8 +160,9 @@ internal class ArtifactsDslTest : DslTestBase<ArtifactsDsl>(ArtifactsDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths: []
                     exclude: []
                 """
@@ -170,8 +180,9 @@ internal class ArtifactsDslTest : DslTestBase<ArtifactsDsl>(ArtifactsDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths:
                     - "p 1"
                     - "p 2"
@@ -200,8 +211,9 @@ internal class ArtifactsDslTest : DslTestBase<ArtifactsDsl>(ArtifactsDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     paths:
                     - "p 1"
                     - "p 2"
@@ -214,6 +226,69 @@ internal class ArtifactsDslTest : DslTestBase<ArtifactsDsl>(ArtifactsDsl.seriali
                 """
         )
     }
+
+    @Test
+    fun `should be equal`() {
+        val testee = createArtifacts {
+            name = "test"
+            exposeAs = "exposed"
+            untracked = true
+            whenUpload = WhenUploadType.ON_SUCCESS
+            expireIn = Duration(days = 1)
+            paths("p 1")
+            exclude("e 1")
+            reports {
+                junit("junit 1")
+            }
+        }
+
+        val other = createArtifacts {
+            name = "test"
+            exposeAs = "exposed"
+            untracked = true
+            whenUpload = WhenUploadType.ON_SUCCESS
+            expireIn = Duration(days = 1)
+            paths("p 1")
+            exclude("e 1")
+            reports {
+                junit("junit 1")
+            }
+        }
+        assertEquals(other, testee)
+    }
+
+    @Test
+    fun `should not be equal`() {
+        // given
+        val testee = createArtifacts {
+            name = "test"
+            exposeAs = "exposed"
+            untracked = true
+            whenUpload = WhenUploadType.ON_FAILURE
+            expireIn = Duration(days = 1)
+            paths("p 1")
+            exclude("e 1")
+            reports {
+                junit("junit 1")
+            }
+        }
+
+        val expected = createArtifacts {
+            name = "test"
+            exposeAs = "exposed"
+            untracked = true
+            whenUpload = WhenUploadType.ALWAYS
+            expireIn = Duration(days = 1)
+            paths("p 1")
+            exclude("e 1")
+            reports {
+                junit("junit 1")
+            }
+        }
+
+        // then
+        assertNotEquals(expected, testee)
+    }
 }
 
 internal class ArtifactsReportsDslTest : DslTestBase<ArtifactsReportsDsl>(ArtifactsReportsDsl.serializer()) {
@@ -224,8 +299,9 @@ internal class ArtifactsReportsDslTest : DslTestBase<ArtifactsReportsDsl>(Artifa
         val testee = createArtifactsReports {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     {}
                 """
         )
@@ -252,8 +328,9 @@ internal class ArtifactsReportsDslTest : DslTestBase<ArtifactsReportsDsl>(Artifa
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     junit:
                     - "junit 1"
                     dotenv:
@@ -307,8 +384,9 @@ internal class ArtifactsReportsDslTest : DslTestBase<ArtifactsReportsDsl>(Artifa
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     junit:
                     - "junit 1"
                     - "junit 2"
@@ -376,8 +454,9 @@ internal class ArtifactsReportsDslTest : DslTestBase<ArtifactsReportsDsl>(Artifa
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     junit: []
                     dotenv: []
                     codequality: []
@@ -432,8 +511,9 @@ internal class ArtifactsReportsDslTest : DslTestBase<ArtifactsReportsDsl>(Artifa
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     junit:
                     - "junit 1"
                     - "junit 2"
@@ -515,8 +595,9 @@ internal class ArtifactsReportsDslTest : DslTestBase<ArtifactsReportsDsl>(Artifa
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     junit:
                     - "junit 1"
                     - "junit 2"
@@ -561,5 +642,84 @@ internal class ArtifactsReportsDslTest : DslTestBase<ArtifactsReportsDsl>(Artifa
                     - "terraform 2"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        val testee = createArtifactsReports {
+            junit("junit 1", "junit 2")
+            dotenv("dotenv 1", "dotenv 2")
+            codequality("codequality 1", "codequality 2")
+            sast("sast 1", "sast 2")
+            dependencyScanning("dependencyScanning 1", "dependencyScanning 2")
+            containerScanning("containerScanning 1", "containerScanning 2")
+            dast("dast 1", "dast 2")
+            licenseManagement("licenseManagement 1", "licenseManagement 2")
+            licenseScanning("licenseScanning 1", "licenseScanning 2")
+            performance("performance 1", "performance 2")
+            metrics("metrics 1", "metrics 2")
+            cobertura("cobertura 1", "cobertura 2")
+            loadPerformance("loadPerformance 1", "loadPerformance 2")
+            terraform("terraform 1", "terraform 2")
+        }
+
+        val other = createArtifactsReports {
+            junit("junit 1", "junit 2")
+            dotenv("dotenv 1", "dotenv 2")
+            codequality("codequality 1", "codequality 2")
+            sast("sast 1", "sast 2")
+            dependencyScanning("dependencyScanning 1", "dependencyScanning 2")
+            containerScanning("containerScanning 1", "containerScanning 2")
+            dast("dast 1", "dast 2")
+            licenseManagement("licenseManagement 1", "licenseManagement 2")
+            licenseScanning("licenseScanning 1", "licenseScanning 2")
+            performance("performance 1", "performance 2")
+            metrics("metrics 1", "metrics 2")
+            cobertura("cobertura 1", "cobertura 2")
+            loadPerformance("loadPerformance 1", "loadPerformance 2")
+            terraform("terraform 1", "terraform 2")
+        }
+        assertEquals(other, testee)
+    }
+
+    @Test
+    fun `should not be equal`() {
+        // given
+        val testee = createArtifactsReports {
+            junit("junit 1", "junit 2")
+            dotenv("dotenv 1", "dotenv 2")
+            codequality("codequality 1", "codequality 2")
+            sast("sast 1", "sast 2")
+            dependencyScanning("dependencyScanning 1", "dependencyScanning 2")
+            containerScanning("containerScanning 1", "containerScanning 2")
+            dast("dast 1", "dast 2")
+            licenseManagement("licenseManagement 1", "licenseManagement 2")
+            licenseScanning("licenseScanning 1", "licenseScanning 2")
+            performance("performance 1", "performance 2")
+            metrics("metrics 1", "metrics 2")
+            cobertura("cobertura 1", "cobertura 2")
+            loadPerformance("loadPerformance 1", "loadPerformance 2")
+            terraform("terraform 1", "terraform 2")
+        }
+
+        val expected = createArtifactsReports {
+            junit("junit 1")
+            dotenv("dotenv 1", "dotenv 2")
+            codequality("codequality 1", "codequality 2")
+            sast("sast 1", "sast 2")
+            dependencyScanning("dependencyScanning 1", "dependencyScanning 2")
+            containerScanning("containerScanning 1", "containerScanning 2")
+            dast("dast 1", "dast 2")
+            licenseManagement("licenseManagement 1", "licenseManagement 2")
+            licenseScanning("licenseScanning 1", "licenseScanning 2")
+            performance("performance 1", "performance 2")
+            metrics("metrics 1", "metrics 2")
+            cobertura("cobertura 1", "cobertura 2")
+            loadPerformance("loadPerformance 1", "loadPerformance 2")
+            terraform("terraform 1", "terraform 2")
+        }
+
+        // then
+        assertNotEquals(expected, testee)
     }
 }

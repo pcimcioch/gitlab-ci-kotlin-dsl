@@ -1,9 +1,10 @@
 package pcimcioch.gitlabci.dsl.job
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
-internal class SecretsDslTest: DslTestBase<SecretsDsl>(SecretsDsl.serializer()) {
+internal class SecretsDslTest : DslTestBase<SecretsDsl>(SecretsDsl.serializer()) {
 
     @Test
     fun `should create from block`() {
@@ -13,8 +14,9 @@ internal class SecretsDslTest: DslTestBase<SecretsDsl>(SecretsDsl.serializer()) 
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "key1":
                       vault: "value 1"
                 """
@@ -27,8 +29,9 @@ internal class SecretsDslTest: DslTestBase<SecretsDsl>(SecretsDsl.serializer()) 
         val testee = createSecrets(mapOf("key1" to "value 1", "key2" to "value 2"))
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "key1":
                       vault: "value 1"
                     "key2":
@@ -45,8 +48,9 @@ internal class SecretsDslTest: DslTestBase<SecretsDsl>(SecretsDsl.serializer()) 
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "key1":
                       vault: "value 1"
                     "key2":
@@ -68,8 +72,9 @@ internal class SecretsDslTest: DslTestBase<SecretsDsl>(SecretsDsl.serializer()) 
         val testee = createSecrets(mapOf("key1" to value1Dsl, "key2" to value2Dsl))
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "key1":
                       vault: "value 1"
                     "key2":
@@ -93,8 +98,9 @@ internal class SecretsDslTest: DslTestBase<SecretsDsl>(SecretsDsl.serializer()) 
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "key1":
                       vault: "value 1"
                     "key2":
@@ -113,8 +119,9 @@ internal class SecretsDslTest: DslTestBase<SecretsDsl>(SecretsDsl.serializer()) 
         val testee = createSecrets {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     {}
                 """
         )
@@ -128,8 +135,9 @@ internal class SecretsDslTest: DslTestBase<SecretsDsl>(SecretsDsl.serializer()) 
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "key1":
                       vault: "value 1"
                 """
@@ -145,8 +153,9 @@ internal class SecretsDslTest: DslTestBase<SecretsDsl>(SecretsDsl.serializer()) 
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "key1":
                       vault: "value 1"
                     "key2":
@@ -174,8 +183,9 @@ internal class SecretsDslTest: DslTestBase<SecretsDsl>(SecretsDsl.serializer()) 
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "key1":
                       vault: "value 1"
                     "key2":
@@ -198,8 +208,8 @@ internal class SecretsDslTest: DslTestBase<SecretsDsl>(SecretsDsl.serializer()) 
     fun `should create direct access`() {
         // given
         val map = mutableMapOf(
-                "key1" to createSecret("value 1"),
-                "key2" to createSecret("value 2")
+            "key1" to createSecret("value 1"),
+            "key2" to createSecret("value 2")
         )
 
         val testee = createSecrets {
@@ -207,8 +217,9 @@ internal class SecretsDslTest: DslTestBase<SecretsDsl>(SecretsDsl.serializer()) 
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "key1":
                       vault: "value 1"
                     "key2":
@@ -226,16 +237,32 @@ internal class SecretsDslTest: DslTestBase<SecretsDsl>(SecretsDsl.serializer()) 
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "key1":
                       vault: "value 2"
                 """
         )
     }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createSecrets {
+            add("key1", "value 1")
+        }
+
+        val expected = createSecrets {
+            add("key1", "value 1")
+        }
+
+        // then
+        assertEquals(expected, testee)
+    }
 }
 
-internal class SecretDslTest: DslTestBase<SecretDsl>(SecretDsl.serializer()) {
+internal class SecretDslTest : DslTestBase<SecretDsl>(SecretDsl.serializer()) {
 
     @Test
     fun `should crete from string`() {
@@ -243,8 +270,9 @@ internal class SecretDslTest: DslTestBase<SecretDsl>(SecretDsl.serializer()) {
         val testee = createSecret("test vault")
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     vault: "test vault"
                 """
         )
@@ -256,8 +284,9 @@ internal class SecretDslTest: DslTestBase<SecretDsl>(SecretDsl.serializer()) {
         val testee = createSecret()
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     vault: {}
                 """
         )
@@ -276,8 +305,9 @@ internal class SecretDslTest: DslTestBase<SecretDsl>(SecretDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     vault:
                       engine:
                         name: "engine name"
@@ -302,8 +332,9 @@ internal class SecretDslTest: DslTestBase<SecretDsl>(SecretDsl.serializer()) {
         val testee = createSecret(vault)
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     vault:
                       engine:
                         name: "engine name"
@@ -313,9 +344,45 @@ internal class SecretDslTest: DslTestBase<SecretDsl>(SecretDsl.serializer()) {
                 """
         )
     }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createSecret {
+            engine {
+                name = "engine name"
+                path = "engine path"
+            }
+            path = "path"
+            field = "field"
+        }
+
+        val expected = createSecret {
+            engine {
+                name = "engine name"
+                path = "engine path"
+            }
+            path = "path"
+            field = "field"
+        }
+
+        // then
+        assertEquals(expected, testee)
+    }
+
+    @Test
+    fun `should be equal simple`() {
+        // given
+        val testee = createSecret("vault")
+
+        val expected = createSecret("vault")
+
+        // then
+        assertEquals(expected, testee)
+    }
 }
 
-internal class SecretVaultDslTest: DslTestBase<SecretVaultDsl>(SecretVaultDsl.serializer()) {
+internal class SecretVaultDslTest : DslTestBase<SecretVaultDsl>(SecretVaultDsl.serializer()) {
 
     @Test
     fun `should create empty`() {
@@ -323,8 +390,9 @@ internal class SecretVaultDslTest: DslTestBase<SecretVaultDsl>(SecretVaultDsl.se
         val testee = createSecretVault()
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     {}
                 """
         )
@@ -343,8 +411,9 @@ internal class SecretVaultDslTest: DslTestBase<SecretVaultDsl>(SecretVaultDsl.se
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     engine:
                       name: "engine name"
                       path: "engine path"
@@ -368,8 +437,9 @@ internal class SecretVaultDslTest: DslTestBase<SecretVaultDsl>(SecretVaultDsl.se
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     engine:
                       name: "engine name"
                       path: "engine path"
@@ -378,9 +448,34 @@ internal class SecretVaultDslTest: DslTestBase<SecretVaultDsl>(SecretVaultDsl.se
                 """
         )
     }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createSecretVault {
+            engine {
+                name = "engine name"
+                path = "engine path"
+            }
+            path = "path"
+            field = "field"
+        }
+
+        val expected = createSecretVault {
+            engine {
+                name = "engine name"
+                path = "engine path"
+            }
+            path = "path"
+            field = "field"
+        }
+
+        // then
+        assertEquals(expected, testee)
+    }
 }
 
-internal class SecretVaultEngineDslTest: DslTestBase<SecretVaultEngineDsl>(SecretVaultEngineDsl.serializer()) {
+internal class SecretVaultEngineDslTest : DslTestBase<SecretVaultEngineDsl>(SecretVaultEngineDsl.serializer()) {
 
     @Test
     fun `should create empty`() {
@@ -388,8 +483,9 @@ internal class SecretVaultEngineDslTest: DslTestBase<SecretVaultEngineDsl>(Secre
         val testee = createSecretVaultEngine()
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     {}
                 """
         )
@@ -404,11 +500,29 @@ internal class SecretVaultEngineDslTest: DslTestBase<SecretVaultEngineDsl>(Secre
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     name: "name"
                     path: "path"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createSecretVaultEngine {
+            name = "name"
+            path = "path"
+        }
+
+        val expected = createSecretVaultEngine {
+            name = "name"
+            path = "path"
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }

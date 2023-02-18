@@ -1,5 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
@@ -13,8 +14,9 @@ internal class ScriptDslTest : DslTestBase<ScriptDsl>(ScriptDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - "command 1"
                 """
         )
@@ -26,8 +28,9 @@ internal class ScriptDslTest : DslTestBase<ScriptDsl>(ScriptDsl.serializer()) {
         val testee = createScript("command 1", "command 2")
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - "command 1"
                     - "command 2"
                 """
@@ -40,8 +43,9 @@ internal class ScriptDslTest : DslTestBase<ScriptDsl>(ScriptDsl.serializer()) {
         val testee = createScript(listOf("command 1", "command 2"))
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - "command 1"
                     - "command 2"
                 """
@@ -57,8 +61,9 @@ internal class ScriptDslTest : DslTestBase<ScriptDsl>(ScriptDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - "command 1"
                     - "command 2"
                 """
@@ -73,8 +78,9 @@ internal class ScriptDslTest : DslTestBase<ScriptDsl>(ScriptDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - "command 1"
                 """
         )
@@ -89,8 +95,9 @@ internal class ScriptDslTest : DslTestBase<ScriptDsl>(ScriptDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - "command 1"
                     - "command 2"
                 """
@@ -105,11 +112,27 @@ internal class ScriptDslTest : DslTestBase<ScriptDsl>(ScriptDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - "command 1"
                     - "command 2"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createScript {
+            commands = mutableListOf("command 1", "command 2")
+        }
+
+        val expected = createScript {
+            commands = mutableListOf("command 1", "command 2")
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }

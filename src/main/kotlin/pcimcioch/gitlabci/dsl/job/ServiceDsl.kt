@@ -7,7 +7,7 @@ import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 
 @Serializable
 class ServiceDsl(
-        var name: String? = null
+    var name: String? = null
 ) : DslBase() {
     var alias: String? = null
     var command: MutableList<String>? = null
@@ -25,6 +25,28 @@ class ServiceDsl(
 
     private fun ensureEntrypoint() = entrypoint ?: mutableListOf<String>().also { entrypoint = it }
     private fun ensureCmd() = command ?: mutableListOf<String>().also { command = it }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ServiceDsl
+
+        if (name != other.name) return false
+        if (alias != other.alias) return false
+        if (command != other.command) return false
+        if (entrypoint != other.entrypoint) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = name?.hashCode() ?: 0
+        result = 31 * result + (alias?.hashCode() ?: 0)
+        result = 31 * result + (command?.hashCode() ?: 0)
+        result = 31 * result + (entrypoint?.hashCode() ?: 0)
+        return result
+    }
+
 
     companion object {
         init {
@@ -39,14 +61,36 @@ fun createService(name: String? = null, block: ServiceDsl.() -> Unit = {}) = Ser
 class ServiceListDsl : DslBase() {
     private val services: MutableList<ServiceDsl> = mutableListOf()
 
-    fun service(name: String? = null, block: ServiceDsl.() -> Unit = {}) = addAndReturn(services, ServiceDsl(name).apply(block))
+    fun service(name: String? = null, block: ServiceDsl.() -> Unit = {}) =
+        addAndReturn(services, ServiceDsl(name).apply(block))
+
     operator fun ServiceDsl.unaryPlus() = this@ServiceListDsl.services.add(this)
 
     override fun validate(errors: MutableList<String>) {
         addErrors(errors, "", services)
     }
 
-    object ServiceListDslSerializer : ValueSerializer<ServiceListDsl, List<ServiceDsl>>(ListSerializer(ServiceDsl.serializer()), ServiceListDsl::services)
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ServiceListDsl
+
+        if (services != other.services) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return services.hashCode()
+    }
+
+
+    object ServiceListDslSerializer : ValueSerializer<ServiceListDsl, List<ServiceDsl>>(
+        ListSerializer(ServiceDsl.serializer()),
+        ServiceListDsl::services
+    )
+
     companion object {
         init {
             addSerializer(ServiceListDsl::class, serializer())
@@ -55,5 +99,8 @@ class ServiceListDsl : DslBase() {
 }
 
 fun createServices(block: ServiceListDsl.() -> Unit = {}) = ServiceListDsl().apply(block)
-fun createServices(vararg elements: String, block: ServiceListDsl.() -> Unit = {}) = createServices(elements.toList(), block)
-fun createServices(elements: Iterable<String>, block: ServiceListDsl.() -> Unit = {}) = ServiceListDsl().apply { elements.forEach { service(it) } }.apply(block)
+fun createServices(vararg elements: String, block: ServiceListDsl.() -> Unit = {}) =
+    createServices(elements.toList(), block)
+
+fun createServices(elements: Iterable<String>, block: ServiceListDsl.() -> Unit = {}) =
+    ServiceListDsl().apply { elements.forEach { service(it) } }.apply(block)

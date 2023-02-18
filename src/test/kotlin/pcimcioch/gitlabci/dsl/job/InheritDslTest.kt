@@ -1,5 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
@@ -11,8 +12,9 @@ internal class InheritDslTest : DslTestBase<InheritDsl>(InheritDsl.serializer())
         val testee = createInherit {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     {}
                 """
         )
@@ -27,8 +29,9 @@ internal class InheritDslTest : DslTestBase<InheritDsl>(InheritDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     default: true
                     variables: false
                 """
@@ -44,8 +47,9 @@ internal class InheritDslTest : DslTestBase<InheritDsl>(InheritDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     default:
                     - "after_script"
                     - "artifacts"
@@ -65,8 +69,9 @@ internal class InheritDslTest : DslTestBase<InheritDsl>(InheritDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     default: []
                     variables: []
                 """
@@ -82,8 +87,9 @@ internal class InheritDslTest : DslTestBase<InheritDsl>(InheritDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     default:
                     - "before_script"
                     variables:
@@ -103,8 +109,9 @@ internal class InheritDslTest : DslTestBase<InheritDsl>(InheritDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     default:
                     - "cache"
                     - "image"
@@ -126,8 +133,9 @@ internal class InheritDslTest : DslTestBase<InheritDsl>(InheritDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     default: true
                     variables:
                     - "var1"
@@ -147,13 +155,48 @@ internal class InheritDslTest : DslTestBase<InheritDsl>(InheritDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     default:
                     - "services"
                     - "timeout"
                     variables: false
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createInherit {
+            default(InheritDefaultType.CACHE, InheritDefaultType.IMAGE)
+            variables("var1", "var2")
+        }
+
+        val expected = createInherit {
+            default(InheritDefaultType.CACHE, InheritDefaultType.IMAGE)
+            variables("var1", "var2")
+        }
+
+        // then
+        assertEquals(expected, testee)
+    }
+
+    @Test
+    fun `should be equal 2`() {
+        // given
+        val testee = createInherit {
+            default(false)
+            variables(true)
+        }
+
+        val expected = createInherit {
+            default(false)
+            variables(true)
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }

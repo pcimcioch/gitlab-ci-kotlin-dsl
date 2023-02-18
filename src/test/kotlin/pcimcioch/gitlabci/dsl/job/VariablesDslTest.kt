@@ -1,5 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
@@ -13,8 +14,9 @@ internal class VariablesDslTest : DslTestBase<VariablesDsl>(VariablesDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "key1": "value 1"
                 """
         )
@@ -26,8 +28,9 @@ internal class VariablesDslTest : DslTestBase<VariablesDsl>(VariablesDsl.seriali
         val testee = createVariables(mapOf("key1" to "value 1", "key2" to "value 2"))
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "key1": "value 1"
                     "key2": "value 2"
                 """
@@ -42,8 +45,9 @@ internal class VariablesDslTest : DslTestBase<VariablesDsl>(VariablesDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "key1": "value 1"
                     "key2": "value 2"
                     "key3": "value 3"
@@ -54,11 +58,17 @@ internal class VariablesDslTest : DslTestBase<VariablesDsl>(VariablesDsl.seriali
     @Test
     fun `should create from enum map`() {
         // given
-        val testee = createVariables(mapOf(RunnerSettingsVariables.GIT_CLONE_PATH to "1", RunnerSettingsVariables.RESTORE_CACHE_ATTEMPTS to "3"))
+        val testee = createVariables(
+            mapOf(
+                RunnerSettingsVariables.GIT_CLONE_PATH to "1",
+                RunnerSettingsVariables.RESTORE_CACHE_ATTEMPTS to "3"
+            )
+        )
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "GIT_CLONE_PATH": "1"
                     "RESTORE_CACHE_ATTEMPTS": "3"
                 """
@@ -68,13 +78,19 @@ internal class VariablesDslTest : DslTestBase<VariablesDsl>(VariablesDsl.seriali
     @Test
     fun `should create from enum map and block`() {
         // given
-        val testee = createVariables(mapOf(RunnerSettingsVariables.GIT_CLONE_PATH to "1", RunnerSettingsVariables.RESTORE_CACHE_ATTEMPTS to "3")) {
+        val testee = createVariables(
+            mapOf(
+                RunnerSettingsVariables.GIT_CLONE_PATH to "1",
+                RunnerSettingsVariables.RESTORE_CACHE_ATTEMPTS to "3"
+            )
+        ) {
             add(RunnerSettingsVariables.GET_SOURCES_ATTEMPTS, 4)
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "GIT_CLONE_PATH": "1"
                     "RESTORE_CACHE_ATTEMPTS": "3"
                     "GET_SOURCES_ATTEMPTS": "4"
@@ -88,11 +104,12 @@ internal class VariablesDslTest : DslTestBase<VariablesDsl>(VariablesDsl.seriali
         val testee = createVariables {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     {}
                 """,
-                "[variables] variables map cannot be empty"
+            "[variables] variables map cannot be empty"
         )
     }
 
@@ -104,8 +121,9 @@ internal class VariablesDslTest : DslTestBase<VariablesDsl>(VariablesDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "key1": "value 1"
                 """
         )
@@ -120,8 +138,9 @@ internal class VariablesDslTest : DslTestBase<VariablesDsl>(VariablesDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "key1": "value 1"
                     "key2": "value 2"
                 """
@@ -139,8 +158,9 @@ internal class VariablesDslTest : DslTestBase<VariablesDsl>(VariablesDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "key1": "value 1"
                     "GIT_CLONE_PATH": "value 2"
                     "key3": "value 3"
@@ -153,8 +173,8 @@ internal class VariablesDslTest : DslTestBase<VariablesDsl>(VariablesDsl.seriali
     fun `should create direct access`() {
         // given
         val map = mutableMapOf(
-                "key1" to "value 1",
-                "key2" to "value 2"
+            "key1" to "value 1",
+            "key2" to "value 2"
         )
 
         val testee = createVariables {
@@ -162,8 +182,9 @@ internal class VariablesDslTest : DslTestBase<VariablesDsl>(VariablesDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "key1": "value 1"
                     "key2": "value 2"
                 """
@@ -179,8 +200,9 @@ internal class VariablesDslTest : DslTestBase<VariablesDsl>(VariablesDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "key1": "value 2"
                 """
         )
@@ -205,8 +227,9 @@ internal class VariablesDslTest : DslTestBase<VariablesDsl>(VariablesDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "GIT_STRATEGY": "clone"
                     "GIT_SUBMODULE_STRATEGY": "recursive"
                     "GIT_CHECKOUT": "true"
@@ -231,8 +254,9 @@ internal class VariablesDslTest : DslTestBase<VariablesDsl>(VariablesDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "GIT_CLEAN_FLAGS": "none"
                 """
         )
@@ -251,13 +275,31 @@ internal class VariablesDslTest : DslTestBase<VariablesDsl>(VariablesDsl.seriali
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     "key1": "string"
                     "key2": "15"
                     "key3": "false"
                     "key4": "test"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createVariables {
+            add("one", "one")
+            add("two", "two")
+        }
+
+        val expected = createVariables {
+            add("one", "one")
+            add("two", "two")
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }

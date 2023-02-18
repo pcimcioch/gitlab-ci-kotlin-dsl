@@ -21,8 +21,27 @@ class SecretsDsl : DslBase() {
     infix fun String.to(value: SecretDsl) = add(this, value)
     infix fun String.to(vault: String) = add(this, vault)
     infix fun String.to(block: SecretVaultDsl.() -> Unit) = add(this, block)
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
 
-    object SecretsDslSerializer : ValueSerializer<SecretsDsl, Map<String, SecretDsl>>(MapSerializer(String.serializer(), SecretDsl.serializer()), SecretsDsl::secrets)
+        other as SecretsDsl
+
+        if (secrets != other.secrets) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return secrets.hashCode()
+    }
+
+
+    object SecretsDslSerializer : ValueSerializer<SecretsDsl, Map<String, SecretDsl>>(
+        MapSerializer(String.serializer(), SecretDsl.serializer()),
+        SecretsDsl::secrets
+    )
+
     companion object {
         init {
             addSerializer(SecretsDsl::class, serializer())
@@ -31,9 +50,12 @@ class SecretsDsl : DslBase() {
 }
 
 fun createSecrets(block: SecretsDsl.() -> Unit = {}) = SecretsDsl().apply(block)
-fun createSecrets(elements: Map<String, String>, block: SecretsDsl.() -> Unit = {}) = SecretsDsl().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+fun createSecrets(elements: Map<String, String>, block: SecretsDsl.() -> Unit = {}) =
+    SecretsDsl().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+
 @JvmName("createSecretsFromDsl")
-fun createSecrets(elements: Map<String, SecretDsl>, block: SecretsDsl.() -> Unit = {}) = SecretsDsl().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+fun createSecrets(elements: Map<String, SecretDsl>, block: SecretsDsl.() -> Unit = {}) =
+    SecretsDsl().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
 
 @Serializable
 class SecretDsl : DslBase() {
@@ -64,11 +86,27 @@ class SecretDsl : DslBase() {
     }
 
     private fun ensureVaultDsl() = vaultDsl ?: SecretVaultDsl().also { vaultDsl = it }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as SecretDsl
+
+        if (vault != other.vault) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return vault?.hashCode() ?: 0
+    }
+
 
     object VaultSerializer : TwoTypeSerializer<Any>(
-            PrimitiveSerialDescriptor("Vault", PrimitiveKind.STRING),
-            String::class, String.serializer(),
-            SecretVaultDsl::class, SecretVaultDsl.serializer())
+        PrimitiveSerialDescriptor("Vault", PrimitiveKind.STRING),
+        String::class, String.serializer(),
+        SecretVaultDsl::class, SecretVaultDsl.serializer()
+    )
 
     companion object {
         init {
@@ -90,6 +128,26 @@ class SecretVaultDsl : DslBase() {
     fun engine(block: SecretVaultEngineDsl.() -> Unit = {}) = ensureEngine().apply(block)
 
     private fun ensureEngine() = engine ?: SecretVaultEngineDsl().also { engine = it }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as SecretVaultDsl
+
+        if (engine != other.engine) return false
+        if (path != other.path) return false
+        if (field != other.field) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = engine?.hashCode() ?: 0
+        result = 31 * result + (path?.hashCode() ?: 0)
+        result = 31 * result + (field?.hashCode() ?: 0)
+        return result
+    }
+
 
     companion object {
         init {
@@ -101,14 +159,33 @@ class SecretVaultDsl : DslBase() {
 fun createSecretVault(block: SecretVaultDsl.() -> Unit = {}) = SecretVaultDsl().apply(block)
 
 @Serializable
-class SecretVaultEngineDsl: DslBase() {
+class SecretVaultEngineDsl : DslBase() {
     var name: String? = null
     var path: String? = null
+
 
     companion object {
         init {
             addSerializer(SecretVaultEngineDsl::class, serializer())
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as SecretVaultEngineDsl
+
+        if (name != other.name) return false
+        if (path != other.path) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = name?.hashCode() ?: 0
+        result = 31 * result + (path?.hashCode() ?: 0)
+        return result
     }
 }
 

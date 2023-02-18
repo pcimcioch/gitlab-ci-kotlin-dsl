@@ -1,5 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 import pcimcioch.gitlabci.dsl.Duration
@@ -12,8 +13,9 @@ internal class RuleDslTest : DslTestBase<RuleDsl>(RuleDsl.serializer()) {
         val testee = createRule {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     {}
                 """
         )
@@ -32,8 +34,9 @@ internal class RuleDslTest : DslTestBase<RuleDsl>(RuleDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     if: "condition"
                     changes:
                     - "file 1"
@@ -58,13 +61,14 @@ internal class RuleDslTest : DslTestBase<RuleDsl>(RuleDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     if: "condition"
                     when: "always"
                     start_in: "10 min"
                 """,
-                "[rule] startIn can be used only with when=delayed jobs"
+            "[rule] startIn can be used only with when=delayed jobs"
         )
     }
 
@@ -78,8 +82,9 @@ internal class RuleDslTest : DslTestBase<RuleDsl>(RuleDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     if: "condition"
                     changes: []
                     exists: []
@@ -97,8 +102,9 @@ internal class RuleDslTest : DslTestBase<RuleDsl>(RuleDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     if: "condition"
                     changes:
                     - "file 1"
@@ -118,8 +124,9 @@ internal class RuleDslTest : DslTestBase<RuleDsl>(RuleDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     if: "condition"
                     changes:
                     - "file 1"
@@ -143,8 +150,9 @@ internal class RuleDslTest : DslTestBase<RuleDsl>(RuleDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     if: "condition"
                     changes:
                     - "file 1"
@@ -170,8 +178,9 @@ internal class RuleDslTest : DslTestBase<RuleDsl>(RuleDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     if: "condition"
                     changes:
                     - "file 1"
@@ -181,6 +190,29 @@ internal class RuleDslTest : DslTestBase<RuleDsl>(RuleDsl.serializer()) {
                     - "file 4"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createRule {
+            ifCondition = "condition"
+            changes("one", "two")
+            exists("one", "two")
+            whenRun = WhenRunType.ALWAYS
+            startIn = Duration(minutes = 10)
+        }
+
+        val expected = createRule {
+            ifCondition = "condition"
+            changes("one", "two")
+            exists("one", "two")
+            whenRun = WhenRunType.ALWAYS
+            startIn = Duration(minutes = 10)
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }
 
@@ -192,8 +224,9 @@ internal class RuleListDslTest : DslTestBase<RuleListDsl>(RuleListDsl.serializer
         val testee = createRules {}
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     []
                 """
         )
@@ -214,8 +247,9 @@ internal class RuleListDslTest : DslTestBase<RuleListDsl>(RuleListDsl.serializer
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - if: "condition"
                       when: "manual"
                     - when: "never"
@@ -234,12 +268,34 @@ internal class RuleListDslTest : DslTestBase<RuleListDsl>(RuleListDsl.serializer
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - when: "manual"
                       start_in: "10 min"
                 """,
-                "[rule] startIn can be used only with when=delayed jobs"
+            "[rule] startIn can be used only with when=delayed jobs"
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = createRules {
+            rule {
+                whenRun = WhenRunType.MANUAL
+                startIn = Duration(minutes = 10)
+            }
+        }
+
+        val expected = createRules {
+            rule {
+                whenRun = WhenRunType.MANUAL
+                startIn = Duration(minutes = 10)
+            }
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }

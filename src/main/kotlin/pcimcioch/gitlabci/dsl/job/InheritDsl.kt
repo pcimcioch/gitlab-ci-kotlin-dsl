@@ -59,16 +59,36 @@ class InheritDsl : DslBase() {
 
     private fun ensureDefaultSet() = defaultSet ?: mutableSetOf<InheritDefaultType>().also { defaultSet = it }
     private fun ensureVariablesSet() = variablesSet ?: mutableSetOf<String>().also { variablesSet = it }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as InheritDsl
+
+        if (default != other.default) return false
+        if (variables != other.variables) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = default?.hashCode() ?: 0
+        result = 31 * result + (variables?.hashCode() ?: 0)
+        return result
+    }
+
 
     object VariablesSerializer : TwoTypeSerializer<Any>(
-            PrimitiveSerialDescriptor("Variables", PrimitiveKind.BOOLEAN),
-            Boolean::class, Boolean.serializer(),
-            Set::class, SetSerializer(String.serializer()))
+        PrimitiveSerialDescriptor("Variables", PrimitiveKind.BOOLEAN),
+        Boolean::class, Boolean.serializer(),
+        Set::class, SetSerializer(String.serializer())
+    )
 
     object DefaultSerializer : TwoTypeSerializer<Any>(
-            PrimitiveSerialDescriptor("Default", PrimitiveKind.BOOLEAN),
-            Boolean::class, Boolean.serializer(),
-            Set::class, SetSerializer(InheritDefaultType.InheritDefaultTypeSerializer))
+        PrimitiveSerialDescriptor("Default", PrimitiveKind.BOOLEAN),
+        Boolean::class, Boolean.serializer(),
+        Set::class, SetSerializer(InheritDefaultType.InheritDefaultTypeSerializer)
+    )
 
     companion object {
         init {
@@ -81,7 +101,7 @@ fun createInherit(block: InheritDsl.() -> Unit = {}) = InheritDsl().apply(block)
 
 @Serializable(with = InheritDefaultType.InheritDefaultTypeSerializer::class)
 enum class InheritDefaultType(
-        override val stringRepresentation: String
+    override val stringRepresentation: String
 ) : StringRepresentation {
     IMAGE("image"),
     SERVICES("services"),

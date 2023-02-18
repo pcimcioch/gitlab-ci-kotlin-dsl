@@ -21,6 +21,23 @@ class RetryDsl(
     }
 
     private fun ensureWhenRetry() = whenRetry ?: mutableSetOf<WhenRetryType>().also { whenRetry = it }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as RetryDsl
+
+        if (max != other.max) return false
+        if (whenRetry != other.whenRetry) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = max ?: 0
+        result = 31 * result + (whenRetry?.hashCode() ?: 0)
+        return result
+    }
 
     companion object {
         init {

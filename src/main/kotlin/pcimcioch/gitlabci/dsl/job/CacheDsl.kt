@@ -1,7 +1,7 @@
 package pcimcioch.gitlabci.dsl.job
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -55,11 +55,36 @@ class CacheDsl : DslBase() {
 
     private fun ensureKeyDsl() = keyDsl ?: CacheKeyDsl().also { keyDsl = it }
     private fun ensurePaths() = paths ?: mutableSetOf<String>().also { paths = it }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as CacheDsl
+
+        if (paths != other.paths) return false
+        if (untracked != other.untracked) return false
+        if (policy != other.policy) return false
+        if (whenCache != other.whenCache) return false
+        if (key != other.key) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = paths?.hashCode() ?: 0
+        result = 31 * result + (untracked?.hashCode() ?: 0)
+        result = 31 * result + (policy?.hashCode() ?: 0)
+        result = 31 * result + (whenCache?.hashCode() ?: 0)
+        result = 31 * result + (key?.hashCode() ?: 0)
+        return result
+    }
+
 
     object KeySerializer : TwoTypeSerializer<Any>(
-            PrimitiveSerialDescriptor("Key", PrimitiveKind.STRING),
-            String::class, String.serializer(),
-            CacheKeyDsl::class, CacheKeyDsl.serializer())
+        PrimitiveSerialDescriptor("Key", PrimitiveKind.STRING),
+        String::class, String.serializer(),
+        CacheKeyDsl::class, CacheKeyDsl.serializer()
+    )
 
     companion object {
         init {
@@ -70,7 +95,8 @@ class CacheDsl : DslBase() {
 
 fun createCache(block: CacheDsl.() -> Unit = {}) = CacheDsl().apply(block)
 fun createCache(vararg elements: String, block: CacheDsl.() -> Unit = {}) = createCache(elements.toList(), block)
-fun createCache(elements: Iterable<String>, block: CacheDsl.() -> Unit = {}) = CacheDsl().apply { paths(elements) }.apply(block)
+fun createCache(elements: Iterable<String>, block: CacheDsl.() -> Unit = {}) =
+    CacheDsl().apply { paths(elements) }.apply(block)
 
 @Serializable
 class CacheKeyDsl : DslBase() {
@@ -82,15 +108,37 @@ class CacheKeyDsl : DslBase() {
 
     override fun validate(errors: MutableList<String>) {
         addError(errors, files?.isNotEmpty() != true, "[key] files list can't be empty")
-        addError(errors,
-                "." == prefix || "%2E" == prefix || "%2e" == prefix,
-                "[key] prefix value '$prefix' can't be '.' nor '%2E'")
-        addError(errors,
-                prefix?.contains("/") == true || prefix?.contains("%2F") == true || prefix?.contains("%2f") == true,
-                "[key] prefix value '$prefix' can't contain '/' nor '%2F'")
+        addError(
+            errors,
+            "." == prefix || "%2E" == prefix || "%2e" == prefix,
+            "[key] prefix value '$prefix' can't be '.' nor '%2E'"
+        )
+        addError(
+            errors,
+            prefix?.contains("/") == true || prefix?.contains("%2F") == true || prefix?.contains("%2f") == true,
+            "[key] prefix value '$prefix' can't contain '/' nor '%2F'"
+        )
     }
 
     private fun ensureFiles() = files ?: mutableSetOf<String>().also { files = it }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as CacheKeyDsl
+
+        if (prefix != other.prefix) return false
+        if (files != other.files) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = prefix?.hashCode() ?: 0
+        result = 31 * result + (files?.hashCode() ?: 0)
+        return result
+    }
+
 
     companion object {
         init {
@@ -103,7 +151,7 @@ fun createCacheKey(block: CacheKeyDsl.() -> Unit = {}) = CacheKeyDsl().apply(blo
 
 @Serializable(with = CachePolicy.CachePolicySerializer::class)
 enum class CachePolicy(
-        override val stringRepresentation: String
+    override val stringRepresentation: String
 ) : StringRepresentation {
     PULL("pull"),
     PULL_PUSH("pull-push"),
@@ -114,7 +162,7 @@ enum class CachePolicy(
 
 @Serializable(with = WhenCacheType.WhenCacheTypeSerializer::class)
 enum class WhenCacheType(
-        override val stringRepresentation: String
+    override val stringRepresentation: String
 ) : StringRepresentation {
     ON_SUCCESS("on_success"),
     ON_FAILURE("on_failure"),

@@ -1,5 +1,6 @@
 package pcimcioch.gitlabci.dsl.include
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
@@ -11,8 +12,9 @@ internal class IncludeDslTest : DslTestBase<IncludeDsl>(IncludeDsl.serializer())
         val testee = IncludeDsl()
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     []
                 """
         )
@@ -33,8 +35,9 @@ internal class IncludeDslTest : DslTestBase<IncludeDsl>(IncludeDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - local: "local 1"
                     - project: "project 1"
                       file: "file 1"
@@ -67,8 +70,9 @@ internal class IncludeDslTest : DslTestBase<IncludeDsl>(IncludeDsl.serializer())
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - local: "local 1"
                     - project: "project 1"
                       file: "file 1"
@@ -79,5 +83,34 @@ internal class IncludeDslTest : DslTestBase<IncludeDsl>(IncludeDsl.serializer())
                     - remote: "remote 1"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = IncludeDsl().apply {
+            local("local 1")
+            file("project 1", "file 1")
+            template("template 1")
+            remote("remote 1")
+            local("local 2")
+            file("project 2", "file 2", "ref 2")
+            template("template 2")
+            remote("remote 2")
+        }
+
+        val expected = IncludeDsl().apply {
+            local("local 1")
+            file("project 1", "file 1")
+            template("template 1")
+            remote("remote 1")
+            local("local 2")
+            file("project 2", "file 2", "ref 2")
+            template("template 2")
+            remote("remote 2")
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }

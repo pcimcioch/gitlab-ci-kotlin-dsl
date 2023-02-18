@@ -1,5 +1,6 @@
 package pcimcioch.gitlabci.dsl.stage
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pcimcioch.gitlabci.dsl.DslTestBase
 
@@ -13,8 +14,9 @@ internal class StagesDslTest : DslTestBase<StagesDsl>(StagesDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - "stage 1"
                 """
         )
@@ -29,8 +31,9 @@ internal class StagesDslTest : DslTestBase<StagesDsl>(StagesDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - "stage 1"
                     - "stage 2"
                 """
@@ -43,8 +46,9 @@ internal class StagesDslTest : DslTestBase<StagesDsl>(StagesDsl.serializer()) {
         val testee = StagesDsl()
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     []
                 """
         )
@@ -59,8 +63,9 @@ internal class StagesDslTest : DslTestBase<StagesDsl>(StagesDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - "stage 1"
                     - "stage 2"
                 """
@@ -75,11 +80,27 @@ internal class StagesDslTest : DslTestBase<StagesDsl>(StagesDsl.serializer()) {
         }
 
         // then
-        assertDsl(testee,
-                """
+        assertDsl(
+            testee,
+            """
                     - "stage 1"
                     - "stage 2"
                 """
         )
+    }
+
+    @Test
+    fun `should be equal`() {
+        // given
+        val testee = StagesDsl().apply {
+            stages = mutableListOf("stage 1", "stage 2")
+        }
+
+        val expected = StagesDsl().apply {
+            stages = mutableListOf("stage 1", "stage 2")
+        }
+
+        // then
+        assertEquals(expected, testee)
     }
 }

@@ -1,5 +1,7 @@
 package pcimcioch.gitlabci.dsl
 
+import com.charleskorn.kaml.Yaml
+import com.charleskorn.kaml.YamlConfiguration
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -13,6 +15,13 @@ import kotlin.reflect.KClass
 abstract class DslBase {
 
     open fun validate(errors: MutableList<String>) {}
+
+    override fun toString(): String {
+        val config = YamlConfiguration(encodeDefaults = false)
+        val yaml = Yaml(configuration = config)
+
+        return yaml.encodeToString(serializer(), this)
+    }
 
     companion object {
         private val serializers: MutableMap<KClass<out DslBase>, KSerializer<out DslBase>> = mutableMapOf()

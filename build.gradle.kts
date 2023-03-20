@@ -47,6 +47,9 @@ val dokkaJar by tasks.creating(Jar::class) {
 
 java {
     withSourcesJar()
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
 }
 
 publishing {

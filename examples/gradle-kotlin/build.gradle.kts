@@ -10,7 +10,7 @@ plugins {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
-    implementation("com.github.pcimcioch:gitlab-ci-kotlin-dsl:1.3.2")
+    implementation("com.github.pcimcioch:gitlab-ci-kotlin-dsl:1.4.1")
 }
 
 application {

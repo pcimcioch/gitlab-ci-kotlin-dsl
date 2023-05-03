@@ -12,6 +12,8 @@ class NeedJobDsl(
     var artifacts: Boolean? = null
     var project: String? = null
     var ref: String? = null
+    var pipeline: String? = null
+    var optional: Boolean? = null
 
     override fun validate(errors: MutableList<String>) {
         addError(errors, isEmpty(job), "[need job='$job'] job '$job' is incorrect")
@@ -27,6 +29,8 @@ class NeedJobDsl(
         if (artifacts != other.artifacts) return false
         if (project != other.project) return false
         if (ref != other.ref) return false
+        if (pipeline != other.pipeline) return false
+        if (optional != other.optional) return false
 
         return true
     }
@@ -36,6 +40,8 @@ class NeedJobDsl(
         result = 31 * result + (artifacts?.hashCode() ?: 0)
         result = 31 * result + (project?.hashCode() ?: 0)
         result = 31 * result + (ref?.hashCode() ?: 0)
+        result = 31 * result + (pipeline?.hashCode() ?: 0)
+        result = 31 * result + (optional?.hashCode() ?: 0)
         return result
     }
 

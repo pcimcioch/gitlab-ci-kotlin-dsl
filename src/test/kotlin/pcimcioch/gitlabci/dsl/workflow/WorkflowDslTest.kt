@@ -12,7 +12,7 @@ internal class WorkflowDslTest : DslTestBase<WorkflowDsl>(WorkflowDsl.serializer
     @Test
     fun `should validate nested objects`() {
         // when
-        val testee = WorkflowDsl().apply {
+        val testee = createWorkflow {
             rules {
                 rule {
                     whenRun = WhenRunType.MANUAL
@@ -50,7 +50,8 @@ internal class WorkflowDslTest : DslTestBase<WorkflowDsl>(WorkflowDsl.serializer
     @Test
     fun `should create full`() {
         // given
-        val testee = WorkflowDsl().apply {
+        val testee = createWorkflow {
+            name = "test workflow"
             rules {
                 rule {
                     ifCondition = "condition"
@@ -66,6 +67,7 @@ internal class WorkflowDslTest : DslTestBase<WorkflowDsl>(WorkflowDsl.serializer
         assertDsl(
             testee,
             """
+                    name: "test workflow"
                     rules:
                     - if: "condition"
                       when: "manual"
@@ -86,7 +88,7 @@ internal class WorkflowDslTest : DslTestBase<WorkflowDsl>(WorkflowDsl.serializer
                 whenRun = WhenRunType.NEVER
             }
         }
-        val testee = WorkflowDsl().apply {
+        val testee = createWorkflow {
             rules = rulesDsl
         }
 
@@ -103,8 +105,9 @@ internal class WorkflowDslTest : DslTestBase<WorkflowDsl>(WorkflowDsl.serializer
     }
 
     @Test
-    fun `should be euqal`() {
-        val testee = WorkflowDsl().apply {
+    fun `should be equal`() {
+        val testee = createWorkflow {
+            name = "test"
             rules {
                 rule {
                     whenRun = WhenRunType.MANUAL
@@ -113,7 +116,8 @@ internal class WorkflowDslTest : DslTestBase<WorkflowDsl>(WorkflowDsl.serializer
             }
         }
 
-        val expected = WorkflowDsl().apply {
+        val expected = createWorkflow {
+            name = "test"
             rules {
                 rule {
                     whenRun = WhenRunType.MANUAL

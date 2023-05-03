@@ -2,10 +2,12 @@ package pcimcioch.gitlabci.dsl.workflow
 
 import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
+import pcimcioch.gitlabci.dsl.job.ArtifactsDsl
 import pcimcioch.gitlabci.dsl.job.RuleListDsl
 
 @Serializable
 class WorkflowDsl : DslBase() {
+    var name: String? = null
     var rules: RuleListDsl? = null
 
     fun rules(block: RuleListDsl.() -> Unit = {}) = ensureRules().apply(block)
@@ -22,12 +24,15 @@ class WorkflowDsl : DslBase() {
         other as WorkflowDsl
 
         if (rules != other.rules) return false
+        if (name != other.name) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return rules?.hashCode() ?: 0
+        var result = name?.hashCode() ?: 0
+        result = 31 * result + (rules?.hashCode() ?: 0)
+        return result
     }
 
     companion object {
@@ -36,3 +41,5 @@ class WorkflowDsl : DslBase() {
         }
     }
 }
+
+fun createWorkflow(block: WorkflowDsl.() -> Unit = {}) = WorkflowDsl().apply(block)

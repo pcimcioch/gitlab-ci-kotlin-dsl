@@ -167,11 +167,14 @@ internal class SecretsDslTest : DslTestBase<SecretsDsl>(SecretsDsl.serializer())
     @Test
     fun `should allow multiple types of adding`() {
         // given
-        val value2Dsl = createSecret("value 2")
         val value5Dsl = createSecret("value 5")
         val testee = createSecrets {
             add("key1", "value 1")
-            add("key2", value2Dsl)
+            addSecret("key2") {
+                vault("value 2")
+                file = true
+                token = "testToken"
+            }
             add("key3") {
                 path = "path 3"
             }
@@ -189,6 +192,8 @@ internal class SecretsDslTest : DslTestBase<SecretsDsl>(SecretsDsl.serializer())
                     "key1":
                       vault: "value 1"
                     "key2":
+                      file: true
+                      token: "testToken"
                       vault: "value 2"
                     "key3":
                       vault:

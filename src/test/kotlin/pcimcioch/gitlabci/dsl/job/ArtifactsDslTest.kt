@@ -29,6 +29,7 @@ internal class ArtifactsDslTest : DslTestBase<ArtifactsDsl>(ArtifactsDsl.seriali
             name = "test"
             exposeAs = "exposed"
             untracked = true
+            public = false
             whenUpload = WhenUploadType.ALWAYS
             expireIn = Duration(days = 1)
             paths("p 1")
@@ -45,6 +46,7 @@ internal class ArtifactsDslTest : DslTestBase<ArtifactsDsl>(ArtifactsDsl.seriali
                     name: "test"
                     expose_as: "exposed"
                     untracked: true
+                    public: false
                     when: "always"
                     expire_in: "1 day"
                     paths:

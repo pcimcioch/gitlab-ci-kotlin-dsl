@@ -141,6 +141,7 @@ internal class EnvironmentDslTest : DslTestBase<EnvironmentDsl>(EnvironmentDsl.s
             url = "https://test.com"
             onStop = "test"
             action = EnvironmentAction.STOP
+            deploymentTier = DeploymentTier.PRODUCTION
             autoStopIn = Duration(minutes = 20)
             kubernetes("kubernetesNamespace")
         }
@@ -153,6 +154,7 @@ internal class EnvironmentDslTest : DslTestBase<EnvironmentDsl>(EnvironmentDsl.s
                     url: "https://test.com"
                     on_stop: "test"
                     action: "stop"
+                    deployment_tier: "production"
                     auto_stop_in: "20 min"
                     kubernetes:
                       namespace: "kubernetesNamespace"

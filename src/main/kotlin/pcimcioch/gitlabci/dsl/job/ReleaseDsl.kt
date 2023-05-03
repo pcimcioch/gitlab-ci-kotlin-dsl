@@ -14,6 +14,9 @@ class ReleaseDsl(
 ) : DslBase() {
     var name: String? = null
     var description: String? = null
+
+    @SerialName("tag_message")
+    var tagMessage: String? = null
     var ref: String? = null
     var milestones: MutableSet<String>? = null
 
@@ -34,6 +37,7 @@ class ReleaseDsl(
         if (tagName != other.tagName) return false
         if (name != other.name) return false
         if (description != other.description) return false
+        if (tagMessage != other.tagMessage) return false
         if (ref != other.ref) return false
         if (milestones != other.milestones) return false
         if (releasedAt != other.releasedAt) return false
@@ -45,6 +49,7 @@ class ReleaseDsl(
         var result = tagName?.hashCode() ?: 0
         result = 31 * result + (name?.hashCode() ?: 0)
         result = 31 * result + (description?.hashCode() ?: 0)
+        result = 31 * result + (tagMessage?.hashCode() ?: 0)
         result = 31 * result + (ref?.hashCode() ?: 0)
         result = 31 * result + (milestones?.hashCode() ?: 0)
         result = 31 * result + (releasedAt?.hashCode() ?: 0)

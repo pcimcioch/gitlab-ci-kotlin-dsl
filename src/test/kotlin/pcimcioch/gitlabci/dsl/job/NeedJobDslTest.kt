@@ -123,6 +123,8 @@ internal class NeedJobDslTest : DslTestBase<NeedJobDsl>(NeedJobDsl.serializer())
             project = "proj"
             artifacts = true
             ref = "ref"
+            optional = true
+            pipeline = "pip"
         }
 
         // then
@@ -133,6 +135,8 @@ internal class NeedJobDslTest : DslTestBase<NeedJobDsl>(NeedJobDsl.serializer())
                     artifacts: true
                     project: "proj"
                     ref: "ref"
+                    pipeline: "pip"
+                    optional: true
                 """
         )
     }

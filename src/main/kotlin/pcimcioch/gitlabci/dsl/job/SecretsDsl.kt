@@ -17,6 +17,7 @@ class SecretsDsl : DslBase() {
     fun add(name: String, value: SecretDsl) = secrets.put(name, value)
     fun add(name: String, vault: String) = secrets.put(name, SecretDsl().apply { this.vault(vault) })
     fun add(name: String, block: SecretVaultDsl.() -> Unit) = secrets.put(name, SecretDsl().apply { vault(block) })
+    fun addSecret(name: String, block: SecretDsl.() -> Unit) = secrets.put(name, SecretDsl().apply(block))
 
     infix fun String.to(value: SecretDsl) = add(this, value)
     infix fun String.to(vault: String) = add(this, vault)
@@ -65,6 +66,9 @@ class SecretDsl : DslBase() {
     @Transient
     private var vaultDsl: SecretVaultDsl? = null
 
+    var file: Boolean? = null
+    var token: String? = null
+
     @Serializable(with = VaultSerializer::class)
     var vault: Any? = null
         get() = vaultString ?: vaultDsl
@@ -86,6 +90,7 @@ class SecretDsl : DslBase() {
     }
 
     private fun ensureVaultDsl() = vaultDsl ?: SecretVaultDsl().also { vaultDsl = it }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -93,12 +98,17 @@ class SecretDsl : DslBase() {
         other as SecretDsl
 
         if (vault != other.vault) return false
+        if (file != other.file) return false
+        if (token != other.token) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return vault?.hashCode() ?: 0
+        var result = vault?.hashCode() ?: 0
+        result = 31 * result + (file?.hashCode() ?: 0)
+        result = 31 * result + (token?.hashCode() ?: 0)
+        return result
     }
 
 

@@ -43,4 +43,10 @@ internal class DurationTest {
         assertThat(Duration(years = 10, minutes = 50, seconds = 60).toString()).isEqualTo("10 y 50 min 60 sec")
         assertThat(Duration(minutes = 360000).toString()).isEqualTo("360000 min")
     }
+
+    @Test
+    fun `should format never`() {
+        assertThat(Duration(never = true).toString()).isEqualTo("never")
+        assertThat(Duration(never = true, minutes = 10, hours = 2).toString()).isEqualTo("never")
+    }
 }

@@ -42,6 +42,7 @@ internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer())
         // given
         val testee = createService {
             name = "test"
+            pullPolicy(PullPolicy.ALWAYS)
         }
 
         // then
@@ -49,6 +50,8 @@ internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer())
             testee,
             """
                     name: "test"
+                    pull_policy:
+                    - "always"
                 """
         )
     }
@@ -91,6 +94,7 @@ internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer())
         val testee = createService("name") {
             command = mutableListOf("c 1", "c 2")
             entrypoint = mutableListOf("e 1", "e 2")
+            pullPolicy = mutableListOf(PullPolicy.NEVER)
         }
 
         // then
@@ -104,18 +108,22 @@ internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer())
                     entrypoint:
                     - "e 1"
                     - "e 2"
+                    pull_policy:
+                    - "never"
                 """
         )
     }
 
     @Test
-    fun `should merge command and entrypoint`() {
+    fun `should merge lists`() {
         // given
         val testee = createService("name") {
             cmd("c 1", "c 2")
             entrypoint("e 1", "e 2")
+            pullPolicy(PullPolicy.ALWAYS)
             cmd("c 10", "c 20")
             entrypoint("e 10", "e 20")
+            pullPolicy(PullPolicy.IF_NOT_PRESENT)
         }
 
         // then
@@ -133,16 +141,20 @@ internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer())
                     - "e 2"
                     - "e 10"
                     - "e 20"
+                    pull_policy:
+                    - "always"
+                    - "if-not-present"
                 """
         )
     }
 
     @Test
-    fun `should create empty command and entrypoint`() {
+    fun `should create empty lists`() {
         // given
         val testee = createService("name") {
             cmd()
             entrypoint()
+            pullPolicy()
         }
 
         // then
@@ -152,16 +164,18 @@ internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer())
                     name: "name"
                     command: []
                     entrypoint: []
+                    pull_policy: []
                 """
         )
     }
 
     @Test
-    fun `should create one element command and entrypoint`() {
+    fun `should create one element lists`() {
         // given
         val testee = createService("name") {
             cmd("c 1")
             entrypoint("e 1")
+            pullPolicy(PullPolicy.NEVER)
         }
 
         // then
@@ -173,16 +187,19 @@ internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer())
                     - "c 1"
                     entrypoint:
                     - "e 1"
+                    pull_policy:
+                    - "never"
                 """
         )
     }
 
     @Test
-    fun `should create multiple elements command and entrypoint`() {
+    fun `should create multiple elements lists`() {
         // given
         val testee = createService("name") {
             cmd(listOf("c 1", "c 2"))
             entrypoint(listOf("e 1", "e 2"))
+            pullPolicy(listOf(PullPolicy.ALWAYS, PullPolicy.IF_NOT_PRESENT))
         }
 
         // then
@@ -196,6 +213,9 @@ internal class ServiceDslTest : DslTestBase<ServiceDsl>(ServiceDsl.serializer())
                     entrypoint:
                     - "e 1"
                     - "e 2"
+                    pull_policy:
+                    - "always"
+                    - "if-not-present"
                 """
         )
     }

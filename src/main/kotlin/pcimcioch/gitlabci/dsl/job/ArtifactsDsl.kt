@@ -14,6 +14,7 @@ class ArtifactsDsl : DslBase() {
     @SerialName("expose_as")
     var exposeAs: String? = null
     var untracked: Boolean? = null
+    var public: Boolean? = null
 
     @SerialName("when")
     var whenUpload: WhenUploadType? = null
@@ -48,6 +49,7 @@ class ArtifactsDsl : DslBase() {
         if (name != other.name) return false
         if (exposeAs != other.exposeAs) return false
         if (untracked != other.untracked) return false
+        if (public != other.public) return false
         if (whenUpload != other.whenUpload) return false
         if (expireIn != other.expireIn) return false
         if (paths != other.paths) return false
@@ -61,6 +63,7 @@ class ArtifactsDsl : DslBase() {
         var result = name?.hashCode() ?: 0
         result = 31 * result + (exposeAs?.hashCode() ?: 0)
         result = 31 * result + (untracked?.hashCode() ?: 0)
+        result = 31 * result + (public?.hashCode() ?: 0)
         result = 31 * result + (whenUpload?.hashCode() ?: 0)
         result = 31 * result + (expireIn?.hashCode() ?: 0)
         result = 31 * result + (paths?.hashCode() ?: 0)

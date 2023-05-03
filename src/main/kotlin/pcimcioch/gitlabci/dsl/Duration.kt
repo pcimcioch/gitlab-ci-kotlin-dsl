@@ -11,7 +11,8 @@ data class Duration(
         val days: Int = 0,
         val hours: Int = 0,
         val minutes: Int = 0,
-        val seconds: Int = 0
+        val seconds: Int = 0,
+        val never: Boolean = false
 ) {
     init {
         require(years >= 0) { "Argument |years| must be greater or equal zero. years=$years" }
@@ -20,18 +21,20 @@ data class Duration(
         require(hours >= 0) { "Argument |hours| must be greater or equal zero. hours=$hours" }
         require(minutes >= 0) { "Argument |minutes| must be greater or equal zero. minutes=$minutes" }
         require(seconds >= 0) { "Argument |seconds| must be greater or equal zero. seconds=$seconds" }
-        require(years + months + days + hours + minutes + seconds > 0) { "Duration can't be zero" }
+        require(years + months + days + hours + minutes + seconds > 0 || never) { "Duration can't be zero" }
     }
 
     override fun toString(): String {
         val terms = mutableListOf<String>()
 
-        if (years > 0) terms.add("$years y")
-        if (months > 0) terms.add("$months mo")
-        if (days > 0) terms.add("$days day")
-        if (hours > 0) terms.add("$hours hr")
-        if (minutes > 0) terms.add("$minutes min")
-        if (seconds > 0) terms.add("$seconds sec")
+        if (never) terms.add("never") else {
+            if (years > 0) terms.add("$years y")
+            if (months > 0) terms.add("$months mo")
+            if (days > 0) terms.add("$days day")
+            if (hours > 0) terms.add("$hours hr")
+            if (minutes > 0) terms.add("$minutes min")
+            if (seconds > 0) terms.add("$seconds sec")
+        }
 
         return terms.joinToString(" ")
     }

@@ -15,6 +15,7 @@ import pcimcioch.gitlabci.dsl.serializer.TwoTypeSerializer
 class CacheDsl : DslBase() {
     var paths: MutableSet<String>? = null
     var untracked: Boolean? = null
+    var unprotect: Boolean? = null
     var policy: CachePolicy? = null
 
     @SerialName("when")
@@ -63,6 +64,7 @@ class CacheDsl : DslBase() {
 
         if (paths != other.paths) return false
         if (untracked != other.untracked) return false
+        if (unprotect != other.unprotect) return false
         if (policy != other.policy) return false
         if (whenCache != other.whenCache) return false
         if (key != other.key) return false
@@ -73,6 +75,7 @@ class CacheDsl : DslBase() {
     override fun hashCode(): Int {
         var result = paths?.hashCode() ?: 0
         result = 31 * result + (untracked?.hashCode() ?: 0)
+        result = 31 * result + (unprotect?.hashCode() ?: 0)
         result = 31 * result + (policy?.hashCode() ?: 0)
         result = 31 * result + (whenCache?.hashCode() ?: 0)
         result = 31 * result + (key?.hashCode() ?: 0)

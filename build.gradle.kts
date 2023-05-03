@@ -16,8 +16,8 @@ dependencies {
 
     api("org.jetbrains.kotlinx:kotlinx-datetime:0.3.1")
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
-    testImplementation("org.assertj:assertj-core:3.22.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
+    testImplementation("org.assertj:assertj-core:3.24.2")
 }
 
 tasks {
@@ -96,5 +96,6 @@ publishing {
 }
 
 signing {
+    useInMemoryPgpKeys(project.findProperty("signingKey").toString(), project.findProperty("signingPassword").toString())
     sign(publishing.publications["maven"])
 }

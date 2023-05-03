@@ -45,6 +45,7 @@ internal class ImageDslTest : DslTestBase<ImageDsl>(ImageDsl.serializer()) {
         val testee = createImage {
             name = "image 1"
             entrypoint(listOf("cmd 1"))
+            pullPolicy(PullPolicy.IF_NOT_PRESENT)
         }
 
         // then
@@ -54,6 +55,8 @@ internal class ImageDslTest : DslTestBase<ImageDsl>(ImageDsl.serializer()) {
                     name: "image 1"
                     entrypoint:
                     - "cmd 1"
+                    pull_policy:
+                    - "if-not-present"
                 """
         )
     }
@@ -197,11 +200,13 @@ internal class ImageDslTest : DslTestBase<ImageDsl>(ImageDsl.serializer()) {
         val testee = createImage("image 1") {
             entrypoint("cmd 1", "cmd 2")
             entrypoint("cmd 3", "cmd 4", "cmd 5")
+            pullPolicy(PullPolicy.ALWAYS)
         }
 
         val expected = createImage("image 1") {
             entrypoint("cmd 1", "cmd 2")
             entrypoint("cmd 3", "cmd 4", "cmd 5")
+            pullPolicy(PullPolicy.ALWAYS)
         }
 
         // then

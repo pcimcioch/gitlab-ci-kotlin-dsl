@@ -23,11 +23,17 @@ class RuleDsl : DslBase() {
     @SerialName("start_in")
     var startIn: Duration? = null
 
+    var variables: VariablesDsl? = null
+
     fun changes(vararg elements: String) = changes(elements.toList())
     fun changes(elements: Iterable<String>) = ensureChanges().addAll(elements)
 
     fun exists(vararg elements: String) = exists(elements.toList())
     fun exists(elements: Iterable<String>) = ensureExists().addAll(elements)
+
+    fun variables(block: VariablesDsl.() -> Unit = {}) = ensureVariables().apply(block)
+    fun variables(elements: Map<String, Any>, block: VariablesDsl.() -> Unit = {}) =
+        ensureVariables().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
 
     override fun validate(errors: MutableList<String>) {
         addError(
@@ -35,10 +41,14 @@ class RuleDsl : DslBase() {
             startIn != null && whenRun != WhenRunType.DELAYED,
             "[rule] startIn can be used only with when=delayed jobs"
         )
+
+        addErrors(errors, "[rule]", variables)
     }
 
     private fun ensureChanges() = changes ?: mutableSetOf<String>().also { changes = it }
     private fun ensureExists() = exists ?: mutableSetOf<String>().also { exists = it }
+    private fun ensureVariables() = variables ?: VariablesDsl().also { variables = it }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -51,6 +61,7 @@ class RuleDsl : DslBase() {
         if (allowFailure != other.allowFailure) return false
         if (whenRun != other.whenRun) return false
         if (startIn != other.startIn) return false
+        if (variables != other.variables) return false
 
         return true
     }
@@ -62,6 +73,7 @@ class RuleDsl : DslBase() {
         result = 31 * result + (allowFailure?.hashCode() ?: 0)
         result = 31 * result + (whenRun?.hashCode() ?: 0)
         result = 31 * result + (startIn?.hashCode() ?: 0)
+        result = 31 * result + (variables?.hashCode() ?: 0)
         return result
     }
 

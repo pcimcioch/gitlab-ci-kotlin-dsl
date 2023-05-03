@@ -1,6 +1,7 @@
 package pcimcioch.gitlabci.dsl
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.util.Maps
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -73,6 +74,10 @@ internal class GitlabCiDslTest {
                 image("")
             }
 
+            variables {
+                add("TEST", "value")
+            }
+
             job("image") {
                 script("test")
             }
@@ -95,6 +100,8 @@ internal class GitlabCiDslTest {
             "default":
               image:
                 name: ""
+            "variables":
+              "TEST": "value"
             "image":
               script:
               - "test"
@@ -218,6 +225,40 @@ internal class GitlabCiDslTest {
     }
 
     @Test
+    fun `should add variable from block`() {
+        // when
+        gitlabCi(writer = writer) {
+            variables {
+                "TEST" to "value"
+            }
+        }
+
+        // then
+        assertThat(writer.toString()).isEqualTo(
+            """
+            "variables":
+              "TEST": "value"
+        """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should add variable from map`() {
+        // when
+        gitlabCi(writer = writer) {
+            variables(Maps.newHashMap("TEST", "value"))
+        }
+
+        // then
+        assertThat(writer.toString()).isEqualTo(
+            """
+            "variables":
+              "TEST": "value"
+        """.trimIndent()
+        )
+    }
+
+    @Test
     fun `should create job from name`() {
         // when
         gitlabCi(validate = false, writer = writer) {
@@ -315,6 +356,10 @@ internal class GitlabCiDslTest {
                 stage = "test"
             }
 
+            variables {
+                "TEST1" to 123
+            }
+
             val release1 = job("release app 1") {
                 script("release command 1")
                 stage = "release"
@@ -345,6 +390,8 @@ internal class GitlabCiDslTest {
               - "before command"
               after_script:
               - "after command"
+            "variables":
+              "TEST1": "123"
             "build app":
               stage: "build"
               script:
@@ -433,6 +480,10 @@ internal class GitlabCiDslTest {
                 stage = "release"
                 dependencies(release1)
             }
+
+            variables {
+                "TEST" to "value"
+            }
         }
 
         val expected = GitlabCiDsl().apply {
@@ -472,6 +523,10 @@ internal class GitlabCiDslTest {
                 script("release command 2")
                 stage = "release"
                 dependencies(release1)
+            }
+
+            variables {
+                add("TEST", "value")
             }
         }
 

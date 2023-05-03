@@ -9,6 +9,7 @@ import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.default.DefaultDsl
 import pcimcioch.gitlabci.dsl.include.IncludeDsl
 import pcimcioch.gitlabci.dsl.job.JobDsl
+import pcimcioch.gitlabci.dsl.job.VariablesDsl
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
 import pcimcioch.gitlabci.dsl.stage.StagesDsl
 import pcimcioch.gitlabci.dsl.workflow.WorkflowDsl
@@ -23,6 +24,7 @@ class GitlabCiDsl : DslBase() {
     private var default: DefaultDsl? = null
     private var workflow: WorkflowDsl? = null
     private var include: IncludeDsl? = null
+    private var variables: VariablesDsl? = null
 
     /**
      * creates a Job, adds it to the GitlabCi and returns it.
@@ -46,13 +48,17 @@ class GitlabCiDsl : DslBase() {
     fun include(vararg elements: String) = include(elements.toList())
     fun include(elements: Iterable<String>) = ensureInclude().apply { elements.forEach { local(it) } }
 
+    fun variables(block: VariablesDsl.() -> Unit = {}) = ensureVariables().apply(block)
+    fun variables(elements: Map<String, Any>, block: VariablesDsl.() -> Unit = {}) =
+        ensureVariables().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+
     fun pages(block: JobDsl.() -> Unit) = job("pages") {
         artifacts("public")
         only("master")
     }.apply(block)
 
     override fun validate(errors: MutableList<String>) {
-        addErrors(errors, "", workflow, stages, default, include)
+        addErrors(errors, "", workflow, stages, default, include, variables)
         addErrors(errors, "", jobs)
     }
 
@@ -60,6 +66,7 @@ class GitlabCiDsl : DslBase() {
     private fun ensureDefault() = default ?: DefaultDsl().also { default = it }
     private fun ensureWorkflow() = workflow ?: WorkflowDsl().also { workflow = it }
     private fun ensureInclude() = include ?: IncludeDsl().also { include = it }
+    private fun ensureVariables() = variables ?: VariablesDsl().also { variables = it }
 
     private fun asMap(): Map<String, DslBase> {
         val map = mutableMapOf<String, DslBase>()
@@ -68,6 +75,7 @@ class GitlabCiDsl : DslBase() {
         include?.also { map["include"] = it }
         stages?.also { map["stages"] = it }
         default?.also { map["default"] = it }
+        variables?.also { map["variables"] = it }
         jobs.forEach { map[it.name] = it }
 
         return map
@@ -84,6 +92,7 @@ class GitlabCiDsl : DslBase() {
         if (default != other.default) return false
         if (workflow != other.workflow) return false
         if (include != other.include) return false
+        if (variables != other.variables) return false
 
         return true
     }
@@ -94,6 +103,7 @@ class GitlabCiDsl : DslBase() {
         result = 31 * result + (default?.hashCode() ?: 0)
         result = 31 * result + (workflow?.hashCode() ?: 0)
         result = 31 * result + (include?.hashCode() ?: 0)
+        result = 31 * result + (variables?.hashCode() ?: 0)
         return result
     }
 

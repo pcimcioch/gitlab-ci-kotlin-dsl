@@ -17,6 +17,9 @@ class EnvironmentDsl(
     var onStop: String? = null
     var action: EnvironmentAction? = null
 
+    @SerialName("deployment_tier")
+    var deploymentTier: DeploymentTier? = null
+
     @SerialName("auto_stop_in")
     var autoStopIn: Duration? = null
     var kubernetes: KubernetesEnvironmentDsl? = null
@@ -52,6 +55,7 @@ class EnvironmentDsl(
         if (url != other.url) return false
         if (onStop != other.onStop) return false
         if (action != other.action) return false
+        if (deploymentTier != other.deploymentTier) return false
         if (autoStopIn != other.autoStopIn) return false
         if (kubernetes != other.kubernetes) return false
 
@@ -63,6 +67,7 @@ class EnvironmentDsl(
         result = 31 * result + (url?.hashCode() ?: 0)
         result = 31 * result + (onStop?.hashCode() ?: 0)
         result = 31 * result + (action?.hashCode() ?: 0)
+        result = 31 * result + (deploymentTier?.hashCode() ?: 0)
         result = 31 * result + (autoStopIn?.hashCode() ?: 0)
         result = 31 * result + (kubernetes?.hashCode() ?: 0)
         return result
@@ -119,7 +124,22 @@ enum class EnvironmentAction(
 ) : StringRepresentation {
     START("start"),
     PREPARE("prepare"),
-    STOP("stop");
+    STOP("stop"),
+    VERIFY("verify"),
+    ACCESS("access");
 
     object EnvironmentActionSerializer : StringRepresentationSerializer<EnvironmentAction>("EnvironmentAction")
+}
+
+@Serializable(with = DeploymentTier.DeploymentTierSerializer::class)
+enum class DeploymentTier(
+    override val stringRepresentation: String
+) : StringRepresentation {
+    PRODUCTION("production"),
+    STAGING("staging"),
+    TESTING("testing"),
+    DEVELOPMENT("development"),
+    OTHER("other");
+
+    object DeploymentTierSerializer : StringRepresentationSerializer<DeploymentTier>("DeploymentTier")
 }

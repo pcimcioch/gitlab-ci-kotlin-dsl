@@ -26,6 +26,7 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
         val testee = createCache {
             paths("path1", "path2")
             untracked = true
+            unprotect = false
             policy = CachePolicy.PULL_PUSH
             whenCache = WhenCacheType.ON_SUCCESS
             key("key1")
@@ -39,6 +40,7 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
                     - "path1"
                     - "path2"
                     untracked: true
+                    unprotect: false
                     policy: "pull-push"
                     when: "on_success"
                     key: "key1"

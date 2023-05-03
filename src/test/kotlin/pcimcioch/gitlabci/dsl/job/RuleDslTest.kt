@@ -31,6 +31,9 @@ internal class RuleDslTest : DslTestBase<RuleDsl>(RuleDsl.serializer()) {
             allowFailure = true
             whenRun = WhenRunType.DELAYED
             startIn = Duration(minutes = 10)
+            variables {
+                "TEST" to "value"
+            }
         }
 
         // then
@@ -47,6 +50,8 @@ internal class RuleDslTest : DslTestBase<RuleDsl>(RuleDsl.serializer()) {
                     allow_failure: true
                     when: "delayed"
                     start_in: "10 min"
+                    variables:
+                      "TEST": "value"
                 """
         )
     }
@@ -175,6 +180,9 @@ internal class RuleDslTest : DslTestBase<RuleDsl>(RuleDsl.serializer()) {
             ifCondition = "condition"
             changes = mutableSetOf("file 1", "file 2")
             exists = mutableSetOf("file 3", "file 4")
+            variables = createVariables {
+                "TEST" to "value"
+            }
         }
 
         // then
@@ -188,6 +196,8 @@ internal class RuleDslTest : DslTestBase<RuleDsl>(RuleDsl.serializer()) {
                     exists:
                     - "file 3"
                     - "file 4"
+                    variables:
+                      "TEST": "value"
                 """
         )
     }

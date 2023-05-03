@@ -1,7 +1,6 @@
 package pcimcioch.gitlabci.dsl
 
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.util.Maps
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -246,7 +245,7 @@ internal class GitlabCiDslTest {
     fun `should add variable from map`() {
         // when
         gitlabCi(writer = writer) {
-            variables(Maps.newHashMap("TEST", "value"))
+            variables(mutableMapOf("TEST" to "value"))
         }
 
         // then

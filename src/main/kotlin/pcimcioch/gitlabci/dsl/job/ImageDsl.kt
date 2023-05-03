@@ -3,8 +3,6 @@ package pcimcioch.gitlabci.dsl.job
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
-import pcimcioch.gitlabci.dsl.StringRepresentation
-import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
 @Serializable
 class ImageDsl(

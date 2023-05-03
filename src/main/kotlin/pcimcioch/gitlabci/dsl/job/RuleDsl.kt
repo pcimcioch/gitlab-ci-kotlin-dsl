@@ -22,7 +22,6 @@ class RuleDsl : DslBase() {
 
     @SerialName("start_in")
     var startIn: Duration? = null
-
     var variables: VariablesDsl? = null
 
     fun changes(vararg elements: String) = changes(elements.toList())

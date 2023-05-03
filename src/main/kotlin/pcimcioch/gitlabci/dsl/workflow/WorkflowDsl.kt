@@ -2,7 +2,6 @@ package pcimcioch.gitlabci.dsl.workflow
 
 import kotlinx.serialization.Serializable
 import pcimcioch.gitlabci.dsl.DslBase
-import pcimcioch.gitlabci.dsl.job.ArtifactsDsl
 import pcimcioch.gitlabci.dsl.job.RuleListDsl
 
 @Serializable

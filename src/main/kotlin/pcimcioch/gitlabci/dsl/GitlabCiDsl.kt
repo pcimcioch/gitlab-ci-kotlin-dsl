@@ -8,6 +8,8 @@ import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.default.DefaultDsl
 import pcimcioch.gitlabci.dsl.include.IncludeDsl
+import pcimcioch.gitlabci.dsl.job.GlobalVariableDsl
+import pcimcioch.gitlabci.dsl.job.GlobalVariablesDsl
 import pcimcioch.gitlabci.dsl.job.JobDsl
 import pcimcioch.gitlabci.dsl.job.VariablesDsl
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
@@ -24,7 +26,7 @@ class GitlabCiDsl : DslBase() {
     private var default: DefaultDsl? = null
     private var workflow: WorkflowDsl? = null
     private var include: IncludeDsl? = null
-    private var variables: VariablesDsl? = null
+    private var variables: GlobalVariablesDsl? = null
 
     /**
      * creates a Job, adds it to the GitlabCi and returns it.
@@ -48,8 +50,8 @@ class GitlabCiDsl : DslBase() {
     fun include(vararg elements: String) = include(elements.toList())
     fun include(elements: Iterable<String>) = ensureInclude().apply { elements.forEach { local(it) } }
 
-    fun variables(block: VariablesDsl.() -> Unit = {}) = ensureVariables().apply(block)
-    fun variables(elements: Map<String, Any>, block: VariablesDsl.() -> Unit = {}) =
+    fun variables(block: GlobalVariablesDsl.() -> Unit = {}) = ensureVariables().apply(block)
+    fun variables(elements: Map<String, GlobalVariableDsl>, block: GlobalVariablesDsl.() -> Unit = {}) =
         ensureVariables().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
 
     fun pages(block: JobDsl.() -> Unit) = job("pages") {
@@ -66,7 +68,7 @@ class GitlabCiDsl : DslBase() {
     private fun ensureDefault() = default ?: DefaultDsl().also { default = it }
     private fun ensureWorkflow() = workflow ?: WorkflowDsl().also { workflow = it }
     private fun ensureInclude() = include ?: IncludeDsl().also { include = it }
-    private fun ensureVariables() = variables ?: VariablesDsl().also { variables = it }
+    private fun ensureVariables() = variables ?: GlobalVariablesDsl().also { variables = it }
 
     private fun asMap(): Map<String, DslBase> {
         val map = mutableMapOf<String, DslBase>()

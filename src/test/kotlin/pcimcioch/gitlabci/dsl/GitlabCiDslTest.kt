@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import pcimcioch.gitlabci.dsl.job.WhenRunType
+import pcimcioch.gitlabci.dsl.job.createGlobalVariable
 import pcimcioch.gitlabci.dsl.job.createJob
 import java.io.StringWriter
 
@@ -100,7 +101,8 @@ internal class GitlabCiDslTest {
               image:
                 name: ""
             "variables":
-              "TEST": "value"
+              "TEST":
+                value: "value"
             "image":
               script:
               - "test"
@@ -228,7 +230,9 @@ internal class GitlabCiDslTest {
         // when
         gitlabCi(writer = writer) {
             variables {
-                "TEST" to "value"
+                "TEST" to {
+                    description = "test description"
+                }
             }
         }
 
@@ -236,7 +240,8 @@ internal class GitlabCiDslTest {
         assertThat(writer.toString()).isEqualTo(
             """
             "variables":
-              "TEST": "value"
+              "TEST":
+                description: "test description"
         """.trimIndent()
         )
     }
@@ -245,14 +250,15 @@ internal class GitlabCiDslTest {
     fun `should add variable from map`() {
         // when
         gitlabCi(writer = writer) {
-            variables(mutableMapOf("TEST" to "value"))
+            variables(mutableMapOf("TEST" to createGlobalVariable("value")))
         }
 
         // then
         assertThat(writer.toString()).isEqualTo(
             """
             "variables":
-              "TEST": "value"
+              "TEST":
+                value: "value"
         """.trimIndent()
         )
     }
@@ -390,7 +396,8 @@ internal class GitlabCiDslTest {
               after_script:
               - "after command"
             "variables":
-              "TEST1": "123"
+              "TEST1":
+                value: "123"
             "build app":
               stage: "build"
               script:

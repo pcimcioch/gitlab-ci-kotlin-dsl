@@ -9,7 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.github.pcimcioch:gitlab-ci-kotlin-dsl:1.4.1")
+        classpath("com.github.pcimcioch:gitlab-ci-kotlin-dsl:1.7.0")
     }
 }
 

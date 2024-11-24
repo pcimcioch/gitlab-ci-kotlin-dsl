@@ -764,6 +764,8 @@ gitlabCi {
 
 <https://docs.gitlab.com/ee/ci/yaml/#cache> 
 
+Github supports multiple caches <https://docs.gitlab.com/ee/ci/caching/#use-multiple-caches>. Each `cache` method will add new cache
+
 ```kotlin
 gitlabCi { 
     job("jobName") {
@@ -813,10 +815,14 @@ val cache3 = createCache {
 gitlabCi {
     job("firstJob") {
         // Note that this will override any previously configured cache in this job
-        cache = cache1
+        cache = mutableListOf(cache1)
     }
     job("secondJob") {
-        cache = cache1
+        cache = mutableListOf(cache1)
+    }
+    job("thirdJob") {
+        // unary plus can be used
+        +cache3
     }
 }
 

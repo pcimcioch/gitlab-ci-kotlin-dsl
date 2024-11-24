@@ -41,7 +41,7 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
                     - name: "service 1"
                     - name: ""
                     cache:
-                      paths:
+                    - paths:
                       - "path"
                       key:
                         prefix: "pre/fix"
@@ -110,7 +110,7 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
                     services:
                     - name: "testService"
                     cache:
-                      paths:
+                    - paths:
                       - "testCache"
                     tags:
                     - "tag"
@@ -336,7 +336,11 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
                 paths("p1")
             }
             cache("p2")
-            cache(listOf("p3"))
+            cache(listOf("p3", "p4"))
+            +createCache {
+                key("some-key")
+                paths("p5")
+            }
         }
 
         // then
@@ -344,10 +348,16 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
             testee,
             """
                     cache:
-                      paths:
+                    - paths:
                       - "p1"
+                    - paths:
                       - "p2"
+                    - paths:
                       - "p3"
+                      - "p4"
+                    - paths:
+                      - "p5"
+                      key: "some-key"
                 """
         )
     }
@@ -447,7 +457,7 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
         val testee = DefaultDsl().apply {
             image = imageDsl
             services = servicesDsl
-            cache = cacheDsl
+            cache = mutableListOf(cacheDsl)
             tags = mutableSetOf("testTag")
             artifacts = artifactsDsl
             retry = retryDsl
@@ -464,7 +474,7 @@ internal class DefaultDslTest : DslTestBase<DefaultDsl>(DefaultDsl.serializer())
                     services:
                     - name: "testService"
                     cache:
-                      paths:
+                    - paths:
                       - "testCache"
                     tags:
                     - "testTag"

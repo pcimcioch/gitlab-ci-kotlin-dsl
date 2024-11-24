@@ -10,7 +10,7 @@ import pcimcioch.gitlabci.dsl.job.*
 class DefaultDsl : DslBase() {
     var image: ImageDsl? = null
     var services: ServiceListDsl? = null
-    var cache: CacheDsl? = null
+    var cache: MutableList<CacheDsl>? = null
     var tags: MutableSet<String>? = null
     var artifacts: ArtifactsDsl? = null
     var retry: RetryDsl? = null
@@ -45,10 +45,11 @@ class DefaultDsl : DslBase() {
     fun services(elements: Iterable<String>, block: ServiceListDsl.() -> Unit = {}) =
         ensureServices().apply { elements.forEach { service(it) } }.apply(block)
 
-    fun cache(block: CacheDsl.() -> Unit = {}) = ensureCache().apply(block)
+    fun cache(block: CacheDsl.() -> Unit = {}) = ensureCache().add(CacheDsl().apply(block))
     fun cache(vararg elements: String, block: CacheDsl.() -> Unit = {}) = cache(elements.toList(), block)
     fun cache(elements: Iterable<String>, block: CacheDsl.() -> Unit = {}) =
-        ensureCache().apply { paths(elements) }.apply(block)
+        ensureCache().add(CacheDsl().apply { paths(elements) }.apply(block))
+    operator fun CacheDsl.unaryPlus() = this@DefaultDsl.ensureCache().add(this)
 
     fun tags(vararg elements: String) = tags(elements.toList())
     fun tags(elements: Iterable<String>) = ensureTags().addAll(elements)
@@ -61,7 +62,13 @@ class DefaultDsl : DslBase() {
     fun retry(max: Int? = null, block: RetryDsl.() -> Unit = {}) = ensureRetry().apply { this.max = max }.apply(block)
 
     override fun validate(errors: MutableList<String>) {
-        addErrors(errors, "[default]", beforeScript, afterScript, image, services, cache, artifacts, retry)
+        val prefix = "[default]"
+
+        addErrors(errors, prefix, beforeScript, afterScript, image, services, artifacts, retry)
+
+        cache?.forEach {
+            addErrors(errors, prefix, it)
+        }
     }
 
     private fun ensureImage() = image ?: ImageDsl().also { image = it }
@@ -69,7 +76,7 @@ class DefaultDsl : DslBase() {
     private fun ensureTags() = tags ?: mutableSetOf<String>().also { tags = it }
     private fun ensureArtifacts() = artifacts ?: ArtifactsDsl().also { artifacts = it }
     private fun ensureRetry() = retry ?: RetryDsl().also { retry = it }
-    private fun ensureCache() = cache ?: CacheDsl().also { cache = it }
+    private fun ensureCache() = cache ?: mutableListOf<CacheDsl>().also { cache = it }
     private fun ensureBeforeScript() = beforeScript ?: BeforeScriptDsl().also { beforeScript = it }
     private fun ensureAfterScript() = afterScript ?: AfterScriptDsl().also { afterScript = it }
     override fun equals(other: Any?): Boolean {

@@ -6,6 +6,7 @@ import kotlinx.serialization.Transient
 import pcimcioch.gitlabci.dsl.DslBase
 import pcimcioch.gitlabci.dsl.Duration
 import pcimcioch.gitlabci.dsl.StringRepresentation
+import pcimcioch.gitlabci.dsl.include.IncludeDetailsDsl
 import pcimcioch.gitlabci.dsl.serializer.StringRepresentationSerializer
 
 @Serializable
@@ -37,7 +38,7 @@ class JobDsl(
     var services: ServiceListDsl? = null
     var needs: NeedsListDsl? = null
     var dependencies: MutableSet<String>? = null
-    var cache: CacheDsl? = null
+    var cache: MutableList<CacheDsl>? = null
     var artifacts: ArtifactsDsl? = null
     var only: OnlyExceptDsl? = null
     var except: OnlyExceptDsl? = null
@@ -134,10 +135,11 @@ class JobDsl(
     fun secrets(elements: Map<String, SecretDsl>, block: SecretsDsl.() -> Unit = {}) =
         ensureSecrets().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
 
-    fun cache(block: CacheDsl.() -> Unit = {}) = ensureCache().apply(block)
+    fun cache(block: CacheDsl.() -> Unit = {}) = ensureCache().add(CacheDsl().apply(block))
     fun cache(vararg elements: String, block: CacheDsl.() -> Unit = {}) = cache(elements.toList(), block)
     fun cache(elements: Iterable<String>, block: CacheDsl.() -> Unit = {}) =
-        ensureCache().apply { paths(elements) }.apply(block)
+        ensureCache().add(CacheDsl().apply { paths(elements) }.apply(block))
+    operator fun CacheDsl.unaryPlus() = this@JobDsl.ensureCache().add(this)
 
     fun artifacts(block: ArtifactsDsl.() -> Unit = {}) = ensureArtifacts().apply(block)
     fun artifacts(vararg elements: String, block: ArtifactsDsl.() -> Unit = {}) = artifacts(elements.toList(), block)
@@ -191,8 +193,12 @@ class JobDsl(
 
         addErrors(
             errors, prefix, beforeScript, afterScript, inherit, retry, image, script, services, needs, variables,
-            cache, artifacts, only, except, rules, environment, trigger, release, secrets
+            artifacts, only, except, rules, environment, trigger, release, secrets
         )
+
+        cache?.forEach {
+            addErrors(errors, prefix, it)
+        }
     }
 
     private fun ensureInherit() = inherit ?: InheritDsl().also { inherit = it }
@@ -204,7 +210,7 @@ class JobDsl(
     private fun ensureRetry() = retry ?: RetryDsl().also { retry = it }
     private fun ensureVariables() = variables ?: VariablesDsl().also { variables = it }
     private fun ensureSecrets() = secrets ?: SecretsDsl().also { secrets = it }
-    private fun ensureCache() = cache ?: CacheDsl().also { cache = it }
+    private fun ensureCache() = cache ?: mutableListOf<CacheDsl>().also { cache = it }
     private fun ensureArtifacts() = artifacts ?: ArtifactsDsl().also { artifacts = it }
     private fun ensureOnly() = only ?: OnlyExceptDsl().also { only = it }
     private fun ensureExcept() = except ?: OnlyExceptDsl().also { except = it }

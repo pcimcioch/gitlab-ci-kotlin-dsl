@@ -191,7 +191,7 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
                     - job: "job 2"
                     - job: ""
                     cache:
-                      paths:
+                    - paths:
                       - "path"
                       key:
                         prefix: "pre/fix"
@@ -318,7 +318,7 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
                     dependencies:
                     - "testDep"
                     cache:
-                      paths:
+                    - paths:
                       - "testCache"
                     artifacts:
                       paths:
@@ -966,7 +966,11 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
                 paths("p1")
             }
             cache("p2")
-            cache(listOf("p3"))
+            cache(listOf("p3", "p4"))
+            +createCache {
+                key("some-key")
+                paths("p5")
+            }
         }
 
         // then
@@ -974,10 +978,16 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
             testee,
             """
                     cache:
-                      paths:
+                    - paths:
                       - "p1"
+                    - paths:
                       - "p2"
+                    - paths:
                       - "p3"
+                      - "p4"
+                    - paths:
+                      - "p5"
+                      key: "some-key"
                     script:
                     - "test command"
                 """
@@ -1300,7 +1310,7 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
             services = servicesDsl
             needs = needsDsl
             dependencies = mutableSetOf("testDep")
-            cache = cacheDsl
+            cache = mutableListOf(cacheDsl)
             artifacts = artifactsDsl
             only = onlyDsl
             except = exceptDsl
@@ -1336,7 +1346,7 @@ internal class JobDslTest : DslTestBase<JobDsl>(JobDsl.serializer()) {
                     dependencies:
                     - "testDep"
                     cache:
-                      paths:
+                    - paths:
                       - "testCache"
                     artifacts:
                       paths:

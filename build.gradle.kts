@@ -1,3 +1,5 @@
+import org.jreleaser.model.Active.ALWAYS
+
 repositories {
     mavenCentral()
 }
@@ -6,7 +8,7 @@ plugins {
     kotlin("jvm") version "1.9.20"
     kotlin("plugin.serialization") version "1.9.20"
     `maven-publish`
-    signing
+    id("org.jreleaser") version "1.23.0"
     id("org.jetbrains.dokka") version "1.9.20"
 }
 
@@ -35,6 +37,9 @@ tasks {
 
     test {
         useJUnitPlatform()
+    }
+    jreleaserDeploy {
+        dependsOn(publish)
     }
 }
 
@@ -85,17 +90,28 @@ publishing {
     }
 
     repositories {
-        val url = if (project.version.toString().contains("SNAPSHOT")) "https://oss.sonatype.org/content/repositories/snapshots" else "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-        maven(url) {
-            credentials {
-                username = project.findProperty("ossrhUsername")?.toString() ?: ""
-                password = project.findProperty("ossrhPassword")?.toString() ?: ""
-            }
+        maven {
+            url = uri(layout.buildDirectory.dir("staging-deploy"))
         }
     }
 }
 
-signing {
-    useInMemoryPgpKeys(project.findProperty("signingKey").toString(), project.findProperty("signingPassword").toString())
-    sign(publishing.publications["maven"])
+jreleaser {
+    signing {
+        pgp {
+            active = ALWAYS
+            armored = true
+        }
+        deploy {
+            maven {
+                mavenCentral {
+                    create("sonatype") {
+                        active = ALWAYS
+                        url = "https://central.sonatype.com/api/v1/publisher"
+                        stagingRepository("build/staging-deploy")
+                    }
+                }
+            }
+        }
+    }
 }

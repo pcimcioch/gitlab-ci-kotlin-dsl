@@ -30,6 +30,7 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
             policy = CachePolicy.PULL_PUSH
             whenCache = WhenCacheType.ON_SUCCESS
             key("key1")
+            fallbackKeys("fallback1", "fallback2")
         }
 
         // then
@@ -44,6 +45,9 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
                     policy: "pull-push"
                     when: "on_success"
                     key: "key1"
+                    fallback_keys:
+                    - "fallback1"
+                    - "fallback2"
                 """
         )
     }
@@ -290,6 +294,141 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
     }
 
     @Test
+    fun `should create cache with empty fallback keys`() {
+        // given
+        val testee = createCache {
+            fallbackKeys()
+        }
+
+        // then
+        assertDsl(
+            testee,
+            """
+                    fallback_keys: []
+                """
+        )
+    }
+
+    @Test
+    fun `should create cache with single fallback key`() {
+        // given
+        val testee = createCache {
+            fallbackKeys("key1")
+        }
+
+        // then
+        assertDsl(
+            testee,
+            """
+                    fallback_keys:
+                    - "key1"
+                """
+        )
+    }
+
+    @Test
+    fun `should create cache with multiple fallback keys`() {
+        // given
+        val testee = createCache {
+            fallbackKeys("key1", "key2", "key3")
+        }
+
+        // then
+        assertDsl(
+            testee,
+            """
+                    fallback_keys:
+                    - "key1"
+                    - "key2"
+                    - "key3"
+                """
+        )
+    }
+
+    @Test
+    fun `should merge fallback keys`() {
+        // given
+        val testee = createCache {
+            fallbackKeys("key1", "key2")
+            fallbackKeys(listOf("key3", "key4"))
+        }
+
+        // then
+        assertDsl(
+            testee,
+            """
+                    fallback_keys:
+                    - "key1"
+                    - "key2"
+                    - "key3"
+                    - "key4"
+                """
+        )
+    }
+
+    @Test
+    fun `should allow direct access to fallback keys`() {
+        // given
+        val testee = createCache {
+            fallbackKeys = mutableListOf("key1", "key2")
+        }
+
+        // then
+        assertDsl(
+            testee,
+            """
+                    fallback_keys:
+                    - "key1"
+                    - "key2"
+                """
+        )
+    }
+
+    @Test
+    fun `should validate fallback keys max 5`() {
+        // given
+        val testee = createCache {
+            fallbackKeys("k1", "k2", "k3", "k4", "k5", "k6")
+        }
+
+        // then
+        assertDsl(
+            testee,
+            """
+                    fallback_keys:
+                    - "k1"
+                    - "k2"
+                    - "k3"
+                    - "k4"
+                    - "k5"
+                    - "k6"
+                """,
+            "[cache] fallback_keys list can't have more than 5 elements"
+        )
+    }
+
+    @Test
+    fun `should accept fallback keys with exactly 5`() {
+        // given
+        val testee = createCache {
+            fallbackKeys("k1", "k2", "k3", "k4", "k5")
+        }
+
+        // then
+        assertDsl(
+            testee,
+            """
+                    fallback_keys:
+                    - "k1"
+                    - "k2"
+                    - "k3"
+                    - "k4"
+                    - "k5"
+                """
+        )
+    }
+
+    @Test
     fun `should be equal`() {
         // given
         val testee = createCache {
@@ -301,6 +440,7 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
                 prefix = "gottem"
                 files = mutableSetOf("file1", "file2")
             }
+            fallbackKeys("fb1", "fb2")
         }
 
         val expected = createCache {
@@ -312,6 +452,7 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
                 prefix = "gottem"
                 files = mutableSetOf("file1", "file2")
             }
+            fallbackKeys("fb1", "fb2")
         }
 
         // then
@@ -327,6 +468,7 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
             policy = CachePolicy.PULL_PUSH
             whenCache = WhenCacheType.ALWAYS
             key("k")
+            fallbackKeys("fb1")
         }
 
         val expected = createCache {
@@ -335,6 +477,7 @@ internal class CacheDslTest : DslTestBase<CacheDsl>(CacheDsl.serializer()) {
             policy = CachePolicy.PULL_PUSH
             whenCache = WhenCacheType.ALWAYS
             key("k")
+            fallbackKeys("fb1")
         }
 
         // then

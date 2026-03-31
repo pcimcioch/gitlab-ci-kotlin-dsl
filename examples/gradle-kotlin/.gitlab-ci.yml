@@ -5,7 +5,7 @@
   image:
     name: "openjdk:8u162"
   cache:
-    paths:
+  - paths:
     - "./gradle/wrapper"
     - "./gradle/caches"
   before_script:

@@ -3,7 +3,7 @@ repositories {
 }
 
 plugins {
-    kotlin("jvm") version "1.5.31"
+    kotlin("jvm") version "1.9.20"
     application
 }
 
@@ -14,5 +14,5 @@ dependencies {
 }
 
 application {
-    mainClassName = "com.example.MainKt"
+    mainClass = "com.example.MainKt"
 }

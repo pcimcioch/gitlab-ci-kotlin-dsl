@@ -19,13 +19,8 @@ jobs:
           JRELEASER_FILE: ${{ secrets.JRELEASER_FILE }}
         run: |
           mkdir -p ~/.jreleaser
-          printf "%s" "$JRELEASER_CONTENT" > ~/.jreleaser/config.toml
+          printf "%s" "$JRELEASER_FILE" > ~/.jreleaser/config.toml
       - name: Publish
         uses: gradle/gradle-build-action@v2
         with:
           arguments: jreleaserDeploy -Pversion=${{ github.event.release.tag_name }}
-        env:
-          ORG_GRADLE_PROJECT_ossrhUsername: ${{ secrets.OSSRH_USERNAME }}
-          ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.OSSRH_PASSWORD }}
-          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
-          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SIGNING_KEY }}

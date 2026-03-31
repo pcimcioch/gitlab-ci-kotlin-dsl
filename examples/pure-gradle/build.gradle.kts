@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.accessors.AccessorFormats.default
 import pcimcioch.gitlabci.dsl.Duration
 import pcimcioch.gitlabci.dsl.gitlabCi
 import pcimcioch.gitlabci.dsl.job.WhenUploadType
@@ -8,7 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.github.pcimcioch:gitlab-ci-kotlin-dsl:1.7.0")
+        classpath("com.github.pcimcioch:gitlab-ci-kotlin-dsl:1.8.0")
     }
 }
 

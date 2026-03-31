@@ -32,6 +32,12 @@ class CacheDsl : DslBase() {
         get() = keyString ?: keyDsl
         private set
 
+    @SerialName("fallback_keys")
+    var fallbackKeys: MutableList<String>? = null
+
+    fun fallbackKeys(vararg elements: String) = fallbackKeys(elements.toList())
+    fun fallbackKeys(elements: Iterable<String>) = ensureFallbackKeys().addAll(elements)
+
     fun paths(vararg elements: String) = paths(elements.toList())
     fun paths(elements: Iterable<String>) = ensurePaths().addAll(elements)
 
@@ -52,9 +58,11 @@ class CacheDsl : DslBase() {
 
     override fun validate(errors: MutableList<String>) {
         addErrors(errors, "[cache]", keyDsl)
+        addError(errors, fallbackKeys != null && fallbackKeys!!.size > 5, "[cache] fallback_keys list can't have more than 5 elements")
     }
 
     private fun ensureKeyDsl() = keyDsl ?: CacheKeyDsl().also { keyDsl = it }
+    private fun ensureFallbackKeys() = fallbackKeys ?: mutableListOf<String>().also { fallbackKeys = it }
     private fun ensurePaths() = paths ?: mutableSetOf<String>().also { paths = it }
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -68,6 +76,7 @@ class CacheDsl : DslBase() {
         if (policy != other.policy) return false
         if (whenCache != other.whenCache) return false
         if (key != other.key) return false
+        if (fallbackKeys != other.fallbackKeys) return false
 
         return true
     }
@@ -79,6 +88,7 @@ class CacheDsl : DslBase() {
         result = 31 * result + (policy?.hashCode() ?: 0)
         result = 31 * result + (whenCache?.hashCode() ?: 0)
         result = 31 * result + (key?.hashCode() ?: 0)
+        result = 31 * result + (fallbackKeys?.hashCode() ?: 0)
         return result
     }
 

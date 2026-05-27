@@ -2,18 +2,22 @@ package pcimcioch.gitlabci.dsl.include
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.DslBase
+import pcimcioch.gitlabci.dsl.job.ArtifactsReportsDsl
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
+import pcimcioch.gitlabci.dsl.serializer.AnySerializer
 
 @Serializable(with = IncludeDsl.IncludeDslSerializer::class)
 class IncludeDsl : DslBase() {
     private val includes = mutableListOf<IncludeDetailsDsl>()
 
-    fun local(local: String) = addAndReturn(includes, IncludeLocalDsl(local))
-    fun file(project: String, file: String, ref: String? = null) = addAndReturn(includes, IncludeFileDsl(project, file, ref))
+    fun local(local: String, block: IncludeLocalDsl.() -> Unit = {}) = addAndReturn(includes, IncludeLocalDsl(local).apply(block))
+    fun file(project: String, file: String, ref: String? = null, block: IncludeFileDsl.() -> Unit = {}) = addAndReturn(includes, IncludeFileDsl(project, file, ref).apply(block))
 
-    fun template(template: String) = addAndReturn(includes, IncludeTemplateDsl(template))
-    fun remote(remote: String) = addAndReturn(includes, IncludeRemoteDsl(remote))
+    fun template(template: String, block: IncludeTemplateDsl.() -> Unit = {}) = addAndReturn(includes, IncludeTemplateDsl(template).apply(block))
+    fun remote(remote: String, block: IncludeRemoteDsl.() -> Unit = {}) = addAndReturn(includes, IncludeRemoteDsl(remote).apply(block))
     operator fun IncludeDetailsDsl.unaryPlus() = this@IncludeDsl.includes.add(this)
 
     override fun validate(errors: MutableList<String>) {
@@ -49,11 +53,29 @@ class IncludeDsl : DslBase() {
 
 @Suppress("SERIALIZER_TYPE_INCOMPATIBLE")
 @Serializable(with = DslBase.DslBaseSerializer::class)
-sealed class IncludeDetailsDsl : DslBase()
+sealed class IncludeDetailsDsl : DslBase() {
+    abstract var inputs: InputsDsl?
+
+    fun inputs(block: InputsDsl.() -> Unit = {}) = ensureInputs().apply(block)
+    fun inputs(elements: Map<String, Any>, block: InputsDsl.() -> Unit = {}) =
+        ensureInputs().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+
+    @JvmName("inputsEnum")
+    fun <T : Enum<T>> inputs(elements: Map<T, Any>, block: InputsDsl.() -> Unit = {}) =
+        ensureInputs().apply { elements.forEach { add(it.key, it.value) } }.apply(block)
+
+    private fun ensureInputs() = inputs ?: InputsDsl().also { inputs = it }
+
+    override fun validate(errors: MutableList<String>) {
+        addErrors(errors, "", inputs)
+    }
+
+}
 
 @Serializable
 class IncludeLocalDsl(
-    var local: String
+    var local: String,
+    override var inputs: InputsDsl? = null
 ) : IncludeDetailsDsl() {
     companion object {
         init {
@@ -68,22 +90,26 @@ class IncludeLocalDsl(
         other as IncludeLocalDsl
 
         if (local != other.local) return false
+        if (inputs != other.inputs) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return local.hashCode()
+        var result = local.hashCode()
+        result = 31 * result + (inputs?.hashCode() ?: 0)
+        return result
     }
 }
 
-fun createIncludeLocal(local: String) = IncludeLocalDsl(local)
+fun createIncludeLocal(local: String, block: IncludeLocalDsl.() -> Unit = {}) = IncludeLocalDsl(local).apply(block)
 
 @Serializable
 class IncludeFileDsl(
     var project: String,
     var file: String,
-    var ref: String? = null
+    var ref: String? = null,
+    override var inputs: InputsDsl? = null
 ) : IncludeDetailsDsl() {
     companion object {
         init {
@@ -100,6 +126,7 @@ class IncludeFileDsl(
         if (project != other.project) return false
         if (file != other.file) return false
         if (ref != other.ref) return false
+        if (inputs != other.inputs) return false
 
         return true
     }
@@ -108,15 +135,17 @@ class IncludeFileDsl(
         var result = project.hashCode()
         result = 31 * result + file.hashCode()
         result = 31 * result + (ref?.hashCode() ?: 0)
+        result = 31 * result + (inputs?.hashCode() ?: 0)
         return result
     }
 }
 
-fun createIncludeFile(project: String, file: String, ref: String? = null) = IncludeFileDsl(project, file, ref)
+fun createIncludeFile(project: String, file: String, ref: String? = null, block: IncludeFileDsl.() -> Unit = {}) = IncludeFileDsl(project, file, ref).apply(block)
 
 @Serializable
 class IncludeTemplateDsl(
-    var template: String
+    var template: String,
+    override var inputs: InputsDsl? = null
 ) : IncludeDetailsDsl() {
     companion object {
         init {
@@ -131,20 +160,24 @@ class IncludeTemplateDsl(
         other as IncludeTemplateDsl
 
         if (template != other.template) return false
+        if (inputs != other.inputs) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return template.hashCode()
+        var result = template.hashCode()
+        result = 31 * result + (inputs?.hashCode() ?: 0)
+        return result
     }
 }
 
-fun createIncludeTemplate(template: String) = IncludeTemplateDsl(template)
+fun createIncludeTemplate(template: String, block: IncludeTemplateDsl.() -> Unit = {}) = IncludeTemplateDsl(template).apply(block)
 
 @Serializable
 class IncludeRemoteDsl(
-    var remote: String
+    var remote: String,
+    override var inputs: InputsDsl? = null
 ) : IncludeDetailsDsl() {
     companion object {
         init {
@@ -159,13 +192,16 @@ class IncludeRemoteDsl(
         other as IncludeRemoteDsl
 
         if (remote != other.remote) return false
+        if (inputs != other.inputs) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return remote.hashCode()
+        var result = remote.hashCode()
+        result = 31 * result + (inputs?.hashCode() ?: 0)
+        return result
     }
 }
 
-fun createIncludeRemote(remote: String) = IncludeRemoteDsl(remote)
+fun createIncludeRemote(remote: String, block: IncludeRemoteDsl.() -> Unit = {}) = IncludeRemoteDsl(remote).apply(block)

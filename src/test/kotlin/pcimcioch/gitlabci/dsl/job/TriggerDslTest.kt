@@ -2,6 +2,8 @@ package pcimcioch.gitlabci.dsl.job
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 import pcimcioch.gitlabci.dsl.DslTestBase
 
 internal class TriggerDslTest : DslTestBase<TriggerDsl>(TriggerDsl.serializer()) {
@@ -20,13 +22,14 @@ internal class TriggerDslTest : DslTestBase<TriggerDsl>(TriggerDsl.serializer())
         )
     }
 
-    @Test
-    fun `should create full`() {
+    @ParameterizedTest
+    @EnumSource(TriggerStrategy::class)
+    fun `should create full`(triggerStrategy: TriggerStrategy) {
         // given
         val testee = createTrigger {
             project = "test/project"
             branch = "test-branch"
-            strategy = TriggerStrategy.DEPEND
+            strategy = triggerStrategy
             include {
                 local("localFile")
             }
@@ -38,7 +41,7 @@ internal class TriggerDslTest : DslTestBase<TriggerDsl>(TriggerDsl.serializer())
             """
                     project: "test/project"
                     branch: "test-branch"
-                    strategy: "depend"
+                    strategy: "${triggerStrategy.stringRepresentation}"
                     include:
                     - local: "localFile"
                 """
@@ -75,10 +78,11 @@ internal class TriggerDslTest : DslTestBase<TriggerDsl>(TriggerDsl.serializer())
         )
     }
 
-    @Test
-    fun `should create from project name, branch and strategy`() {
+    @ParameterizedTest
+    @EnumSource(TriggerStrategy::class)
+    fun `should create from project name, branch and strategy`(triggerStrategy: TriggerStrategy) {
         // given
-        val testee = createTrigger("testProject", "test-branch", TriggerStrategy.DEPEND)
+        val testee = createTrigger("testProject", "test-branch", triggerStrategy)
 
         // then
         assertDsl(
@@ -86,7 +90,7 @@ internal class TriggerDslTest : DslTestBase<TriggerDsl>(TriggerDsl.serializer())
             """
                     project: "testProject"
                     branch: "test-branch"
-                    strategy: "depend"
+                    strategy: "${triggerStrategy.stringRepresentation}"
                 """
         )
     }

@@ -216,7 +216,8 @@ fun createTriggerIncludeArtifact(artifact: String, job: JobDsl) = TriggerInclude
 enum class TriggerStrategy(
     override val stringRepresentation: String
 ) : StringRepresentation {
-    DEPEND("depend");
+    DEPEND("depend"),
+    MIRROR("mirror");
 
     object TriggerStrategySerializer : StringRepresentationSerializer<TriggerStrategy>("TriggerStrategy")
 }

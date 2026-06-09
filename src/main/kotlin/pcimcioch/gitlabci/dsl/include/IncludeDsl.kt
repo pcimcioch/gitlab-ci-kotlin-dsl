@@ -2,12 +2,8 @@ package pcimcioch.gitlabci.dsl.include
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.builtins.MapSerializer
-import kotlinx.serialization.builtins.serializer
 import pcimcioch.gitlabci.dsl.DslBase
-import pcimcioch.gitlabci.dsl.job.ArtifactsReportsDsl
 import pcimcioch.gitlabci.dsl.serializer.ValueSerializer
-import pcimcioch.gitlabci.dsl.serializer.AnySerializer
 
 @Serializable(with = IncludeDsl.IncludeDslSerializer::class)
 class IncludeDsl : DslBase() {
@@ -18,6 +14,7 @@ class IncludeDsl : DslBase() {
 
     fun template(template: String, block: IncludeTemplateDsl.() -> Unit = {}) = addAndReturn(includes, IncludeTemplateDsl(template).apply(block))
     fun remote(remote: String, block: IncludeRemoteDsl.() -> Unit = {}) = addAndReturn(includes, IncludeRemoteDsl(remote).apply(block))
+    fun component(component: String, block: IncludeComponentDsl.() -> Unit = {}) = addAndReturn(includes, IncludeComponentDsl(component).apply(block))
     operator fun IncludeDetailsDsl.unaryPlus() = this@IncludeDsl.includes.add(this)
 
     override fun validate(errors: MutableList<String>) {
@@ -205,3 +202,35 @@ class IncludeRemoteDsl(
 }
 
 fun createIncludeRemote(remote: String, block: IncludeRemoteDsl.() -> Unit = {}) = IncludeRemoteDsl(remote).apply(block)
+
+@Serializable
+class IncludeComponentDsl(
+    var component: String,
+    override var inputs: InputsDsl? = null
+) : IncludeDetailsDsl() {
+    companion object {
+        init {
+            addSerializer(IncludeComponentDsl::class, serializer())
+        }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as IncludeComponentDsl
+
+        if (component != other.component) return false
+        if (inputs != other.inputs) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = component.hashCode()
+        result = 31 * result + (inputs?.hashCode() ?: 0)
+        return result
+    }
+}
+
+fun createIncludeComponent(remote: String, block: IncludeComponentDsl.() -> Unit = {}) = IncludeComponentDsl(remote).apply(block)

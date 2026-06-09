@@ -212,6 +212,7 @@ internal class GitlabCiDslTest {
             include {
                 local("local 1")
                 remote("remote 1")
+                component("component 1")
             }
         }
 
@@ -221,6 +222,7 @@ internal class GitlabCiDslTest {
             "include":
             - local: "local 1"
             - remote: "remote 1"
+            - component: "component 1"
         """.trimIndent()
         )
     }

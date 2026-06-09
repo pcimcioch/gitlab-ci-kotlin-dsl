@@ -29,10 +29,12 @@ internal class IncludeDslTest : DslTestBase<IncludeDsl>(IncludeDsl.serializer())
             file("project 1", "file 1")
             template("template 1")
             remote("remote 1")
+            component("component 1")
             local("local 2")
             file("project 2", "file 2", "ref 2")
             template("template 2")
             remote("remote 2")
+            component("component 2")
         }
 
         // then
@@ -44,12 +46,14 @@ internal class IncludeDslTest : DslTestBase<IncludeDsl>(IncludeDsl.serializer())
                       file: "file 1"
                     - template: "template 1"
                     - remote: "remote 1"
+                    - component: "component 1"
                     - local: "local 2"
                     - project: "project 2"
                       file: "file 2"
                       ref: "ref 2"
                     - template: "template 2"
                     - remote: "remote 2"
+                    - component: "component 2"
                 """
         )
     }
@@ -77,6 +81,9 @@ internal class IncludeDslTest : DslTestBase<IncludeDsl>(IncludeDsl.serializer())
         val remote2Dsl = createIncludeRemote("remote 2") {
             inputs { "i" to "j" }
         }
+        val component1Dsl = createIncludeComponent("component 1") {
+            inputs { "x" to "y" }
+        }
         val testee = IncludeDsl().apply {
             +local1Dsl
             +local2Dsl
@@ -88,6 +95,7 @@ internal class IncludeDslTest : DslTestBase<IncludeDsl>(IncludeDsl.serializer())
             +template2Dsl
             +remote1Dsl
             +remote2Dsl
+            +component1Dsl
         }
 
         // then
@@ -120,6 +128,9 @@ internal class IncludeDslTest : DslTestBase<IncludeDsl>(IncludeDsl.serializer())
                     - remote: "remote 2"
                       inputs:
                         "i": "j"
+                    - component: "component 1"
+                      inputs:
+                        "x": "y"
                 """
         )
     }
@@ -132,10 +143,12 @@ internal class IncludeDslTest : DslTestBase<IncludeDsl>(IncludeDsl.serializer())
             file("project 1", "file 1")
             template("template 1")
             remote("remote 1")
+            component("component 1")
             local("local 2")
             file("project 2", "file 2", "ref 2")
             template("template 2")
             remote("remote 2")
+            component("component 2")
         }
 
         val expected = IncludeDsl().apply {
@@ -143,10 +156,12 @@ internal class IncludeDslTest : DslTestBase<IncludeDsl>(IncludeDsl.serializer())
             file("project 1", "file 1")
             template("template 1")
             remote("remote 1")
+            component("component 1")
             local("local 2")
             file("project 2", "file 2", "ref 2")
             template("template 2")
             remote("remote 2")
+            component("component 2")
         }
 
         // then
@@ -177,6 +192,11 @@ internal class IncludeDslTest : DslTestBase<IncludeDsl>(IncludeDsl.serializer())
                     "active" to false
                 }
             }
+            component("component 1") {
+                inputs {
+                    "param" to "value"
+                }
+            }
         }
 
         // then
@@ -202,6 +222,9 @@ internal class IncludeDslTest : DslTestBase<IncludeDsl>(IncludeDsl.serializer())
                     - remote: "remote 1"
                       inputs:
                         "active": false
+                    - component: "component 1"
+                      inputs:
+                        "param": "value"
                 """
         )
     }

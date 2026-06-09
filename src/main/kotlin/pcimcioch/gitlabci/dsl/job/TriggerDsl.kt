@@ -1,5 +1,6 @@
 package pcimcioch.gitlabci.dsl.job
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import pcimcioch.gitlabci.dsl.DslBase
@@ -14,14 +15,18 @@ class TriggerDsl(
     var strategy: TriggerStrategy? = null
 ) : DslBase() {
     var include: TriggerIncludeDsl? = null
+    var forward: TriggerForwardDsl? = null
 
     fun include(block: TriggerIncludeDsl.() -> Unit = {}) = ensureInclude().apply(block)
+    fun forward(block: TriggerForwardDsl.() -> Unit = {}) = ensureForward().apply(block)
 
     override fun validate(errors: MutableList<String>) {
         addErrors(errors, "[trigger]", include)
+        addErrors(errors, "[trigger]", forward)
     }
 
     private fun ensureInclude() = include ?: TriggerIncludeDsl().also { include = it }
+    private fun ensureForward() = forward ?: TriggerForwardDsl().also { forward = it }
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -32,6 +37,7 @@ class TriggerDsl(
         if (branch != other.branch) return false
         if (strategy != other.strategy) return false
         if (include != other.include) return false
+        if (forward != other.forward) return false
 
         return true
     }
@@ -41,6 +47,7 @@ class TriggerDsl(
         result = 31 * result + (branch?.hashCode() ?: 0)
         result = 31 * result + (strategy?.hashCode() ?: 0)
         result = 31 * result + (include?.hashCode() ?: 0)
+        result = 31 * result + (forward?.hashCode() ?: 0)
         return result
     }
 
@@ -220,3 +227,39 @@ enum class TriggerStrategy(
 
     object TriggerStrategySerializer : StringRepresentationSerializer<TriggerStrategy>("TriggerStrategy")
 }
+
+@Serializable
+class TriggerForwardDsl(
+    @SerialName("pipeline_variables")
+    var pipelineVariables: Boolean? = null,
+    @SerialName("yaml_variables")
+    var yamlVariables: Boolean? = null,
+) : DslBase() {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as TriggerForwardDsl
+
+        if (pipelineVariables != other.pipelineVariables) return false
+        if (yamlVariables != other.yamlVariables) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = pipelineVariables?.hashCode() ?: 0
+        result = 31 * result + (yamlVariables?.hashCode() ?: 0)
+        return result
+    }
+
+    companion object {
+        init {
+            addSerializer(TriggerForwardDsl::class, serializer())
+        }
+    }
+
+}
+
+fun createTriggerForward(block: TriggerForwardDsl.() -> Unit = {}) = TriggerForwardDsl().apply(block)

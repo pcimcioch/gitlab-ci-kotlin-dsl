@@ -33,6 +33,10 @@ internal class TriggerDslTest : DslTestBase<TriggerDsl>(TriggerDsl.serializer())
             include {
                 local("localFile")
             }
+            forward {
+                yamlVariables = true
+                pipelineVariables = false
+            }
         }
 
         // then
@@ -44,6 +48,9 @@ internal class TriggerDslTest : DslTestBase<TriggerDsl>(TriggerDsl.serializer())
                     strategy: "${triggerStrategy.stringRepresentation}"
                     include:
                     - local: "localFile"
+                    forward:
+                      pipeline_variables: false
+                      yaml_variables: true
                 """
         )
     }
@@ -136,8 +143,12 @@ internal class TriggerDslTest : DslTestBase<TriggerDsl>(TriggerDsl.serializer())
         val includeDsl = createTriggerInclude {
             local("localFile")
         }
+        val forwardDsl = createTriggerForward {
+            pipelineVariables = true
+        }
         val testee = createTrigger {
             include = includeDsl
+            forward = forwardDsl
         }
 
         // then
@@ -146,6 +157,8 @@ internal class TriggerDslTest : DslTestBase<TriggerDsl>(TriggerDsl.serializer())
             """
                     include:
                     - local: "localFile"
+                    forward:
+                      pipeline_variables: true
                 """
         )
     }
